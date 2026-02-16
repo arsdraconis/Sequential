@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGAppKitAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern	const NSString* const	PGUseEntireScreenWhenInFullScreenKey;
 
 static
@@ -66,7 +68,7 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 
 #if __has_feature(objc_arc)
 @interface PGFullscreenWindow ()
-@property (nonatomic, strong) NSWindow* blackHideTheNotchWindow;	//	2023/08/14 added
+@property (nonatomic, strong, nullable) NSWindow* blackHideTheNotchWindow;	//	2023/08/14 added
 @end
 #endif
 
@@ -178,7 +180,7 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 
 //	MARK: NSWindow
 
-- (IBAction)performClose:(id)sender
+- (IBAction)performClose:(nullable id)sender
 {
 	[(NSObject<PGFullscreenWindowDelegate> *)self.delegate closeWindowContent:self];
 }
@@ -204,3 +206,5 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

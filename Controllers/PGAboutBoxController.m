@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGZooming.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 static NSString *const PGPaneItemKey = @"PGPaneItem";
 
 static PGAboutBoxController *PGSharedAboutBoxController;
@@ -59,7 +61,7 @@ static PGAboutBoxController *PGSharedAboutBoxController;
 
 //	MARK: - PGAboutBoxController
 
-- (IBAction)changePane:(id)sender
+- (IBAction)changePane:(nullable id)sender
 {
 	NSString *path = nil;
 #if __has_feature(objc_arc)
@@ -172,7 +174,7 @@ static PGAboutBoxController *PGSharedAboutBoxController;
 
 //	MARK: - <NSToolbarDelegate>
 
-- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)ident willBeInsertedIntoToolbar:(BOOL)flag
+- (nullable NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)ident willBeInsertedIntoToolbar:(BOOL)flag
 {
 	NSParameterAssert(PGEqualObjects(ident, PGPaneItemKey));
 #if __has_feature(objc_arc)
@@ -203,3 +205,5 @@ static PGAboutBoxController *PGSharedAboutBoxController;
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

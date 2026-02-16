@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFadeOutPanel.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define PGFadeOutPanelFrameRate (1.0 / 30.0)
 #define PGFadeOutPanelDuration  0.20
 
@@ -73,12 +75,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - NSWindow
 
-- (IBAction)makeKeyAndOrderFront:(id)sender
+- (IBAction)makeKeyAndOrderFront:(nullable id)sender
 {
 	[self cancelFadeOut];
 	[super makeKeyAndOrderFront:sender];
 }
-- (IBAction)orderFront:(id)sender
+- (IBAction)orderFront:(nullable id)sender
 {
 	[self cancelFadeOut];
 	[super orderFront:sender];
@@ -108,3 +110,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

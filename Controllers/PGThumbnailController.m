@@ -47,6 +47,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 //	should match #define in PGDisplayController.m
 	//	does not work well so disabled until it's fixed
 #define FULL_HEIGHT_BROWSER_IN_FULLSIZE_CONTENT_MODE	false
@@ -107,7 +109,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 #if !__has_feature(objc_arc)
 @synthesize displayController = _displayController;
 #endif
-- (void)setDisplayController:(PGDisplayController *)aController
+- (void)setDisplayController:(nullable PGDisplayController *)aController
 {
 	if(aController == _displayController) return;
 	[_window.parentWindow removeChildWindow:_window];
@@ -131,7 +133,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 #if !__has_feature(objc_arc)
 @synthesize document = _document;
 #endif
-- (void)setDocument:(PGDocument *)aDoc
+- (void)setDocument:(nullable PGDocument *)aDoc
 {
 	if(aDoc == _document) return;
 	[_document PG_removeObserver:self name:PGPrefObjectBaseOrientationDidChangeNotification];
@@ -196,7 +198,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 
 //	MARK: -
 
-- (void)displayControllerActiveNodeDidChange:(NSNotification *)aNotif
+- (void)displayControllerActiveNodeDidChange:(nullable NSNotification *)aNotif
 {
 	//	2023/08/21 only process notifications which are targeting this instance;
 	//	this stops the app from crashing when the thumbnail view is shown/hidden
@@ -215,7 +217,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 {
 	[self clipViewBoundsDidChange:nil];
 }
-- (void)clipViewBoundsDidChange:(NSNotification *)aNotif
+- (void)clipViewBoundsDidChange:(nullable NSNotification *)aNotif
 {
 	[_browser redisplayItem:self.displayController.activeNode recursively:NO];
 
@@ -259,7 +261,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 {
 	[_browser redisplayItem:aNotif.userInfo[PGDocumentNodeKey] recursively:[aNotif.userInfo[PGDocumentUpdateRecursivelyKey] boolValue]];
 }
-- (void)documentBaseOrientationDidChange:(NSNotification *)aNotif
+- (void)documentBaseOrientationDidChange:(nullable NSNotification *)aNotif
 {
 	_browser.thumbnailOrientation = self.document.baseOrientation;
 }
@@ -549,7 +551,7 @@ NSLog(@"-mouseMoved:");
 
 //	MARK: - <PGThumbnailBrowserDataSource>
 
-- (id)thumbnailBrowser:(PGThumbnailBrowser *)sender parentOfItem:(id)item
+- (nullable id)thumbnailBrowser:(PGThumbnailBrowser *)sender parentOfItem:(id)item
 {
 	PGNode *const parent = ((PGNode *)item).parentNode;
 	return self.document.node == parent && !parent.isViewable ? nil : parent;
@@ -609,7 +611,7 @@ NSLog(@"-mouseMoved:");
 
 //	MARK: - <PGThumbnailViewDataSource>
 
-- (NSArray *)itemsForThumbnailView:(PGThumbnailView *)sender
+- (nullable NSArray *)itemsForThumbnailView:(PGThumbnailView *)sender
 {
 	PGNode *const item = sender.representedObject;
 	if(item)
@@ -724,3 +726,5 @@ NSLog(@"-mouseMoved:");
 - (void)thumbnailPanelDidResignKey:(NSNotification *)aNotif {}
 
 @end
+
+NS_ASSUME_NONNULL_END

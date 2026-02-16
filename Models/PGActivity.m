@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGActivity.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 static PGActivity *PGApplicationActivity;
 
 #if __has_feature(objc_arc)
@@ -94,14 +96,14 @@ static PGActivity *PGApplicationActivity;
 @synthesize parentActivity = _parentActivity;
 #endif
 
-- (PGActivity *)parentActivity
+- (nullable PGActivity *)parentActivity
 {
 	@synchronized(self) {
 		return _parentActivity;
 	}
 	return nil;
 }
-- (void)setParentActivity:(PGActivity *)activity
+- (void)setParentActivity:(nullable PGActivity *)activity
 {
 	@synchronized(self) {
 		if(activity == _parentActivity) return;
@@ -239,3 +241,5 @@ static PGActivity *PGApplicationActivity;
 - (void)cancelActivity:(PGActivity *)activity {}
 
 @end
+
+NS_ASSUME_NONNULL_END

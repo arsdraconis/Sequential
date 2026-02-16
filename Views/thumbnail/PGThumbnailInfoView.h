@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //#import "PGGeometryTypes.h"
 #import "PGBezelPanel.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGThumbnailInfoView : NSView<PGBezelPanelContentView>
 #if !__has_feature(objc_arc)
 {
@@ -41,3 +43,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)setImageCount:(NSUInteger)imageCount byteSizeTotal:(uint64_t)byteSizeTotal;
 
 @end
+
+NS_ASSUME_NONNULL_END

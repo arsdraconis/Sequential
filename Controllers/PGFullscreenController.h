@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDisplayController.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGFullscreenController : PGDisplayController<NSWindowDelegate>
 #if !__has_feature(objc_arc)
 {
@@ -40,3 +42,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)resizeToUseEntireScreen;	//	2023/08/14 added
 
 @end
+
+NS_ASSUME_NONNULL_END

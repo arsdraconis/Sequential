@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGAttachments.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGOrientationMenuIconCell : PGIconAttachmentCell 
 #if !__has_feature(objc_arc)
 {
@@ -39,3 +41,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (NSImage *)iconForOrientation:(inout PGOrientation *)orientation highlighted:(BOOL)flag;
 
 @end
+
+NS_ASSUME_NONNULL_END

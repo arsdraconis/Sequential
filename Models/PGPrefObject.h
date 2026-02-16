@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGPrefObjectShowsInfoDidChangeNotification;
 extern NSString *const PGPrefObjectShowsThumbnailsDidChangeNotification;
 extern NSString *const PGPrefObjectReadingDirectionDidChangeNotification;
@@ -110,3 +112,5 @@ typedef NS_OPTIONS(NSUInteger, PGSortOrder) {
 - (BOOL)isCurrentSortOrder:(PGSortOrder)order; // Ignores sort options.
 
 @end
+
+NS_ASSUME_NONNULL_END

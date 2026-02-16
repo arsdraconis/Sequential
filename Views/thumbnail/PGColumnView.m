@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGColumnView ()
@@ -190,3 +192,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

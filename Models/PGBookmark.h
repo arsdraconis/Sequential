@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @class PGSubscription;
 #endif
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGBookmarkDidUpdateNotification;
 
 @interface PGBookmark : NSObject <NSSecureCoding>	//	NSCoding
@@ -45,7 +47,7 @@ extern NSString *const PGBookmarkDidUpdateNotification;
 - (instancetype)initWithNode:(PGNode *)aNode;
 - (instancetype)initWithDocumentIdentifier:(PGDisplayableIdentifier *)docIdent
 				  fileIdentifier:(PGDisplayableIdentifier *)fileIdent
-					 displayName:(NSString *)aString NS_DESIGNATED_INITIALIZER; // For backward compatibility.
+					 displayName:(nullable NSString *)aString NS_DESIGNATED_INITIALIZER; // For backward compatibility.
 - (instancetype)init NS_UNAVAILABLE;
 
 #if __has_feature(objc_arc)
@@ -62,3 +64,5 @@ extern NSString *const PGBookmarkDidUpdateNotification;
 - (void)identifierDidChange:(NSNotification *)aNotif;
 
 @end
+
+NS_ASSUME_NONNULL_END

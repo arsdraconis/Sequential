@@ -33,18 +33,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGImageSaveAlert ()
 
-@property (nonatomic, weak) IBOutlet NSView *accessoryView;
-@property (nonatomic, weak) IBOutlet NSOutlineView *nodesOutline;
-@property (nonatomic, weak) IBOutlet NSTableColumn *nameColumn;
-@property (nonatomic, weak) IBOutlet NSTableColumn *errorColumn;
+@property (nonatomic, weak, nullable) IBOutlet NSView *accessoryView;
+@property (nonatomic, weak, nullable) IBOutlet NSOutlineView *nodesOutline;
+@property (nonatomic, weak, nullable) IBOutlet NSTableColumn *nameColumn;
+@property (nonatomic, weak, nullable) IBOutlet NSTableColumn *errorColumn;
 @property (nonatomic, strong) PGNode *rootNode;
-@property (nonatomic, strong) NSSet *initialSelection;
+@property (nonatomic, strong, nullable) NSSet *initialSelection;
 @property (nonatomic, strong) NSOpenPanel *openPanel;
-@property (nonatomic, strong) NSString *destination;
+@property (nonatomic, strong, nullable) NSString *destination;
 @property (nonatomic, strong) NSMutableDictionary *saveNamesByNodePointer;
 @property (nonatomic, assign) BOOL saveOnSheetClose;
 @property (nonatomic, assign) BOOL firstTime;
@@ -204,7 +206,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 		[self openPanelDidEnd:_openPanel returnCode:[_openPanel runModal] contextInfo:NULL];
 	}
 }
-- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(NSInteger)returnCode contextInfo:(nullable void *)contextInfo
 {
 	[panel orderOut:self];
 	[_openPanel PG_removeObserver:self name:NSWindowDidEndSheetNotification];
@@ -376,7 +378,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - <NSOutlineViewDataSource>
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(nullable id)item
 {
 	return item ? ((PGContainerAdapter *)[item resourceAdapter]).sortedChildren[index] : _rootNode;
 }
@@ -384,11 +386,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 {
 	return [item resourceAdapter].hasSavableChildren;
 }
-- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(nullable id)item
 {
 	return item ? ((PGContainerAdapter *)[item resourceAdapter]).unsortedChildren.count : 1;
 }
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+- (nullable id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(nullable NSTableColumn *)tableColumn byItem:(nullable id)item
 {
 	NSString *const saveName = [self saveNameForNode:item];
 #if __has_feature(objc_arc)
@@ -403,7 +405,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 				@"Appears in the image save alert beside each filename that conflicts with an existing file in the destination folder.");
 	return nil;
 }
-- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(nullable id)object forTableColumn:(nullable NSTableColumn *)tableColumn byItem:(nullable id)item
 {
 #if __has_feature(objc_arc)
 	NSParameterAssert(tableColumn == _nameColumn);
@@ -415,7 +417,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - <NSOutlineViewDelegate>
 
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(nullable NSTableColumn *)tableColumn item:(id)item
 {
 #if __has_feature(objc_arc)
 	if(tableColumn == _nameColumn)
@@ -427,7 +429,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 		[cell setEnabled:[item resourceAdapter].canSaveData];
 	}
 }
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(nullable NSTableColumn *)tableColumn item:(id)item
 {
 #if __has_feature(objc_arc)
 	if(tableColumn != _nameColumn) return NO;
@@ -456,3 +458,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

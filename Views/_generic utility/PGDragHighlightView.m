@@ -27,11 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Views
 @class PGBezelPanel;
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGDragHighlightView ()
 
-@property (nonatomic, strong) NSBezierPath *highlightPath;
+@property (nonatomic, strong, nullable) NSBezierPath *highlightPath;
 
 @end
 
@@ -90,3 +92,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

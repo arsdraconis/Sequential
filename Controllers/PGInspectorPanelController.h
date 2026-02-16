@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFloatingPanelController.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGInspectorPanelController :
 	PGFloatingPanelController <NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation>
 #if !__has_feature(objc_arc)
@@ -38,9 +40,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 #endif
 
-- (IBAction)changeSearch:(id)sender;
-- (IBAction)copy:(id)sender;
+- (IBAction)changeSearch:(nullable id)sender;
+- (IBAction)copy:(nullable id)sender;
 
-- (void)displayControllerActiveNodeWasRead:(NSNotification *)aNotif;
+- (void)displayControllerActiveNodeWasRead:(nullable NSNotification *)aNotif;
 
 @end
+
+NS_ASSUME_NONNULL_END

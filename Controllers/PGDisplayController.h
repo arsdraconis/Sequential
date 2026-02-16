@@ -47,6 +47,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGDisplayControllerActiveNodeDidChangeNotification;
 extern NSString *const PGDisplayControllerActiveNodeWasReadNotification;
 extern NSString *const PGDisplayControllerTimerDidChangeNotification;
@@ -97,61 +99,61 @@ extern NSString *const PGDisplayControllerTimerDidChangeNotification;
 
 + (NSArray *)pasteboardTypes;
 
-- (IBAction)saveImagesTo:(id)sender;
-- (IBAction)setAsDesktopPicture:(id)sender;
-- (IBAction)setCopyAsDesktopPicture:(id)sender;
-- (IBAction)moveToTrash:(id)sender;
+- (IBAction)saveImagesTo:(nullable id)sender;
+- (IBAction)setAsDesktopPicture:(nullable id)sender;
+- (IBAction)setCopyAsDesktopPicture:(nullable id)sender;
+- (IBAction)moveToTrash:(nullable id)sender;
 
-- (IBAction)copy:(id)sender;
-- (IBAction)selectAll:(id)sender;
-- (IBAction)performFindPanelAction:(id)sender;
-- (IBAction)hideFindPanel:(id)sender;
+- (IBAction)copy:(nullable id)sender;
+- (IBAction)selectAll:(nullable id)sender;
+- (IBAction)performFindPanelAction:(nullable id)sender;
+- (IBAction)hideFindPanel:(nullable id)sender;
 
-- (IBAction)toggleFullscreen:(id)sender;
-- (IBAction)toggleEntireWindowOrScreen:(id)sender;
-- (IBAction)toggleInfo:(id)sender;
-- (IBAction)toggleThumbnails:(id)sender;
-- (IBAction)changeReadingDirection:(id)sender;
-- (IBAction)changeSortOrder:(id)sender;
-- (IBAction)changeSortDirection:(id)sender;
-- (IBAction)changeSortRepeat:(id)sender;
-- (IBAction)revertOrientation:(id)sender;
-- (IBAction)changeOrientation:(id)sender;
-- (IBAction)toggleAnimation:(id)sender;
+- (IBAction)toggleFullscreen:(nullable id)sender;
+- (IBAction)toggleEntireWindowOrScreen:(nullable id)sender;
+- (IBAction)toggleInfo:(nullable id)sender;
+- (IBAction)toggleThumbnails:(nullable id)sender;
+- (IBAction)changeReadingDirection:(nullable id)sender;
+- (IBAction)changeSortOrder:(nullable id)sender;
+- (IBAction)changeSortDirection:(nullable id)sender;
+- (IBAction)changeSortRepeat:(nullable id)sender;
+- (IBAction)revertOrientation:(nullable id)sender;
+- (IBAction)changeOrientation:(nullable id)sender;
+- (IBAction)toggleAnimation:(nullable id)sender;
 
-- (IBAction)changeImageScaleMode:(id)sender;
-- (IBAction)zoomIn:(id)sender;
-- (IBAction)zoomOut:(id)sender;
-- (IBAction)changeImageScaleFactor:(id)sender;
-- (IBAction)minImageScaleFactor:(id)sender;
-- (IBAction)maxImageScaleFactor:(id)sender;
+- (IBAction)changeImageScaleMode:(nullable id)sender;
+- (IBAction)zoomIn:(nullable id)sender;
+- (IBAction)zoomOut:(nullable id)sender;
+- (IBAction)changeImageScaleFactor:(nullable id)sender;
+- (IBAction)minImageScaleFactor:(nullable id)sender;
+- (IBAction)maxImageScaleFactor:(nullable id)sender;
 
-- (IBAction)previousPage:(id)sender;
-- (IBAction)nextPage:(id)sender;
-- (IBAction)firstPage:(id)sender;
-- (IBAction)lastPage:(id)sender;
+- (IBAction)previousPage:(nullable id)sender;
+- (IBAction)nextPage:(nullable id)sender;
+- (IBAction)firstPage:(nullable id)sender;
+- (IBAction)lastPage:(nullable id)sender;
 
-- (IBAction)firstOfPreviousFolder:(id)sender;
-- (IBAction)firstOfNextFolder:(id)sender;
-- (IBAction)skipBeforeFolder:(id)sender;
-- (IBAction)skipPastFolder:(id)sender;
-- (IBAction)firstOfFolder:(id)sender;
-- (IBAction)lastOfFolder:(id)sender;
+- (IBAction)firstOfPreviousFolder:(nullable id)sender;
+- (IBAction)firstOfNextFolder:(nullable id)sender;
+- (IBAction)skipBeforeFolder:(nullable id)sender;
+- (IBAction)skipPastFolder:(nullable id)sender;
+- (IBAction)firstOfFolder:(nullable id)sender;
+- (IBAction)lastOfFolder:(nullable id)sender;
 
-- (IBAction)jumpToPage:(id)sender;
+- (IBAction)jumpToPage:(nullable id)sender;
 
-- (IBAction)pauseDocument:(id)sender;
-- (IBAction)pauseAndCloseDocument:(id)sender;
+- (IBAction)pauseDocument:(nullable id)sender;
+- (IBAction)pauseAndCloseDocument:(nullable id)sender;
 
-- (IBAction)reload:(id)sender;
-- (IBAction)decrypt:(id)sender;
+- (IBAction)reload:(nullable id)sender;
+- (IBAction)decrypt:(nullable id)sender;
 
 #if __has_feature(objc_arc)
-@property (readonly) PGDocument *activeDocument;
+@property (readonly, nullable) PGDocument *activeDocument;
 @property (readonly) PGNode *activeNode;
-@property (readonly) NSWindow *windowForSheet;
+@property (readonly, nullable) NSWindow *windowForSheet;
 @property (nonatomic, copy) NSSet *selectedNodes;	//	2023/10/02 was readonly
-@property (readonly) PGNode *selectedNode;
+@property (readonly, nullable) PGNode *selectedNode;
 @property (readonly, weak) PGClipView *clipView;
 @property (readonly) PGPageLocation initialLocation;
 @property (readonly, getter = isReading) BOOL reading;
@@ -186,7 +188,7 @@ extern NSString *const PGDisplayControllerTimerDidChangeNotification;
 					BOOL inFullSizeContentModeForNonFullScreenMode;
 #endif
 
-- (BOOL)setActiveDocument:(PGDocument *)document closeIfAppropriate:(BOOL)flag; // Returns YES if the window was closed.
+- (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag; // Returns YES if the window was closed.
 - (void)activateDocument:(PGDocument *)document;
 
 - (void)setActiveNode:(PGNode *)aNode forward:(BOOL)flag;
@@ -207,22 +209,24 @@ extern NSString *const PGDisplayControllerTimerDidChangeNotification;
 - (void)clipViewFrameDidChange:(NSNotification *)aNotif;
 
 - (void)nodeLoadingDidProgress:(NSNotification *)aNotif;
-- (void)nodeReadyForViewing:(NSNotification *)aNotif;
+- (void)nodeReadyForViewing:(nullable NSNotification *)aNotif;
 
 - (void)documentWillRemoveNodes:(NSNotification *)aNotif;
 - (void)documentSortedNodesDidChange:(NSNotification *)aNotif;
 - (void)documentNodeDisplayNameDidChange:(NSNotification *)aNotif;
-- (void)documentNodeIsViewableDidChange:(NSNotification *)aNotif;
+- (void)documentNodeIsViewableDidChange:(nullable NSNotification *)aNotif;
 - (void)documentBaseOrientationDidChange:(NSNotification *)aNotif;
 
-- (void)documentShowsInfoDidChange:(NSNotification *)aNotif;
-- (void)documentShowsThumbnailsDidChange:(NSNotification *)aNotif;
-- (void)documentReadingDirectionDidChange:(NSNotification *)aNotif;
+- (void)documentShowsInfoDidChange:(nullable NSNotification *)aNotif;
+- (void)documentShowsThumbnailsDidChange:(nullable NSNotification *)aNotif;
+- (void)documentReadingDirectionDidChange:(nullable NSNotification *)aNotif;
 - (void)documentImageScaleDidChange:(NSNotification *)aNotif;
-- (void)documentAnimatesImagesDidChange:(NSNotification *)aNotif;
+- (void)documentAnimatesImagesDidChange:(nullable NSNotification *)aNotif;
 - (void)documentTimerIntervalDidChange:(NSNotification *)aNotif;
 
-- (void)thumbnailControllerContentInsetDidChange:(NSNotification *)aNotif;
-- (void)prefControllerBackgroundPatternColorDidChange:(NSNotification *)aNotif;
+- (void)thumbnailControllerContentInsetDidChange:(nullable NSNotification *)aNotif;
+- (void)prefControllerBackgroundPatternColorDidChange:(nullable NSNotification *)aNotif;
 
 @end
+
+NS_ASSUME_NONNULL_END

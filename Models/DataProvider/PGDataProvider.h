@@ -25,35 +25,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Models
 @class PGResourceIdentifier;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGDataProvider : NSObject <NSCopying>
 
-@property(readonly) PGResourceIdentifier *identifier;
-@property(readonly) NSURLResponse *response;
+@property(readonly, nullable) PGResourceIdentifier *identifier;
+@property(readonly, nullable) NSURLResponse *response;
 // TODO: Add -fileName/-displayableName/-attributedString properties.
 
-@property(readonly) NSData *data;
+@property(readonly, nullable) NSData *data;
 @property(readonly) uint64_t dataByteSize;	//	2023/09/17
-@property(readonly) NSDate *dateModified;
-@property(readonly) NSDate *dateCreated;
+@property(readonly, nullable) NSDate *dateModified;
+@property(readonly, nullable) NSDate *dateCreated;
 
-@property(readonly) NSString *UTIType;
+@property(readonly, nullable) NSString *UTIType;
 @property(readonly) NSString *MIMEType;
 @property(readonly) OSType typeCode;
-@property(readonly) NSString *extension;
+@property(readonly, nullable) NSString *extension;
 
 @property(readonly) NSImage *icon;
-@property(readonly) NSString *kindString;
+@property(readonly, nullable) NSString *kindString;
 @property(readonly) BOOL hasData;
-@property(readonly) NSData *fourCCData;
+@property(readonly, nullable) NSData *fourCCData;
 //@property(readonly) NSNumber *dataLength;	//	2023/09/17 deprecated; use dataByteSize instead
 
 @end
 
 @interface PGDataProvider(PGDataProviderCreation)
 
-+ (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name;
++ (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(nullable NSString *)name;
 + (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident;
-+ (instancetype)providerWithURLResponse:(NSURLResponse *)response data:(NSData *)data;
++ (instancetype)providerWithURLResponse:(NSURLResponse *)response data:(nullable NSData *)data;
 
 @end
 
@@ -64,3 +66,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 + (PGDataProvider *)customDataProviderWithURLResponse:(NSURLResponse *)response data:(NSData *)data;
 
 @end
+
+NS_ASSUME_NONNULL_END

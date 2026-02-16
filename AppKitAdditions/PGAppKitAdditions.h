@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef NS_ENUM(NSUInteger, AEIconType) {
 	AENoIcon = 0,
 	AEPlayIcon = 1,
@@ -87,7 +89,8 @@ typedef NS_ENUM(NSUInteger, AEIconType) {
 
 @interface NSScreen(PGAppKitAdditions)
 
-+ (NSScreen *)PG_mainScreen; // Returns the real main screen (the screen containing the menu bar).
+/// Returns the real main screen (the screen containing the menu bar).
++ (nullable NSScreen *)PG_mainScreen;
 //- (BOOL)PG_setDesktopImageURL:(NSURL *)URL;
 
 @end
@@ -105,3 +108,5 @@ typedef NS_ENUM(NSUInteger, AEIconType) {
 - (void)PG_setContentRect:(NSRect)aRect;
 
 @end
+
+NS_ASSUME_NONNULL_END

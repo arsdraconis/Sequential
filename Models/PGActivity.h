@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @protocol PGActivityOwner;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGActivity : NSObject
 #if !__has_feature(objc_arc)
 {
@@ -66,3 +68,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)cancelActivity:(PGActivity *)activity;
 
 @end
+
+NS_ASSUME_NONNULL_END

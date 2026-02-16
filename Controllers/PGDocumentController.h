@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @class PGActivityPanelController;
 #endif
 
+NS_ASSUME_NONNULL_BEGIN
+
 //	general prefs pane
 extern NSString *const PGBackgroundColorSourceKey;	//	2023/08/17
 extern NSString *const PGBackgroundColorKey;
@@ -161,7 +163,7 @@ typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
 @property (readonly) NSMenu *scaleMenu;
 @property (nonatomic, weak) IBOutlet NSSlider *scaleSlider;
 @property (readonly, strong) IBOutlet NSMenu *defaultPageMenu;
-@property (nonatomic, weak) PGDocument *currentDocument;
+@property (nonatomic, weak, nullable) PGDocument *currentDocument;
 @property (readonly) BOOL pathFinderRunning;
 
 #else
@@ -184,9 +186,9 @@ typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
 
 - (void)addDocument:(PGDocument *)document;
 - (void)removeDocument:(PGDocument *)document;
-- (PGDocument *)documentForIdentifier:(PGResourceIdentifier *)ident;
-- (PGDocument *)next:(BOOL)flag documentBeyond:(PGDocument *)document;
-- (NSMenuItem *)windowsMenuItemForDocument:(PGDocument *)document;
+- (nullable PGDocument *)documentForIdentifier:(PGResourceIdentifier *)ident;
+- (nullable PGDocument *)next:(BOOL)flag documentBeyond:(PGDocument *)document;
+- (nullable NSMenuItem *)windowsMenuItemForDocument:(PGDocument *)document;
 
 - (id)openDocumentWithContentsOfIdentifier:(PGResourceIdentifier *)ident display:(BOOL)flag;
 - (id)openDocumentWithContentsOfURL:(NSURL *)URL display:(BOOL)flag;
@@ -196,10 +198,12 @@ typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
 
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
 
-- (void)recentDocumentIdentifierDidChange:(NSNotification *)aNotif;
+- (void)recentDocumentIdentifierDidChange:(nullable NSNotification *)aNotif;
 
 typedef NSUInteger BeforeState;
 - (BeforeState)togglePanelsForExitingFullScreen:(BOOL)exitingFullScreen
 								withBeforeState:(BeforeState)state;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -40,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAppKitAdditions.h"
 #import "PGZooming.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 
 #if __has_feature(objc_arc)
@@ -65,7 +67,7 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 
 //	MARK: -
 
-- (BOOL)setActiveDocument:(PGDocument *)document closeIfAppropriate:(BOOL)flag
+- (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag
 {
 	[self.activeDocument storeWindowFrame:[self.window PG_contentRect]];
 	if([super setActiveDocument:document closeIfAppropriate:flag])
@@ -86,7 +88,7 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 
 //	MARK: -
 
-- (void)nodeReadyForViewing:(NSNotification *)aNotif
+- (void)nodeReadyForViewing:(nullable NSNotification *)aNotif
 {
 	[super nodeReadyForViewing:aNotif];
 	if(!_shouldZoomOnNextImageLoad) return;
@@ -139,3 +141,5 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

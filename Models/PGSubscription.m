@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGSubscriptionEventDidOccurNotification = @"PGSubscriptionEventDidOccur";
 
 NSString *const PGSubscriptionPathKey = @"PGSubscriptionPath";
@@ -91,7 +93,7 @@ NSString *const PGSubscriptionRootFlagsKey = @"PGSubscriptionRootFlags";
 
 //	MARK: - PGSubscription
 
-- (NSString *)path
+- (nullable NSString *)path
 {
 	return nil;
 }
@@ -241,7 +243,7 @@ static CFMutableSetRef PGActiveSubscriptions = nil;
 
 //	MARK: - PGSubscription
 
-- (NSString *)path
+- (nullable NSString *)path
 {
 	NSString *result = nil;
 	char *path = calloc(PATH_MAX, sizeof(char));
@@ -298,7 +300,7 @@ static void PGEventStreamCallback(ConstFSEventStreamRef streamRef, PGBranchSubsc
 
 @interface PGBranchSubscription ()
 
-@property (nonatomic, assign) FSEventStreamRef eventStream;
+@property (nonatomic, assign, nullable) FSEventStreamRef eventStream;
 @property (nonatomic, strong) PGSubscription *rootSubscription;
 
 @end
@@ -362,7 +364,7 @@ static void PGEventStreamCallback(ConstFSEventStreamRef streamRef, PGBranchSubsc
 
 //	MARK: - PGSubscription
 
-- (NSString *)path
+- (nullable NSString *)path
 {
 	return _rootSubscription.path;
 }
@@ -381,3 +383,5 @@ static void PGEventStreamCallback(ConstFSEventStreamRef streamRef, PGBranchSubsc
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

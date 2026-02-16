@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAppKitAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGPDFPageAdapter : PGResourceAdapter<PGResourceAdapterImageGeneration>
 
 @end
@@ -142,7 +144,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 {
 	return YES;
 }
-- (PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent
+- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent
 {
 	if(!self.node.isViewable || self.node == descendent) return nil;
 	NSInteger const index = ((PGPDFPageDataProvider *)self.dataProvider).pageIndex;
@@ -259,3 +261,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

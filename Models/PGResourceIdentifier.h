@@ -26,6 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @class PGDisplayableIdentifier;
 @class PGSubscription;
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGDisplayableIdentifierIconDidChangeNotification;
 extern NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification;
 
@@ -40,7 +42,7 @@ extern NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification;
 
 @property(readonly) PGResourceIdentifier *identifier;
 @property(readonly) PGDisplayableIdentifier *displayableIdentifier;
-@property(readonly) PGResourceIdentifier *superidentifier;
+@property(readonly, nullable) PGResourceIdentifier *superidentifier;
 @property(readonly) PGResourceIdentifier *rootIdentifier;
 @property(readonly) NSURL *URL; // Equivalent to -URLByFollowingAliases:NO.
 @property(readonly) NSInteger index;
@@ -50,9 +52,9 @@ extern NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification;
 - (PGResourceIdentifier *)subidentifierWithIndex:(NSInteger)index;
 
 - (NSURL *)superURLByFollowingAliases:(BOOL)flag; // Our URL, or our superidentifier's otherwise.
-- (NSURL *)URLByFollowingAliases:(BOOL)flag;
+- (nullable NSURL *)URLByFollowingAliases:(BOOL)flag;
 
-- (PGSubscription *)subscriptionWithDescendents:(BOOL)flag;
+- (nullable PGSubscription *)subscriptionWithDescendents:(BOOL)flag;
 
 @end
 
@@ -116,10 +118,10 @@ typedef UInt8 PGLabelColor;
 @property (nonatomic, assign) BOOL postsNotifications;
 @property (nonatomic, strong) NSImage *icon;
 @property (nonatomic, readonly) NSString *displayName;
-@property (nonatomic, copy) NSString *customDisplayName;
+@property (nonatomic, copy, nullable) NSString *customDisplayName;
 @property (nonatomic, copy) NSString *naturalDisplayName; // The name from the filesystem or raw address of the URL.
 //@property(readonly) PGLabelColor labelColor;	2021/07/21 modernized
-@property (nonatomic, readonly) NSColor* labelColor;
+@property (nonatomic, readonly, nullable) NSColor* labelColor;
 #else
 @property(assign) BOOL postsNotifications;
 @property(retain) NSImage *icon;
@@ -143,3 +145,5 @@ typedef UInt8 PGLabelColor;
 @property(readonly) PGDisplayableIdentifier *PG_displayableIdentifier;
 
 @end
+
+NS_ASSUME_NONNULL_END

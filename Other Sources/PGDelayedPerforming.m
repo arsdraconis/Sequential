@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 //	Because this file involves selectors and optional -retain's, it's
@@ -111,7 +113,7 @@ static void PGTimerCallback(CFRunLoopTimerRef timer, PGTimerContextObject *conte
 	[context invoke];
 }
 
-- (NSTimer *)PG_performSelector:(SEL)aSel withObject:(id)anArgument fireDate:(NSDate *)date interval:(NSTimeInterval)interval options:(PGDelayedPerformingOptions)opts
+- (NSTimer *)PG_performSelector:(SEL)aSel withObject:(nullable id)anArgument fireDate:(nullable NSDate *)date interval:(NSTimeInterval)interval options:(PGDelayedPerformingOptions)opts
 {
 	return [self PG_performSelector:aSel
 						 withObject:anArgument
@@ -121,7 +123,7 @@ static void PGTimerCallback(CFRunLoopTimerRef timer, PGTimerContextObject *conte
 							   mode:NSRunLoopCommonModes];
 }
 
-- (NSTimer *)PG_performSelector:(SEL)aSel withObject:(id)anArgument fireDate:(NSDate *)date interval:(NSTimeInterval)interval options:(PGDelayedPerformingOptions)opts mode:(NSString *)mode
+- (NSTimer *)PG_performSelector:(SEL)aSel withObject:(nullable id)anArgument fireDate:(nullable NSDate *)date interval:(NSTimeInterval)interval options:(PGDelayedPerformingOptions)opts mode:(NSString *)mode
 {
 	NSParameterAssert(interval >= 0.0f);
 #if __has_feature(objc_arc)
@@ -194,7 +196,7 @@ static void PGTimerCallback(CFRunLoopTimerRef timer, PGTimerContextObject *conte
 	[PGTimersByNonretainedObjectValue removeObjectForKey:self];
 #endif
 }
-- (void)PG_cancelPreviousPerformRequestsWithSelector:(SEL)aSel object:(id)anArgument
+- (void)PG_cancelPreviousPerformRequestsWithSelector:(SEL)aSel object:(nullable id)anArgument
 {
 #if __has_feature(objc_arc)
 	NSMutableArray *const timers = (NSMutableArray *) CFDictionaryGetValue(PGTimers_NonretainedKey_RetainedValue,
@@ -330,3 +332,5 @@ static void PGTimerCallback(CFRunLoopTimerRef timer, PGTimerContextObject *conte
 @end
 
 #endif
+
+NS_ASSUME_NONNULL_END

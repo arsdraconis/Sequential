@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGAppKitAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation NSWindow(PGZooming)
 
 - (IBAction)PG_grow:(id)sender
@@ -179,3 +181,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

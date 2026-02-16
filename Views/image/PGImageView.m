@@ -34,12 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define PGAnimateSizeChanges true
 #define PGDebugDrawingModes false
 
 #if __has_feature(objc_arc)
 
-static __strong NSImage *PGRoundedCornerImages[4];
+static __strong NSImage * _Nullable PGRoundedCornerImages[4];
 static NSSize PGRoundedCornerSizes[4];
 
 @interface PGImageView ()
@@ -47,7 +49,7 @@ static NSSize PGRoundedCornerSizes[4];
 @property (nonatomic, assign) NSSize size;
 @property (nonatomic, assign) NSSize immediateSize;
 @property (nonatomic, assign) NSTimeInterval lastSizeAnimationTime;
-@property (nonatomic, strong) NSTimer *sizeTransitionTimer;
+@property (nonatomic, strong, nullable) NSTimer *sizeTransitionTimer;
 
 @property (nonatomic, assign) NSUInteger pauseCount;
 
@@ -66,7 +68,7 @@ static NSSize PGRoundedCornerSizes[4];
 //- (void)_drawImageWithFrame:(NSRect)aRect compositeCopy:(BOOL)compositeCopy rects:(NSRect const *)rects count:(NSUInteger)count;
 - (void)_drawImageWithFrame:(NSRect)aRect;
 @property(readonly) BOOL _shouldDrawRoundedCorners;
-- (BOOL)_needsToDrawRoundedCornersForImageRect:(NSRect)r rects:(NSRect const *)rects count:(NSUInteger)count;
+- (BOOL)_needsToDrawRoundedCornersForImageRect:(NSRect)r rects:(NSRect const * _Nullable)rects count:(NSUInteger)count;
 - (void)_getRoundedCornerRects:(NSRectArray)rects forRect:(NSRect)r;
 - (NSAffineTransform *)_transformWithRotationInDegrees:(CGFloat)val;
 - (BOOL)_setSize:(NSSize)size;
@@ -230,7 +232,7 @@ static NSSize PGRoundedCornerSizes[4];
 
 //	MARK: -
 
-- (void)setImageRep:(NSImageRep *)rep orientation:(PGOrientation)orientation size:(NSSize)size
+- (void)setImageRep:(nullable NSImageRep *)rep orientation:(PGOrientation)orientation size:(NSSize)size
 {
 	[self _invalidateCache];
 	[self setNeedsDisplay:YES];
@@ -334,7 +336,7 @@ static NSSize PGRoundedCornerSizes[4];
 
 //	MARK: -
 
-- (BOOL)writeToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types
+- (BOOL)writeToPasteboard:(nullable NSPasteboard *)pboard types:(NSArray *)types
 {
 	if(![types containsObject:NSPasteboardTypeTIFF]) return NO;
 	if(!_rep || ![_rep respondsToSelector:@selector(TIFFRepresentation)]) return NO;
@@ -518,7 +520,7 @@ static NSSize PGRoundedCornerSizes[4];
 {
 	return _usesRoundedCorners && _immediateSize.width > 64.0f && _immediateSize.height > 64.0f;
 }
-- (BOOL)_needsToDrawRoundedCornersForImageRect:(NSRect)r rects:(NSRect const *)rects count:(NSUInteger)count
+- (BOOL)_needsToDrawRoundedCornersForImageRect:(NSRect)r rects:(NSRect const * _Nullable)rects count:(NSUInteger)count
 {
 	if(!self._shouldDrawRoundedCorners) return NO;
 	if(!rects) return YES;
@@ -669,7 +671,7 @@ static NSSize PGRoundedCornerSizes[4];
 	[super viewDidEndLiveResize];
 	[self setNeedsDisplay:YES];
 }
-- (void)viewWillMoveToWindow:(NSWindow *)aWindow
+- (void)viewWillMoveToWindow:(nullable NSWindow *)aWindow
 {
 	[super viewWillMoveToWindow:aWindow];
 	[self _invalidateCache];
@@ -711,3 +713,5 @@ static NSSize PGRoundedCornerSizes[4];
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

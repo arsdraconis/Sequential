@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAppKitAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 static NSBitmapImageRep *PGImageSourceImageRepAtIndex(CGImageSourceRef source, size_t i)
 {
 	if(!source) return nil;
@@ -56,7 +58,7 @@ static NSBitmapImageRep *PGImageSourceImageRepAtIndex(CGImageSourceRef source, s
 @property (nonatomic, assign) BOOL reading;
 @property (nonatomic, assign) BOOL readFailed;
 @property (nonatomic, assign) PGOrientation orientation;
-@property (nonatomic, strong) NSImageRep *cachedRep;
+@property (nonatomic, strong, nullable) NSImageRep *cachedRep;
 @property (readonly) NSDictionary *imageSourceOptions;
 
 - (void)_setImageProperties:(NSDictionary *)properties;
@@ -347,3 +349,5 @@ static NSBitmapImageRep *PGImageSourceImageRepAtIndex(CGImageSourceRef source, s
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

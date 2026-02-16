@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Models
 #import "PGActivity.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol PGURLLoadDelegate;
 
 @interface PGURLLoad : NSObject <PGActivityOwner>
@@ -74,3 +76,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)loadDidCancel:(PGURLLoad *)sender;
 
 @end
+
+NS_ASSUME_NONNULL_END

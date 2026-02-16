@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGTimerPanelController ()
@@ -46,7 +48,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @property (nonatomic, weak) IBOutlet NSTextField *remainingField;
 @property (nonatomic, weak) IBOutlet NSTextField *totalField;
 @property (nonatomic, weak) IBOutlet NSSlider *intervalSlider;
-@property (nonatomic, strong) NSTimer *updateTimer;
+@property (nonatomic, strong, nullable) NSTimer *updateTimer;
 
 @end
 
@@ -126,7 +128,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #endif
 	[self _updateOnTimer:nil];
 }
-- (void)_updateOnTimer:(NSTimer *)timer
+- (void)_updateOnTimer:(nullable NSTimer *)timer
 {
 	NSTimeInterval const interval = [self _currentPrefObject].timerInterval;
 	BOOL const running = self.displayController.timerRunning;
@@ -166,7 +168,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 {
 	return @"PGTimer";
 }
-- (BOOL)setDisplayControllerReturningWasChanged:(PGDisplayController *)controller
+- (BOOL)setDisplayControllerReturningWasChanged:(nullable PGDisplayController *)controller
 //- (BOOL)setDisplayController:(PGDisplayController *)controller
 {
 	PGDisplayController *const oldController = self.displayController;
@@ -204,3 +206,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define PGIconSize 16.0f
 #define PGIconSpacingLeft 5.0f
 #define PGIconSpacingRight 3.0f
@@ -55,11 +57,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	[self.icon drawInRect:r fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:self.enabled ? 1.0f : 0.66f];
 	[NSGraphicsContext restoreGraphicsState];
 }
-- (void)editWithFrame:(NSRect)aRect inView:(NSView *)aView editor:(NSText *)textObj delegate:(id)anObject event:(NSEvent *)anEvent
+- (void)editWithFrame:(NSRect)aRect inView:(NSView *)aView editor:(NSText *)textObj delegate:(nullable id)anObject event:(nullable NSEvent *)anEvent
 {
 	[super editWithFrame:[self titleRectForBounds:aRect] inView:aView editor:textObj delegate:anObject event:anEvent];
 }
-- (void)selectWithFrame:(NSRect)aRect inView:(NSView *)aView editor:(NSText *)textObj delegate:(id)anObject start:(NSInteger)selStart length:(NSInteger)selLength
+- (void)selectWithFrame:(NSRect)aRect inView:(NSView *)aView editor:(NSText *)textObj delegate:(nullable id)anObject start:(NSInteger)selStart length:(NSInteger)selLength
 {
 	[super selectWithFrame:[self titleRectForBounds:aRect] inView:aView editor:textObj delegate:anObject start:selStart length:selLength];
 }
@@ -76,7 +78,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - <NSCopying>
 
-- (id)copyWithZone:(NSZone *)aZone
+- (id)copyWithZone:(nullable NSZone *)aZone
 {
 	PGIconTextFieldCell *const dupe = [super copyWithZone:aZone];
 #if __has_feature(objc_arc)
@@ -88,3 +90,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

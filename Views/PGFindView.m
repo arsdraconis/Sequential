@@ -27,11 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Views
 @class PGBezelPanel;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation PGFindView
 
 //	MARK: - NSResponder
 
-- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+- (BOOL)acceptsFirstMouse:(nullable NSEvent *)theEvent
 {
 	return YES;
 }
@@ -55,7 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - NSTextView
 
-- (IBAction)performFindPanelAction:(id)sender
+- (IBAction)performFindPanelAction:(nullable id)sender
 {
 	[self doesNotRecognizeSelector:_cmd];
 }
@@ -75,3 +77,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

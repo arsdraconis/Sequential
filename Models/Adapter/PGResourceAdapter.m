@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGPasswordKey = @"PGPassword";
 
 static NSString *const PGBundleTypeFourCCsKey = @"PGBundleTypeFourCCs";
@@ -64,7 +66,7 @@ static NSString *const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
 
 @property (nonatomic, strong) PGActivity *activity;
 @property (nonatomic, strong) NSImage *realThumbnail;
-@property (nonatomic, strong) NSOperation *generateImageOperation;	//	2023/10/21 generates full image and/or thumbnail if neither exist
+@property (nonatomic, strong, nullable) NSOperation *generateImageOperation;	//	2023/10/21 generates full image and/or thumbnail if neither exist
 
 - (void)_stopGeneratingImagesInOperation:(NSOperation *)operation;
 
@@ -332,7 +334,7 @@ static NSString *const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
 
 //	MARK: -
 
-- (NSDictionary *)imageProperties
+- (nullable NSDictionary *)imageProperties
 {
 	return nil;
 }
@@ -345,7 +347,7 @@ static NSString *const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
 
 //	MARK: -
 
-- (PGNode *)nodeForIdentifier:(PGResourceIdentifier *)ident
+- (nullable PGNode *)nodeForIdentifier:(nullable PGResourceIdentifier *)ident
 {
 	return PGEqualObjects(ident, self.node.identifier) ? self.node : nil;
 }
@@ -354,7 +356,7 @@ static NSString *const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
 {
 	return [self sortedViewableNodeFirst:flag stopAtNode:nil includeSelf:YES];
 }
-- (PGNode *)sortedViewableNodeFirst:(BOOL)flag stopAtNode:(PGNode *)descendent includeSelf:(BOOL)includeSelf
+- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag stopAtNode:(nullable PGNode *)descendent includeSelf:(BOOL)includeSelf
 {
 	return includeSelf && self.node.isViewable && self.node != descendent ? self.node : nil;
 }
@@ -375,16 +377,16 @@ static NSString *const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
 	return [[self sortedViewableNodeNext:flag].resourceAdapter sortedViewableNodeNext:flag afterRemovalOfChildren:removedChildren fromNode:changedNode];
 }
 
-- (PGNode *)sortedFirstViewableNodeInFolderNext:(BOOL)forward inclusive:(BOOL)inclusive
+- (nullable PGNode *)sortedFirstViewableNodeInFolderNext:(BOOL)forward inclusive:(BOOL)inclusive
 {
 	PGNode *const node = [self.parentAdapter outwardSearchForward:forward fromChild:self.node inclusive:inclusive withSelector:@selector(sortedFirstViewableNodeInFolderFirst:) context:nil];
 	return node || forward ? node : [self.rootContainerAdapter sortedViewableNodeFirst:YES stopAtNode:self.node includeSelf:YES];
 }
-- (PGNode *)sortedFirstViewableNodeInFolderFirst:(BOOL)flag
+- (nullable PGNode *)sortedFirstViewableNodeInFolderFirst:(BOOL)flag
 {
 	return nil;
 }
-- (PGNode *)sortedViewableNodeInFolderFirst:(BOOL)flag
+- (nullable PGNode *)sortedViewableNodeInFolderFirst:(BOOL)flag
 {
 	PGContainerAdapter *ancestor = self.parentAdapter;
 	while(ancestor) {
@@ -400,7 +402,7 @@ static NSString *const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
 	PGNode *const node = [self.parentAdapter outwardSearchForward:flag fromChild:self.node inclusive:NO withSelector:@selector(sortedViewableNodeFirst:matchSearchTerms:stopAtNode:) context:terms];
 	return node ? node : [self.rootContainerAdapter sortedViewableNodeFirst:flag matchSearchTerms:terms stopAtNode:self.node];
 }
-- (PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent
+- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent
 {
 	return self.node.isViewable && self.node != descendent && [self.node.identifier.displayName PG_matchesSearchTerms:terms] ? self.node : nil;
 }
@@ -726,3 +728,5 @@ ThumbnailOf(NSImageRep *imageRep, NSSize size, PGOrientation orientation, BOOL o
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

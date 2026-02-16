@@ -42,6 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	#import "PGResourceIdentifier.h"
 #endif
 
+NS_ASSUME_NONNULL_BEGIN
+
 //extern	void	Unpack2HalfUInts(NSUInteger packed, NSUInteger* upper, NSUInteger* lower);
 extern	void	Unpack_ByteSize_FolderImageCounts(uint64_t packed, uint64_t* byteSize,
 												  NSUInteger* folders, NSUInteger* images);
@@ -91,7 +93,7 @@ typedef NS_ENUM(unsigned int, PGBackgroundType) {
 #endif
 	PGBackgroundCount,
 };
-static NSColor *PGBackgroundColors[PGBackgroundCount];
+static NSColor * _Nullable PGBackgroundColors[PGBackgroundCount];
 
 #if __has_feature(objc_arc)
 
@@ -1140,7 +1142,7 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 #endif
 }
 
-- (void)_selectItems:(NSSet *)items {
+- (void)_selectItems:(nullable NSSet *)items {
 #if __has_feature(objc_arc) && defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 	[_selection setSet:items];
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_NSSET)	//	[2]
@@ -1204,7 +1206,9 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 #endif
 }
 
-- (void)_selectAllDirectChildrenOf:(id)item {
+- (void)_selectAllDirectChildrenOf:(nullable id)item {
+    if (!item) return;
+    
 	//	first, perform default action of selecting the item
 	[self selectItem:item byExtendingSelection:NO];
 
@@ -1239,14 +1243,14 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	return [self _copyOfSelection];
 }
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
-- (NSSet *)selection {
+- (nullable NSSet *)selection {
 	return [self _copyOfSelection];
 }
 #else
 //@synthesize selection = _selection;
 #endif
 
-- (void)setSelection:(NSSet *)items
+- (void)setSelection:(nullable NSSet *)items
 {
 #if __has_feature(objc_arc) && defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 	if([_selection isEqualToSet:items])	//	probably incorrect: -isEqualToSet: does not work with the custom set
@@ -1303,7 +1307,7 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	[self _scrollToSelectionAnchor:scrollToRect];
 	[self.delegate thumbnailViewSelectionDidChange:self];
 }
-- (void)selectItem:(id)item byExtendingSelection:(BOOL)flag
+- (void)selectItem:(nullable id)item byExtendingSelection:(BOOL)flag
 {
 	if(!item) return;
 	BOOL const can = [self.dataSource thumbnailView:self canSelectItem:item];
@@ -1359,8 +1363,9 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	[self setNeedsDisplayInRect:[self frameOfItemAtIndex:[_items indexOfObjectIdenticalTo:item] withMargin:YES]];
 	[self.delegate thumbnailViewSelectionDidChange:self];
 }
-- (void)toggleSelectionOfItem:(id)item
+- (void)toggleSelectionOfItem:(nullable id)item
 {
+    if (!item) return;
 	if([self _isItemSelected:item]) [self deselectItem:item];
 	else [self selectItem:item byExtendingSelection:YES];
 }
@@ -2044,7 +2049,7 @@ NSLog(@"%@", logStr);
 {
 	[self sizeToFit];
 }
-- (void)viewWillMoveToWindow:(NSWindow *)aWindow
+- (void)viewWillMoveToWindow:(nullable NSWindow *)aWindow
 {
 	[self.window PG_removeObserver:self name:NSWindowDidBecomeKeyNotification];
 	[self.window PG_removeObserver:self name:NSWindowDidResignKeyNotification];
@@ -2061,23 +2066,23 @@ NSLog(@"%@", logStr);
 
 //	MARK: - NSResponder
 
-- (IBAction)moveUp:(id)sender
+- (IBAction)moveUp:(nullable id)sender
 {
 	[self moveUp:YES byExtendingSelection:NO];
 }
-- (IBAction)moveDown:(id)sender
+- (IBAction)moveDown:(nullable id)sender
 {
 	[self moveUp:NO byExtendingSelection:NO];
 }
-- (IBAction)moveUpAndModifySelection:(id)sender
+- (IBAction)moveUpAndModifySelection:(nullable id)sender
 {
 	[self moveUp:YES byExtendingSelection:YES];
 }
-- (IBAction)moveDownAndModifySelection:(id)sender
+- (IBAction)moveDownAndModifySelection:(nullable id)sender
 {
 	[self moveUp:NO byExtendingSelection:YES];
 }
-- (IBAction)selectAll:(id)sender
+- (IBAction)selectAll:(nullable id)sender
 {
 #if 1
 	//	2023/09/18 optimized version
@@ -2180,10 +2185,10 @@ NSLog(@"%@", logStr);
 //	MARK: - NSObject(NSKeyValueObserving)
 
 //	2022/10/15
-- (void)observeValueForKeyPath:(NSString *)keyPath
-					  ofObject:(id)object
-						change:(NSDictionary *)change
-					   context:(void *)context
+- (void)observeValueForKeyPath:(nullable NSString *)keyPath
+					  ofObject:(nullable id)object
+						change:(nullable NSDictionary *)change
+					   context:(nullable void *)context
 {
 	if(PGEqualObjects(keyPath, PGShowThumbnailImageNameKey) ||
 	   PGEqualObjects(keyPath, PGShowThumbnailImageSizeKey) ||
@@ -2201,11 +2206,11 @@ NSLog(@"%@", logStr);
 //	MARK: -
 @implementation NSObject(PGThumbnailViewDataSource)
 
-- (NSArray *)itemsForThumbnailView:(PGThumbnailView *)sender
+- (nullable NSArray *)itemsForThumbnailView:(PGThumbnailView *)sender
 {
 	return nil;
 }
-- (NSImage *)thumbnailView:(PGThumbnailView *)sender thumbnailForItem:(id)item
+- (nullable NSImage *)thumbnailView:(PGThumbnailView *)sender thumbnailForItem:(id)item
 {
 	return nil;
 }
@@ -2213,11 +2218,11 @@ NSLog(@"%@", logStr);
 {
 	return YES;
 }
-- (NSString *)thumbnailView:(PGThumbnailView *)sender labelForItem:(id)item
+- (nullable NSString *)thumbnailView:(PGThumbnailView *)sender labelForItem:(id)item
 {
 	return nil;
 }
-- (NSColor *)thumbnailView:(PGThumbnailView *)sender labelColorForItem:(id)item
+- (nullable NSColor *)thumbnailView:(PGThumbnailView *)sender labelColorForItem:(id)item
 {
 	return nil;
 }
@@ -2243,3 +2248,5 @@ NSLog(@"%@", logStr);
 - (void)thumbnailViewSelectionDidChange:(PGThumbnailView *)sender {}
 
 @end
+
+NS_ASSUME_NONNULL_END

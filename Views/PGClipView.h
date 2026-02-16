@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGClipViewBoundsDidChangeNotification;
 
 typedef NS_ENUM(NSUInteger, PGScrollType) {
@@ -92,12 +94,12 @@ typedef NS_ENUM(NSUInteger, PGScrollToRectType) {
 
 #else
 
-@property (nonatomic, weak) IBOutlet NSResponder<PGClipViewDelegate> *delegate;
-@property (nonatomic, strong) IBOutlet NSView *documentView;
+@property (nonatomic, weak, nullable) IBOutlet NSResponder<PGClipViewDelegate> *delegate;
+@property (nonatomic, strong, nullable) IBOutlet NSView *documentView;
 @property (readonly) NSRect documentFrame;
 @property (nonatomic, assign) PGInset boundsInset;
 @property (readonly) NSRect insetBounds;
-@property (nonatomic, strong) NSColor *backgroundColor;
+@property (nonatomic, strong, nullable) NSColor *backgroundColor;
 @property (nonatomic, assign) BOOL showsBorder;
 @property (nonatomic, strong) NSCursor *cursor;
 @property (nonatomic, assign, getter = isScrolling) BOOL scrolling;
@@ -132,7 +134,7 @@ typedef NS_ENUM(NSUInteger, PGScrollToRectType) {
 - (void)scrollInDirection:(PGRectEdgeMask)direction type:(PGScrollType)scrollType;
 - (void)magicPanForward:(BOOL)forward acrossFirst:(BOOL)across;
 
-- (void)viewFrameDidChange:(NSNotification *)aNotif;
+- (void)viewFrameDidChange:(nullable NSNotification *)aNotif;
 
 @end
 
@@ -167,3 +169,5 @@ typedef NS_ENUM(NSUInteger, PGScrollToRectType) {
 - (NSView *)PG_deepestViewAtPoint:(NSPoint)aPoint;
 
 @end
+
+NS_ASSUME_NONNULL_END

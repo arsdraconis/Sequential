@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGAppKitAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation PGProgressIndicatorCell
 
 //	MARK: - NSCell
@@ -56,3 +58,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

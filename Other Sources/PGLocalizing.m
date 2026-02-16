@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation NSObject(PGLocalizing)
 
 - (void)PG_localizeFromTable:(NSString *)tableName {}
@@ -228,3 +230,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //}
 //
 //@end
+
+NS_ASSUME_NONNULL_END

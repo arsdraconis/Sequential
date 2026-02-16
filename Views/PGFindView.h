@@ -25,8 +25,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Views
 #import "PGBezelPanel.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGFindView : NSView <PGBezelPanelContentView>
 @end
 
 @interface PGFindlessTextView : NSTextView
 @end
+
+NS_ASSUME_NONNULL_END

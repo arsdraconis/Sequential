@@ -27,9 +27,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGCFBundleHelpBookNameKey;
 
-NS_INLINE BOOL PGEqualObjects(id<NSObject> a, id<NSObject> b)
+NS_INLINE BOOL PGEqualObjects(_Nullable id<NSObject> a, _Nullable id<NSObject> b)
 {
 	if(a == b) return YES;
 	if(!a || !b) return NO;
@@ -77,8 +79,8 @@ extern OSType PGOSTypeFromString(NSString *);
 
 + (id)PG_errorWithDomain:(NSString *)domain
 					code:(NSInteger)code
-	localizedDescription:(NSString *)desc
-				userInfo:(NSDictionary *)dict;
+	localizedDescription:(nullable NSString *)desc
+				userInfo:(nullable NSDictionary *)dict;
 
 @end
 
@@ -97,7 +99,7 @@ extern OSType PGOSTypeFromString(NSString *);
 @interface NSObject(PGFoundationAdditions)
 
 - (void)PG_postNotificationName:(NSString *)aName;
-- (void)PG_postNotificationName:(NSString *)aName userInfo:(NSDictionary *)aDict;
+- (void)PG_postNotificationName:(NSString *)aName userInfo:(nullable NSDictionary *)aDict;
 
 - (void)PG_addObserver:(id)observer selector:(SEL)aSelector name:(NSString *)aName;
 - (void)PG_removeObserver;
@@ -105,9 +107,9 @@ extern OSType PGOSTypeFromString(NSString *);
 
 - (NSArray *)PG_asArray;
 
-+ (void *)PG_useInstance:(BOOL)instance
- implementationFromClass:(Class)class
-			 forSelector:(SEL)aSel;
++ (nullable void *)PG_useInstance:(BOOL)instance
+          implementationFromClass:(Class)class
+                      forSelector:(SEL)aSel;
 
 @end
 
@@ -122,7 +124,7 @@ extern OSType PGOSTypeFromString(NSString *);
 
 - (BOOL)PG_scanFromString:(NSString *)start
 				 toString:(NSString *)end
-			   intoString:(out NSString **)outString;
+               intoString:(out NSString *_Nullable*_Nullable)outString;
 
 @end
 
@@ -143,7 +145,7 @@ extern OSType PGOSTypeFromString(NSString *);
 
 @interface NSURL(PGFoundationAdditions)
 
-+ (NSURL *)PG_URLWithString:(NSString *)aString;
++ (nullable NSURL *)PG_URLWithString:(NSString *)aString;
 
 - (NSImage *)PG_icon; // Returns the URL image for non-file URLs.
 
@@ -151,9 +153,11 @@ extern OSType PGOSTypeFromString(NSString *);
 
 @interface NSUserDefaults(PGFoundationAdditions)
 
-- (id)PG_decodeObjectOfClass:(Class)class forKey:(NSString *)defaultName;
+- (nullable id)PG_decodeObjectOfClass:(Class)class forKey:(NSString *)defaultName;
 - (void)PG_encodeObject:(id)value forKey:(NSString *)defaultName;
 //- (id)PG_decodedObjectForKey:(NSString *)defaultName;
 //- (void)PG_encodeObject:(id)value forKey:(NSString *)defaultName;
 
 @end
+
+NS_ASSUME_NONNULL_END

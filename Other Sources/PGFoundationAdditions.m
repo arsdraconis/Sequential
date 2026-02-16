@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGDebug.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGCFBundleHelpBookNameKey = @"CFBundleHelpBookName";
 
 NSString *PGOSTypeToStringQuoted(OSType type, BOOL flag)
@@ -145,7 +147,7 @@ OSType PGOSTypeFromString(NSString *str)
 //	MARK: -
 @implementation NSError(PGFoundationAdditions)
 
-+ (id)PG_errorWithDomain:(NSString *)domain code:(NSInteger)code localizedDescription:(NSString *)desc userInfo:(NSDictionary *)dict
++ (id)PG_errorWithDomain:(NSString *)domain code:(NSInteger)code localizedDescription:(nullable NSString *)desc userInfo:(nullable NSDictionary *)dict
 {
 #if __has_feature(objc_arc)
 	NSMutableDictionary *const d = dict ? [dict mutableCopy] : [NSMutableDictionary new];
@@ -205,7 +207,7 @@ OSType PGOSTypeFromString(NSString *str)
 {
 	[self PG_postNotificationName:aName userInfo:nil];
 }
-- (void)PG_postNotificationName:(NSString *)aName userInfo:(NSDictionary *)aDict
+- (void)PG_postNotificationName:(NSString *)aName userInfo:(nullable NSDictionary *)aDict
 {
 	[NSNotificationCenter.defaultCenter postNotificationName:aName
 													  object:self
@@ -236,7 +238,7 @@ OSType PGOSTypeFromString(NSString *str)
 
 //	MARK: -
 
-+ (void *)PG_useInstance:(BOOL)instance implementationFromClass:(Class)class forSelector:(SEL)aSel
++ (nullable void *)PG_useInstance:(BOOL)instance implementationFromClass:(Class)class forSelector:(SEL)aSel
 {
 	//	swizzle a system method with one inside this app
 
@@ -402,7 +404,7 @@ OSType PGOSTypeFromString(NSString *str)
 //	MARK: -
 @implementation NSURL(PGFoundationAdditions)
 
-+ (NSURL *)PG_URLWithString:(NSString *)aString
++ (nullable NSURL *)PG_URLWithString:(NSString *)aString
 {
 	NSMutableString *const URL = [NSMutableString string];
 	NSScanner *const scanner = [NSScanner scannerWithString:aString];
@@ -526,7 +528,7 @@ OSType PGOSTypeFromString(NSString *str)
 @implementation NSUserDefaults(PGFoundationAdditions)
 
 #if 1
-- (id)PG_decodeObjectOfClass:(Class)class forKey:(NSString *)defaultName {
+- (nullable id)PG_decodeObjectOfClass:(Class)class forKey:(NSString *)defaultName {
 	NSData *const data = [self dataForKey:defaultName];
 	if(!data)
 		return nil;
@@ -560,3 +562,5 @@ OSType PGOSTypeFromString(NSString *str)
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

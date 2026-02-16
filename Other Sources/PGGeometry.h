@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 //	MARK: NSPoint
 
 extern NSPoint PGIntegralPoint(NSPoint aPoint);
@@ -42,7 +44,7 @@ extern NSSize PGIntegralSize(NSSize s);
 extern NSRect PGCenteredSizeInRect(NSSize s, NSRect r);
 extern BOOL PGIntersectsRectList(NSRect rect, NSRect const *list, NSUInteger count);
 extern NSRect PGIntegralRect(NSRect r); // NSIntegralRect() expands the rectangle in all directions. It's better to round the origin and width separately.
-extern void PGGetRectDifference(NSRect diff[4], NSUInteger *count, NSRect minuend, NSRect subtrahend);
+extern void PGGetRectDifference(NSRect diff[_Nonnull 4], NSUInteger *count, NSRect minuend, NSRect subtrahend);
 extern NSRect PGScaleRect(NSRect r, CGFloat scaleX, CGFloat scaleY);
 
 //	MARK: - PGRectEdgeMask
@@ -83,3 +85,5 @@ extern PGInset PGAddInsets(PGInset a, PGInset b);
 
 extern NSTimeInterval PGUptime(void);
 extern CGFloat PGLagCounteractionSpeedup(NSTimeInterval *timeOfFrame, CGFloat desiredFramerate); // On input, timeOfFrame should be the PGUptime() from the last frame or 0. On return, it is the current PGUptime().
+
+NS_ASSUME_NONNULL_END

@@ -23,6 +23,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGAboutBoxController : NSWindowController<NSToolbarDelegate>
 #if !__has_feature(objc_arc)
 {
@@ -34,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 + (PGAboutBoxController*)sharedAboutBoxController;
 
-- (IBAction)changePane:(id)sender;
+- (IBAction)changePane:(nullable id)sender;
 
 @end
+
+NS_ASSUME_NONNULL_END

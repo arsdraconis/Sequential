@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Models
 @class PGNode;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGImageSaveAlert : NSWindowController<
 	NSOpenSavePanelDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate, NSWindowDelegate>
 #if !__has_feature(objc_arc)
@@ -46,9 +48,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 - (instancetype)initWithRoot:(PGNode *)root initialSelection:(NSSet *)aSet;
 - (void)beginSheetForWindow:(NSWindow *)window; // If 'window' is nil, uses a modal alert instead of a sheet.
-- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
+- (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(NSInteger)returnCode contextInfo:(nullable void *)contextInfo;
 
 - (NSString *)saveNameForNode:(PGNode *)node;
 //- (void)replaceAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
 @end
+
+NS_ASSUME_NONNULL_END

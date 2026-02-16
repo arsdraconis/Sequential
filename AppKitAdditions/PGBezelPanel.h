@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGBezelPanelFrameShouldChangeNotification;
 extern NSString *const PGBezelPanelFrameDidChangeNotification;
 
@@ -71,3 +73,5 @@ extern NSString *const PGBezelPanelFrameDidChangeNotification;
 - (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)scaleFactor;
 
 @end
+
+NS_ASSUME_NONNULL_END

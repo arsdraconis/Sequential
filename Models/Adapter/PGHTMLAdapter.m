@@ -34,14 +34,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import <WebKit/WebKit.h>	//	#import "PGWebKitAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGDOMDocumentKey = @"PGDOMDocument";
 
 #if __has_feature(objc_arc)
 
 @interface PGHTMLAdapter ()
 
-@property (nonatomic, strong) WKWebView *webView;	//	WebView *_webView;
-@property (nonatomic, strong) WKNavigation *navigation;
+@property (nonatomic, strong, nullable) WKWebView *webView;
+@property (nonatomic, strong, nullable) WKNavigation *navigation;
 
 - (void)_clearWebView;
 
@@ -177,10 +179,10 @@ NSString *const PGDOMDocumentKey = @"PGDOMDocument";
 
 #if 1
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-					  ofObject:(id)object
-						change:(NSDictionary<NSKeyValueChangeKey, id> *)change
-					   context:(void *)context {
+- (void)observeValueForKeyPath:(nullable NSString *)keyPath
+					  ofObject:(nullable id)object
+						change:(nullable NSDictionary<NSKeyValueChangeKey, id> *)change
+					   context:(nullable void *)context {
 	if([keyPath isEqual:@"title"]) {
 		WKWebView* webView = (WKWebView*) object;
 		NSParameterAssert([webView isKindOfClass:[WKWebView class]]);
@@ -197,7 +199,7 @@ NSString *const PGDOMDocumentKey = @"PGDOMDocument";
 }
 
 - (void)	  webView:(WKWebView *)webView
-	didFailNavigation:(WKNavigation *)navigation
+	didFailNavigation:(null_unspecified WKNavigation *)navigation
 			withError:(NSError *)error {
 	if(navigation != _navigation)
 		return;
@@ -208,7 +210,7 @@ NSString *const PGDOMDocumentKey = @"PGDOMDocument";
 }
 
 - (void)		webView:(WKWebView *)webView
-	didFinishNavigation:(WKNavigation *)navigation {
+	didFinishNavigation:(null_unspecified WKNavigation *)navigation {
 	if(navigation != _navigation)
 		return;
 
@@ -296,3 +298,5 @@ NSString *const PGDOMDocumentKey = @"PGDOMDocument";
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

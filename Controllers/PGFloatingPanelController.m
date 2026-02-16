@@ -33,14 +33,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGFloatingPanelController ()
 
 //@property (nonatomic, assign, getter = isShown) BOOL shown;
-@property (nonatomic, strong) PGDisplayController *displayController;
+@property (nonatomic, strong, nullable) PGDisplayController *displayController;
 
-- (void)_updateWithDisplayController:(PGDisplayController *)controller;
+- (void)_updateWithDisplayController:(nullable PGDisplayController *)controller;
 
 @end
 
@@ -57,7 +59,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //	MARK: -
 @implementation PGFloatingPanelController
 
-- (void)_updateWithDisplayController:(PGDisplayController *)controller
+- (void)_updateWithDisplayController:(nullable PGDisplayController *)controller
 {
 	PGDisplayController *const c = controller ? controller : NSApp.mainWindow.windowController;
 	[self setDisplayControllerReturningWasChanged:[c isKindOfClass:[PGDisplayController class]] ? c : nil];
@@ -102,7 +104,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: -
 
-- (NSString *)nibName
+- (nullable NSString *)nibName
 {
 	return nil;
 }
@@ -111,7 +113,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	NSString *const name = [self nibName];
 	return name ? [NSString stringWithFormat:@"%@PanelFrame", name] : [NSString string];
 }
-- (BOOL)setDisplayControllerReturningWasChanged:(PGDisplayController *)controller
+- (BOOL)setDisplayControllerReturningWasChanged:(nullable PGDisplayController *)controller
 {
 	if(controller == _displayController) return NO;
 #if __has_feature(objc_arc)
@@ -142,7 +144,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: -
 
-- (IBAction)showWindow:(id)sender
+- (IBAction)showWindow:(nullable id)sender
 {
 	[self setShown:YES];
 }
@@ -208,7 +210,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - <NSWindowDelegate>
 
-- (void)windowDidResize:(NSNotification *)notification
+- (void)windowDidResize:(nullable NSNotification *)notification
 {
 #if 1	//	2022/02/15
 	[self.window saveFrameUsingName:self.windowFrameAutosaveName];
@@ -227,7 +229,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	if([self conformsToProtocol:@protocol(PGFloatingPanelProtocol)])
 		[(id<PGFloatingPanelProtocol>)self windowWillClose];
 }
-- (void)windowDidBecomeMain:(NSNotification *)aNotif
+- (void)windowDidBecomeMain:(nullable NSNotification *)aNotif
 {
 	[self _updateWithDisplayController:aNotif ? [aNotif.object windowController] : NSApp.mainWindow.windowController];
 }
@@ -237,3 +239,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

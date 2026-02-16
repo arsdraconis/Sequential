@@ -8,6 +8,8 @@
 
 #import "PGFullSizeContentTitlebarAccessoryViewController.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 //	<https://stackoverflow.com/questions/12322714/changing-color-of-nswindow-title-text>
 static
 NSView*
@@ -105,7 +107,7 @@ static const NSString *const TrackingViewKey = @"TrackingView";
 static
 NSTrackingArea *
 CreateAndRegisterTrackingArea(NSRect rect, PGFullSizeContentController *owner,
-	NSView *view, NSView *viewForUserInfo) {
+                              NSView *view,  NSView * _Nullable  viewForUserInfo) {
 	NSTrackingArea *const trackingArea = [[NSTrackingArea alloc] initWithRect:rect
 		options:(NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
 		  owner:owner
@@ -449,7 +451,7 @@ GetTitleBarHeightFor(NSWindow *w) {
 	[self _toggleFullSizeContentWithAnimation:animate];
 }
 
-- (NSTextField *)accessoryTextField {
+- (nullable NSTextField *)accessoryTextField {
 	NSView *rhs = self.fullSizeContentTitlebarAccessoryViewController.view;
 	for(NSView *view in rhs.subviews) {
 		if([view isKindOfClass:NSTextField.class])
@@ -459,3 +461,5 @@ GetTitleBarHeightFor(NSWindow *w) {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

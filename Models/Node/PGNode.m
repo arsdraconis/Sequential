@@ -77,7 +77,7 @@ enum {
 @property (nonatomic, weak) id<PGNodeParenting> parent;
 @property (nonatomic, strong) PGDisplayableIdentifier *identifier;
 //@property (nonatomic, strong) PGDataProvider *dataProvider;
-@property (nonatomic, strong) NSMutableArray<PGResourceAdapter *> *potentialAdapters;
+@property (nonatomic, strong, nullable) NSMutableArray<PGResourceAdapter *> *potentialAdapters;
 @property (nonatomic, strong) PGResourceAdapter *resourceAdapter;//@property (nonatomic, strong) PGResourceAdapter *adapter;
 @property (nonatomic, assign) PGNodeStatus status;
 
@@ -219,7 +219,7 @@ enum {
 
 //	MARK: -
 
-- (NSImage *)thumbnail
+- (nullable NSImage *)thumbnail
 {
 	return PGNodeLoading & _status ? nil : self.resourceAdapter.thumbnail;
 }
@@ -311,7 +311,7 @@ enum {
 	}
 	return (NSOrderedSame == r ? [self.identifier.displayName PG_localizedCaseInsensitiveNumericCompare:node.identifier.displayName] : r) * d; // If the actual sort order doesn't produce a distinct ordering, then sort by name too.
 }
-- (BOOL)writeToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types
+- (BOOL)writeToPasteboard:(nullable NSPasteboard *)pboard types:(NSArray *)types
 {
 	BOOL wrote = NO;
 	if([types containsObject:NSPasteboardTypeString]) {
@@ -401,7 +401,7 @@ enum {
 	PGNode *const parent = self.parentNode;
 	return aNode == parent ? self : [parent ancestorThatIsChildOfNode:aNode];
 }
-- (BOOL)isDescendantOfNode:(PGNode *)aNode
+- (BOOL)isDescendantOfNode:(nullable PGNode *)aNode
 {
 	return [self ancestorThatIsChildOfNode:aNode] != nil;
 }

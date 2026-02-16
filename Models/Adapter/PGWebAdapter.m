@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGWebDataProvider : PGDataProvider
 #if !__has_feature(objc_arc)
 {
@@ -69,7 +71,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: +PGDataProviderCustomizing
 
-+ (PGDataProvider *)customDataProviderWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name
++ (nullable PGDataProvider *)customDataProviderWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name
 {
 	if(ident.isFileIdentifier) return nil;
 	NSURL *const URL = ident.URL;
@@ -213,7 +215,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 #if __has_feature(objc_arc)
-- (PGResourceIdentifier *)identifier {
+- (nullable PGResourceIdentifier *)identifier {
 	return _identifierWDP;
 }
 #else
@@ -238,3 +240,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

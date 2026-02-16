@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Views
 @class PGBezelPanel;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGDocumentWindow : NSWindow
 #if !__has_feature(objc_arc)
 {
@@ -42,3 +44,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (BOOL)window:(PGDocumentWindow *)window performDragOperation:(id<NSDraggingInfo>)info;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*
 static
 NSUInteger
@@ -153,7 +155,7 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 
 @interface PGContainerAdapter ()
 
-@property (nonatomic, strong) NSArray<PGNode*> *sortedChildren;
+@property (nonatomic, strong, nullable) NSArray<PGNode*> *sortedChildren;
 @property (nonatomic, strong) NSArray<PGNode*> *unsortedChildren;
 @property (nonatomic, assign) PGSortOrder unsortedOrder;
 @property (nonatomic, assign) uint64_t byteSizeDirectChildren, byteSizeAllChildren;
@@ -271,7 +273,7 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 
 //	MARK: -
 
-- (PGNode *)childForIdentifier:(PGResourceIdentifier *)anIdent
+- (nullable PGNode *)childForIdentifier:(PGResourceIdentifier *)anIdent
 {
 	for(PGNode *const child in _unsortedChildren) if(PGEqualObjects(anIdent, child.identifier)) return child;
 	return nil;
@@ -285,7 +287,7 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 	}
 	return 0;
 }
-- (PGNode *)outwardSearchForward:(BOOL)forward fromChild:(PGNode *)start inclusive:(BOOL)inclusive withSelector:(SEL)sel context:(id)context
+- (nullable PGNode *)outwardSearchForward:(BOOL)forward fromChild:(PGNode *)start inclusive:(BOOL)inclusive withSelector:(SEL)sel context:(nullable id)context
 {
 	NSArray *const children = self.sortedChildren;
 	NSUInteger i = [children indexOfObjectIdenticalTo:start];
@@ -345,7 +347,7 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 
 //	MARK: - <PGResourceAdapter>
 
-- (PGContainerAdapter *)containerAdapter
+- (nullable PGContainerAdapter *)containerAdapter
 {
 	return self;
 }
@@ -423,7 +425,7 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 
 //	MARK: -
 
-- (PGNode *)nodeForIdentifier:(PGResourceIdentifier *)ident
+- (nullable PGNode *)nodeForIdentifier:(nullable PGResourceIdentifier *)ident
 {
 	if(!ident) return nil;
 	for(PGNode *const child in _unsortedChildren) {
@@ -437,7 +439,7 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 	PGNode *const node = children && flag ? [self sortedViewableNodeFirst:YES stopAtNode:nil includeSelf:NO] : nil;
 	return node ? node : [super sortedViewableNodeNext:flag includeChildren:children];
 }
-- (PGNode *)sortedViewableNodeFirst:(BOOL)flag stopAtNode:(PGNode *)descendent includeSelf:(BOOL)includeSelf
+- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag stopAtNode:(nullable PGNode *)descendent includeSelf:(BOOL)includeSelf
 {
 	if(descendent == self.node) return nil;
 	if(flag) {
@@ -452,7 +454,7 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 	}
 	return flag ? nil : [super sortedViewableNodeFirst:NO stopAtNode:descendent includeSelf:includeSelf];
 }
-- (PGNode *)sortedFirstViewableNodeInFolderFirst:(BOOL)flag
+- (nullable PGNode *)sortedFirstViewableNodeInFolderFirst:(BOOL)flag
 {
 	if(flag) return [self sortedViewableNodeFirst:YES];
 	NSArray *const children = self.sortedChildren;
@@ -463,7 +465,7 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 	for(PGNode *const child in children) if(child.isViewable) return child;
 	return nil;
 }
-- (PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent
+- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent
 {
 	if(descendent == self.node) return nil;
 	if(flag) {
@@ -492,3 +494,5 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

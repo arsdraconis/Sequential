@@ -28,9 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //#import "PGBezelPanel.h"
 #import "PGDragHighlightView.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 @interface PGDocumentWindow ()
-@property (nonatomic, strong) PGBezelPanel *dragHighlightPanel;
+@property (nonatomic, strong, nullable) PGBezelPanel *dragHighlightPanel;
 @end
 #endif
 
@@ -51,7 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	[_dragHighlightPanel displayOverWindow:self];
 	return op;
 }
-- (void)draggingExited:(id<NSDraggingInfo>)sender
+- (void)draggingExited:(nullable id<NSDraggingInfo>)sender
 {
 #if __has_feature(objc_arc)
 	[_dragHighlightPanel fadeOut];
@@ -107,3 +109,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

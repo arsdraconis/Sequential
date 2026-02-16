@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "PGDataProvider.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGResourceDataProvider : PGDataProvider
 #if !__has_feature(objc_arc)
 {
@@ -46,9 +48,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (instancetype)initWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 //- (id)valueForLSAttributeName:(CFStringRef)name;
-- (id)valueForResourceKey:(NSURLResourceKey)key;
-- (id)valueForFMAttributeName:(NSString *)name;
+- (nullable id)valueForResourceKey:(NSURLResourceKey)key;
+- (nullable id)valueForFMAttributeName:(NSString *)name;
 
 @end
 
 #endif /* PGResourceDataProvider_h */
+
+NS_ASSUME_NONNULL_END

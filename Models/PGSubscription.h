@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <sys/event.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGSubscriptionEventDidOccurNotification;
 
 extern NSString *const PGSubscriptionPathKey;
@@ -34,6 +36,8 @@ extern NSString *const PGSubscriptionRootFlagsKey; // Only included when the sub
 + (instancetype)subscriptionWithPath:(NSString *)path descendents:(BOOL)flag;
 + (instancetype)subscriptionWithPath:(NSString *)path;
 
-- (NSString *)path;
+- (nullable NSString *)path;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @protocol PGThumbnailBrowserDataSource;
 @protocol PGThumbnailBrowserDelegate;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGThumbnailBrowser : PGColumnView <PGThumbnailViewDelegate>
 #if !__has_feature(objc_arc)
 {
@@ -45,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @property (nonatomic, weak) IBOutlet NSObject<PGThumbnailBrowserDataSource, PGThumbnailViewDataSource> *dataSource;
 @property (nonatomic, weak) IBOutlet NSObject<PGThumbnailBrowserDelegate> *delegate;
 @property (nonatomic, assign) PGOrientation thumbnailOrientation;
-@property (nonatomic, copy) NSSet *selection;
+@property (nonatomic, copy, nullable) NSSet *selection;
 #else
 @property(nonatomic, assign) NSObject<PGThumbnailBrowserDataSource, PGThumbnailViewDataSource> *dataSource;
 @property(nonatomic, assign) NSObject<PGThumbnailBrowserDelegate> *delegate;
@@ -65,7 +67,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @protocol PGThumbnailBrowserDataSource <NSObject>
 
 @optional
-- (id)thumbnailBrowser:(PGThumbnailBrowser *)sender parentOfItem:(id)item;
+- (nullable id)thumbnailBrowser:(PGThumbnailBrowser *)sender parentOfItem:(id)item;
 - (BOOL)thumbnailBrowser:(PGThumbnailBrowser *)sender itemCanHaveChildren:(id)item;
 
 @end
@@ -79,3 +81,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)thumbnailBrowser:(PGThumbnailBrowser *)sender numberOfColumnsDidChangeFrom:(NSUInteger)oldCount;
 
 @end
+
+NS_ASSUME_NONNULL_END

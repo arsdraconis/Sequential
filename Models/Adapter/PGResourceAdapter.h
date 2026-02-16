@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDataProvider.h"
 #import "PGActivity.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGPasswordKey;
 
 typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
@@ -113,22 +115,22 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
 @property (nonatomic, readonly) BOOL canGenerateRealThumbnail;
 - (void)invalidateThumbnail;
 
-@property(readonly) NSDictionary *imageProperties;
+@property(readonly, nullable) NSDictionary *imageProperties;
 - (PGOrientation)orientationWithBase:(BOOL)flag;
 - (void)clearCache;
 - (void)addChildrenToMenu:(NSMenu *)menu;
 
-- (PGNode *)nodeForIdentifier:(PGResourceIdentifier *)ident;
+- (nullable PGNode *)nodeForIdentifier:(nullable PGResourceIdentifier *)ident;
 - (PGNode *)sortedViewableNodeFirst:(BOOL)flag;
-- (PGNode *)sortedViewableNodeFirst:(BOOL)flag stopAtNode:(PGNode *)descendent includeSelf:(BOOL)includeSelf;
+- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag stopAtNode:(nullable PGNode *)descendent includeSelf:(BOOL)includeSelf;
 - (PGNode *)sortedViewableNodeNext:(BOOL)flag;
 - (PGNode *)sortedViewableNodeNext:(BOOL)flag includeChildren:(BOOL)children;
 - (PGNode *)sortedViewableNodeNext:(BOOL)flag afterRemovalOfChildren:(NSArray *)removedChildren fromNode:(PGNode *)changedNode; // Returns a node that will still exist after the change.
-- (PGNode *)sortedFirstViewableNodeInFolderNext:(BOOL)forward inclusive:(BOOL)inclusive;
-- (PGNode *)sortedFirstViewableNodeInFolderFirst:(BOOL)flag;
-- (PGNode *)sortedViewableNodeInFolderFirst:(BOOL)flag;
+- (nullable PGNode *)sortedFirstViewableNodeInFolderNext:(BOOL)forward inclusive:(BOOL)inclusive;
+- (nullable PGNode *)sortedFirstViewableNodeInFolderFirst:(BOOL)flag;
+- (nullable PGNode *)sortedViewableNodeInFolderFirst:(BOOL)flag;
 - (PGNode *)sortedViewableNodeNext:(BOOL)flag matchSearchTerms:(NSArray *)terms;
-- (PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent;
+- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent;
 
 @property(readonly) BOOL nodeIsFirstOfFolder; // 2022/11/04 added
 @property(readonly) BOOL nodeIsLastOfFolder; // 2022/11/04 added
@@ -173,3 +175,5 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
 - (NSArray *)adaptersForNode:(PGNode *)node;
 
 @end
+
+NS_ASSUME_NONNULL_END

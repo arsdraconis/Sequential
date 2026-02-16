@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGThumbnailControllerContentInsetDidChangeNotification;
 
 @interface PGThumbnailController : NSObject <NSWindowDelegate,
@@ -59,8 +61,8 @@ extern NSString *const PGThumbnailControllerContentInsetDidChangeNotification;
 + (BOOL)shouldShowThumbnailsForDocument:(PGDocument *)aDoc;
 
 #if __has_feature(objc_arc)
-@property (nonatomic, weak) PGDisplayController *displayController;
-@property (nonatomic, weak) PGDocument *document;
+@property (nonatomic, weak, nullable) PGDisplayController *displayController;
+@property (nonatomic, weak, nullable) PGDocument *document;
 @property (readonly) PGInset contentInset;
 @property (nonatomic, copy) NSSet *selectedNodes;	//	2023/10/02 was readonly
 #else
@@ -75,16 +77,16 @@ extern NSString *const PGThumbnailControllerContentInsetDidChangeNotification;
 - (void)selectionNeedsDisplay;
 - (void)fadeOut;
 
-- (void)displayControllerActiveNodeDidChange:(NSNotification *)aNotif;
+- (void)displayControllerActiveNodeDidChange:(nullable NSNotification *)aNotif;
 - (void)displayControllerActiveNodeWasRead:(NSNotification *)aNotif;
-- (void)clipViewBoundsDidChange:(NSNotification *)aNotif;
+- (void)clipViewBoundsDidChange:(nullable NSNotification *)aNotif;
 - (void)parentWindowDidResize:(NSNotification *)aNotif;
 - (void)parentWindowWillTransitionToScreenFrame:(NSRect)parentWindowFrame;
 - (void)parentWindowWillBeginSheet:(NSNotification *)aNotif;
 - (void)parentWindowDidEndSheet:(NSNotification *)aNotif;
 
 - (void)documentNodeThumbnailDidChange:(NSNotification *)aNotif;
-- (void)documentBaseOrientationDidChange:(NSNotification *)aNotif;
+- (void)documentBaseOrientationDidChange:(nullable NSNotification *)aNotif;
 - (void)documentSortedNodesDidChange:(NSNotification *)aNotif;
 - (void)documentNodeIsViewableDidChange:(NSNotification *)aNotif;
 
@@ -97,3 +99,5 @@ extern NSString *const PGThumbnailControllerContentInsetDidChangeNotification;
 - (void)thumbnailPanelDidResignKey:(NSNotification *)aNotif;
 
 @end
+
+NS_ASSUME_NONNULL_END

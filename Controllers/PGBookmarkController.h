@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @class PGResourceIdentifier;
 @class PGBookmark;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGBookmarkController : NSObject
 #if !__has_feature(objc_arc)
 {
@@ -52,8 +54,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)addBookmark:(PGBookmark *)aBookmark;
 - (void)removeBookmark:(PGBookmark *)aBookmark;
 - (void)addMenuItemForBookmark:(PGBookmark *)aBookmark;
-- (PGBookmark *)bookmarkForIdentifier:(PGResourceIdentifier *)ident;
+- (nullable PGBookmark *)bookmarkForIdentifier:(PGResourceIdentifier *)ident;
 
 - (void)bookmarkDidUpdate:(NSNotification *)aNotif;
 
 @end
+
+NS_ASSUME_NONNULL_END

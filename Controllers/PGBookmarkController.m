@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAppKitAdditions.h"
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 //	2023/08/12 the paused document data blob is too large for NSUserDefaults in macOS 12 Monterey:
 //	"Sequential [User Defaults] CFPrefsPlistSource (Domain: com.SequentialX.Sequential,
 //	User: kCFPreferencesCurrentUser, ByHost: No, Container: (null), Contents Need Refresh: Yes):
@@ -223,7 +225,7 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 	[aBookmark PG_addObserver:self selector:@selector(bookmarkDidUpdate:) name:PGBookmarkDidUpdateNotification];
 	[self _updateMenuItemForBookmark:aBookmark];
 }
-- (PGBookmark *)bookmarkForIdentifier:(PGResourceIdentifier *)ident
+- (nullable PGBookmark *)bookmarkForIdentifier:(PGResourceIdentifier *)ident
 {
 	for(PGBookmark *const bookmark in _bookmarks) if(PGEqualObjects(bookmark.documentIdentifier, ident)) return bookmark;
 	return nil;
@@ -433,3 +435,5 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

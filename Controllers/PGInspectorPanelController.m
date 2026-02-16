@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGGeometry.h"
 #import "PGZooming.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NSObject(PGAdditions)
 - (id)PG_replacementUsingObject:(id)replacement preserveUnknown:(BOOL)preserve getTopLevelKey:(out id *)outKey;
 @end
@@ -76,7 +78,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //	MARK: -
 @implementation PGInspectorPanelController
 
-- (IBAction)changeSearch:(id)sender
+- (IBAction)changeSearch:(nullable id)sender
 {
 	NSMutableDictionary *const matchingProperties = [NSMutableDictionary dictionary];
 #if __has_feature(objc_arc)
@@ -105,7 +107,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #endif
 	[self _updateColumnWidths];
 }
-- (IBAction)copy:(id)sender
+- (IBAction)copy:(nullable id)sender
 {
 	NSMutableString *const string = [NSMutableString string];
 #if __has_feature(objc_arc)
@@ -123,7 +125,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	[pboard setString:string forType:NSPasteboardTypeString];
 }
 
-- (void)displayControllerActiveNodeWasRead:(NSNotification *)aNotif
+- (void)displayControllerActiveNodeWasRead:(nullable NSNotification *)aNotif
 {
 	NSDictionary *d = self.displayController.activeNode.resourceAdapter.imageProperties;
 #if __has_feature(objc_arc)
@@ -559,7 +561,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 {
 	return @"PGInspector";
 }
-- (BOOL)setDisplayControllerReturningWasChanged:(PGDisplayController *)controller
+- (BOOL)setDisplayControllerReturningWasChanged:(nullable PGDisplayController *)controller
 //- (BOOL)setDisplayController:(PGDisplayController *)controller
 {
 	PGDisplayController *const oldController = self.displayController;
@@ -762,3 +764,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

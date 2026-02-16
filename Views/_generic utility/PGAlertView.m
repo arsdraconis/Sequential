@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define PGAlertViewSize 100.0f
 #define PGMarginSize 4.0f
 
@@ -170,7 +172,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	[_currentGraphic drawInView:self];
 }
 
-- (void)viewWillMoveToWindow:(NSWindow *)aWindow
+- (void)viewWillMoveToWindow:(nullable NSWindow *)aWindow
 {
 	[self.window PG_removeObserver:self name:NSWindowWillCloseNotification];
 	if(aWindow) [aWindow PG_addObserver:self selector:@selector(windowWillClose:) name:NSWindowWillCloseNotification];
@@ -586,3 +588,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

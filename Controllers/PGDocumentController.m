@@ -57,6 +57,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGLocalizing.h"
 #import "PGZooming.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 //	general prefs pane
 NSString *const PGAntialiasWhenUpscalingKey = @"PGAntialiasWhenUpscaling";
 NSString *const PGBackgroundColorSourceKey = @"PGBackgroundColorSource";	//	2023/08/17
@@ -116,7 +118,7 @@ static PGDocumentController *PGSharedDocumentController = nil;
 
 //	was copy, now strong (to silence a static analyzer warning)
 @property (nonatomic, strong) NSMutableArray<PGDocument*> *documents;	//	2023/10/29 specified static type
-@property (nonatomic, strong) PGFullscreenController *fullscreenController;
+@property (nonatomic, strong, nullable) PGFullscreenController *fullscreenController;
 @property (nonatomic, assign) BOOL inFullscreen;
 
 @property (nonatomic, strong) PGInspectorPanelController *inspectorPanel;
@@ -464,7 +466,7 @@ extern	const NSString* const	PGUseEntireScreenWhenInFullScreenKey;
 @synthesize defaultPageMenu;
 //@synthesize currentDocument = _currentDocument;
 #endif
-- (void)setCurrentDocument:(PGDocument *)document
+- (void)setCurrentDocument:(nullable PGDocument *)document
 {
 	_currentDocument = document;
 	NSMenu *const menu = _currentDocument.pageMenu;
@@ -532,12 +534,12 @@ extern	const NSString* const	PGUseEntireScreenWhenInFullScreenKey;
 #endif
 	[self _setFullscreen:_documents.count > 0];
 }
-- (PGDocument *)documentForIdentifier:(PGResourceIdentifier *)ident
+- (nullable PGDocument *)documentForIdentifier:(PGResourceIdentifier *)ident
 {
 	for(PGDocument *const doc in _documents) if(PGEqualObjects(doc.rootIdentifier, ident)) return doc;
 	return nil;
 }
-- (PGDocument *)next:(BOOL)flag documentBeyond:(PGDocument *)document
+- (nullable PGDocument *)next:(BOOL)flag documentBeyond:(PGDocument *)document
 {
 	NSArray *const docs = [PGDocumentController sharedDocumentController].documents;
 	NSUInteger const count = docs.count;
@@ -549,7 +551,7 @@ extern	const NSString* const	PGUseEntireScreenWhenInFullScreenKey;
 	} else if(0 == i--) i = docs.count - 1;
 	return docs[i];
 }
-- (NSMenuItem *)windowsMenuItemForDocument:(PGDocument *)document
+- (nullable NSMenuItem *)windowsMenuItemForDocument:(PGDocument *)document
 {
 #if __has_feature(objc_arc)
 	NSInteger const i = [_windowsMenu indexOfItemWithRepresentedObject:document];
@@ -608,7 +610,7 @@ extern	const NSString* const	PGUseEntireScreenWhenInFullScreenKey;
 
 //	MARK: -
 
-- (void)recentDocumentIdentifierDidChange:(NSNotification *)aNotif
+- (void)recentDocumentIdentifierDidChange:(nullable NSNotification *)aNotif
 {
 //	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:_recentDocumentIdentifiers] forKey:PGRecentItemsKey];
 	NSError* error = nil;
@@ -1222,3 +1224,5 @@ EnableViews(NSView *view, BOOL enabled, BOOL recursive) {
 }
 
 @end */
+
+NS_ASSUME_NONNULL_END

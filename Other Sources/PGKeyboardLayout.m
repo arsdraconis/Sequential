@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGKeyboardLayout.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 unsigned short PGKeyCodeFromUnichar(unichar c)
 {
 	switch(c) {
@@ -53,3 +55,5 @@ unsigned short PGKeyCodeFromUnichar(unichar c)
 		default: return PGKeyUnknown;
 	}
 }
+
+NS_ASSUME_NONNULL_END

@@ -45,9 +45,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGDataProvider(PGArchiveDataProvider)
 
-- (XADArchive *)archive;
+- (nullable XADArchive *)archive;
 - (int)entry;
 
 @end
@@ -415,7 +417,7 @@ StringAtDepth(NSInteger depth) {
 
 @implementation PGDataProvider(PGArchiveDataProvider)
 
-- (XADArchive *)archive
+- (nullable XADArchive *)archive
 {
 	return nil;
 }
@@ -458,7 +460,7 @@ StringAtDepth(NSInteger depth) {
 
 //	MARK: PGDataProvider
 
-- (NSData *)data
+- (nullable NSData *)data
 {
 //NSLog(@"PGArchiveDataProvider -data for entry %d", _entry);
 	@synchronized(_archive) {
@@ -476,14 +478,14 @@ StringAtDepth(NSInteger depth) {
 	}
 	return 0;	*/
 }
-- (NSDate *)dateModified
+- (nullable NSDate *)dateModified
 {	//	2023/09/17 added to implement sorting by date modified in archives
 	@synchronized(_archive) {
 		return [_archive attributesOfEntry:_entry][NSFileModificationDate];
 	}
 	return nil;
 }
-- (NSDate *)dateCreated
+- (nullable NSDate *)dateCreated
 {
 	@synchronized(_archive) {
 		//	2023/09/18 bugfix: was using XADCreationDateKey instead of NSFileCreationDate
@@ -502,7 +504,7 @@ StringAtDepth(NSInteger depth) {
 	}
 	return 0;	*/
 }
-- (NSString *)extension
+- (nullable NSString *)extension
 {
 	return _extension;
 /*	@synchronized(_archive) {
@@ -525,7 +527,7 @@ StringAtDepth(NSInteger depth) {
 	return YES;
 }
 
-- (NSData *)fourCCData
+- (nullable NSData *)fourCCData
 {
 	return nil; // Too slow.
 }
@@ -539,7 +541,7 @@ StringAtDepth(NSInteger depth) {
 
 //	MARK: PGDataProvider(PGArchiveDataProvider)
 
-- (XADArchive *)archive
+- (nullable XADArchive *)archive
 {
 	return _archive;
 }
@@ -576,7 +578,7 @@ StringAtDepth(NSInteger depth) {
 
 //	MARK: PGDataProvider
 
-- (NSString *)UTIType
+- (nullable NSString *)UTIType
 {
 	if (@available(macOS 11.0, *))
 		return UTTypeFolder.identifier;
@@ -635,3 +637,5 @@ StringAtDepth(NSInteger depth) {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

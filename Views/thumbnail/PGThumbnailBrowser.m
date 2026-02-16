@@ -32,13 +32,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	#import "PGResourceIdentifier.h"
 #endif
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGThumbnailBrowser ()
 
 @property(nonatomic, assign) NSUInteger updateCount;
 
-- (void)_addColumnWithItem:(id)item;
+- (void)_addColumnWithItem:(nullable id)item;
 
 @end
 
@@ -46,7 +48,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 @interface PGThumbnailBrowser(Private)
 
-- (void)_addColumnWithItem:(id)item;
+- (void)_addColumnWithItem:(nullable id)item;
 
 @end
 
@@ -58,7 +60,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #else
 @synthesize dataSource;
 #endif
-- (void)setDataSource:(NSObject<PGThumbnailBrowserDataSource, PGThumbnailViewDataSource> *)obj
+- (void)setDataSource:(nullable NSObject<PGThumbnailBrowserDataSource, PGThumbnailViewDataSource> *)obj
 {
 	if(obj == dataSource) return;
 	dataSource = obj;
@@ -74,7 +76,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	NSUInteger i = self.numberOfColumns;
 	while(i--) [[self viewAtIndex:i] setThumbnailOrientation:orientation];
 }
-- (NSSet *)selection
+- (nullable NSSet *)selection
 {
 	PGThumbnailView *const lastView = self.views.lastObject;
 	NSSet *const selection = lastView.selection;
@@ -82,7 +84,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	id const item = lastView.representedObject;
 	return item ? [NSSet setWithObject:item] : nil;
 }
-- (void)setSelection:(NSSet *)aSet
+- (void)setSelection:(nullable NSSet *)aSet
 {
 	++_updateCount;
 	NSUInteger const initialNumberOfColumns = self.numberOfColumns;
@@ -195,7 +197,7 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 
 //	MARK: - PGThumbnailBrowser(Private)
 
-- (void)_addColumnWithItem:(id)item
+- (void)_addColumnWithItem:(nullable id)item
 {
 	if(item && dataSource && ![dataSource thumbnailBrowser:self itemCanHaveChildren:item]) return;
 #if __has_feature(objc_arc)
@@ -230,14 +232,14 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 
 //	MARK: - NSResponder
 
-- (IBAction)moveLeft:(id)sender
+- (IBAction)moveLeft:(nullable id)sender
 {
 	NSUInteger const i = [self.views indexOfObjectIdenticalTo:self.window.firstResponder];
 	if(NSNotFound == i || !i) return;
 	[self.views[i] setSelection:[NSSet set]];
 	[self.window makeFirstResponder:self.views[i - 1]];
 }
-- (IBAction)moveRight:(id)sender
+- (IBAction)moveRight:(nullable id)sender
 {
 	NSUInteger const i = [self.views indexOfObjectIdenticalTo:self.window.firstResponder];
 	if(NSNotFound == i || i + 1 >= self.numberOfColumns) return;
@@ -297,7 +299,7 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 //	MARK: -
 @implementation NSObject(PGThumbnailBrowserDataSource)
 
-- (id)thumbnailBrowser:(PGThumbnailBrowser *)sender parentOfItem:(id)item
+- (nullable id)thumbnailBrowser:(PGThumbnailBrowser *)sender parentOfItem:(id)item
 {
 	return nil;
 }
@@ -314,3 +316,5 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 - (void)thumbnailBrowser:(PGThumbnailBrowser *)sender numberOfColumnsDidChangeFrom:(NSUInteger)oldCount {}
 
 @end
+
+NS_ASSUME_NONNULL_END

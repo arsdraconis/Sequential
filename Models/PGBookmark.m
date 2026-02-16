@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 
 @interface PGBookmark ()
@@ -55,7 +57,7 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 {
 	return [self initWithDocumentIdentifier:aNode.document.rootIdentifier fileIdentifier:aNode.identifier displayName:nil];
 }
-- (instancetype)initWithDocumentIdentifier:(PGDisplayableIdentifier *)docIdent fileIdentifier:(PGDisplayableIdentifier *)fileIdent displayName:(NSString *)aString
+- (instancetype)initWithDocumentIdentifier:(PGDisplayableIdentifier *)docIdent fileIdentifier:(PGDisplayableIdentifier *)fileIdent displayName:(nullable NSString *)aString
 {
 	if((self = [super init])) {
 #if __has_feature(objc_arc)
@@ -136,7 +138,7 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 
 //	MARK: - <NSCoding>
 
-- (instancetype)initWithCoder:(NSCoder *)aCoder
+- (nullable instancetype)initWithCoder:(NSCoder *)aCoder
 {
 //	NSSet* classes = [NSSet setWithArray:@[PGDisplayableIdentifier.class, PGResourceIdentifier.class]];
 	NSSet* classes = [NSSet setWithArray:@[NSData.class, PGDisplayableIdentifier.class, PGResourceIdentifier.class]];
@@ -179,3 +181,5 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

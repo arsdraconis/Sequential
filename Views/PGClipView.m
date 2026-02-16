@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGKeyboardLayout.h"
 #import "PGZooming.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGClipViewBoundsDidChangeNotification = @"PGClipViewBoundsDidChange";
 
 #define PGMouseHiddenDraggingStyle true
@@ -73,7 +75,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 @property (nonatomic, assign) NSPoint startPosition;
 @property (nonatomic, assign) NSPoint targetPosition;
 @property (nonatomic, assign) CGFloat animationProgress;
-@property (nonatomic, strong) NSTimer *animationTimer;
+@property (nonatomic, strong, nullable) NSTimer *animationTimer;
 @property (nonatomic, assign) NSTimeInterval lastAnimationTime;
 
 - (BOOL)_setPosition:(NSPoint)aPoint scrollEnclosingClipViews:(BOOL)scroll markForRedisplay:(BOOL)redisplay;
@@ -101,7 +103,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 //	MARK: -
 @implementation PGClipView
 
-+ (id)defaultAnimationForKey:(NSString *)key {
++ (nullable id)defaultAnimationForKey:(NSString *)key {
     if ([key isEqualToString:@"backgroundColor"]) {
         // By default, animate background color changes with simple linear
         // interpolation to the new color value.
@@ -126,7 +128,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 //@synthesize cursor = _cursor;
 //@synthesize allowsAnimation = _allowsAnimation;
 #endif
-- (void)setDocumentView:(NSView *)aView
+- (void)setDocumentView:(nullable NSView *)aView
 {
 	if(aView == documentView) return;
 	[documentView PG_removeObserver:self name:NSViewFrameDidChangeNotification];
@@ -155,7 +157,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 {
 	return PGInsetRect(self.bounds, _boundsInset);
 }
-- (void)setBackgroundColor:(NSColor *)aColor
+- (void)setBackgroundColor:(nullable NSColor *)aColor
 {
 	if(PGEqualObjects(aColor, _backgroundColor)) return;
 #if !__has_feature(objc_arc)
@@ -525,7 +527,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 
 //	MARK: -
 
-- (void)viewFrameDidChange:(NSNotification *)aNotif
+- (void)viewFrameDidChange:(nullable NSNotification *)aNotif
 {
 	_documentViewIsResizing++;
 	NSSize const offset = self.pinLocationOffset;
@@ -617,7 +619,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	NSRectFillList(rects, count);
 }
 
-- (NSView *)hitTest:(NSPoint)aPoint
+- (nullable NSView *)hitTest:(NSPoint)aPoint
 {
 	NSView *const subview = [super hitTest:aPoint];
 	if(!subview) return nil;
@@ -711,7 +713,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 
 //	MARK: - NSResponder
 
-- (BOOL)acceptsFirstMouse:(NSEvent *)anEvent
+- (BOOL)acceptsFirstMouse:(nullable NSEvent *)anEvent
 {
 	_firstMouse = YES;
 	return YES;
@@ -898,38 +900,38 @@ PerformMenuItemActionWithMatchingKeyEquivalent(NSEvent *event, NSMenu *menu) {
 }
 #endif
 
-- (IBAction)moveToBeginningOfDocument:(id)sender
+- (IBAction)moveToBeginningOfDocument:(nullable id)sender
 {
 	[self scrollToLocation:PGHomeLocation animation:PGPreferAnimation];
 }
-- (IBAction)moveToEndOfDocument:(id)sender
+- (IBAction)moveToEndOfDocument:(nullable id)sender
 {
 	[self scrollToLocation:PGEndLocation animation:PGPreferAnimation];
 }
-- (IBAction)scrollPageUp:(id)sender
+- (IBAction)scrollPageUp:(nullable id)sender
 {
 	[self scrollInDirection:PGMaxYEdgeMask type:PGScrollByPage];
 }
-- (IBAction)scrollPageDown:(id)sender
+- (IBAction)scrollPageDown:(nullable id)sender
 {
 	[self scrollInDirection:PGMinYEdgeMask type:PGScrollByPage];
 }
 
-- (void)insertTab:(id)sender
+- (void)insertTab:(nullable id)sender
 {
 	[self.window selectNextKeyView:sender];
 }
-- (void)insertBacktab:(id)sender
+- (void)insertBacktab:(nullable id)sender
 {
 	[self.window selectPreviousKeyView:sender];
 }
 
 // These two functions aren't actually defined by NSResponder, but -interpretKeyEvents: calls them.
-- (IBAction)scrollToBeginningOfDocument:(id)sender
+- (IBAction)scrollToBeginningOfDocument:(nullable id)sender
 {
 	[self moveToBeginningOfDocument:sender];
 }
-- (IBAction)scrollToEndOfDocument:(id)sender
+- (IBAction)scrollToEndOfDocument:(nullable id)sender
 {
 	[self moveToEndOfDocument:sender];
 }
@@ -1017,3 +1019,5 @@ PerformMenuItemActionWithMatchingKeyEquivalent(NSEvent *event, NSMenu *menu) {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

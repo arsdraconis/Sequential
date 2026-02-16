@@ -25,12 +25,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NSAttributedString(PGAdditions)
 
 + (NSMutableAttributedString *)PG_attributedStringWithAttachmentCell:(NSTextAttachmentCell *)cell label:(NSString *)label;
-+ (NSMutableAttributedString *)PG_attributedStringWithFileIcon:(NSImage *)anImage name:(NSString *)fileName;
++ (NSMutableAttributedString *)PG_attributedStringWithFileIcon:(nullable NSImage *)anImage name:(NSString *)fileName;
 
 @end
 
 @interface PGIconAttachmentCell : NSTextAttachmentCell
 @end
+
+NS_ASSUME_NONNULL_END

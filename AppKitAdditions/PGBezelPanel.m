@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGGeometry.h"
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGBezelPanelFrameShouldChangeNotification = @"PGBezelPanelFrameShouldChange";
 NSString *const PGBezelPanelFrameDidChangeNotification    = @"PGBezelPanelFrameDidChange";
 
@@ -168,7 +170,7 @@ NSString *const PGBezelPanelFrameDidChangeNotification    = @"PGBezelPanelFrameD
 
 //	MARK: NSStandardKeyBindingMethods Protocol
 
-- (void)cancelOperation:(id)sender
+- (void)cancelOperation:(nullable id)sender
 {
 	[self doesNotRecognizeSelector:_cmd];
 }
@@ -184,7 +186,7 @@ NSString *const PGBezelPanelFrameDidChangeNotification    = @"PGBezelPanelFrameD
 
 //	MARK: NSWindow
 
-- (IBAction)performClose:(id)sender
+- (IBAction)performClose:(nullable id)sender
 {
 	[self doesNotRecognizeSelector:_cmd];
 }
@@ -201,13 +203,13 @@ NSString *const PGBezelPanelFrameDidChangeNotification    = @"PGBezelPanelFrameD
 	[super becomeKeyWindow];
 	if(!_canBecomeKey) [self.parentWindow makeKeyAndOrderFront:self];
 }
-- (void)setContentView:(NSView *)aView
+- (void)setContentView:(nullable NSView *)aView
 {
 	[self.contentView PG_removeObserver:self name:PGBezelPanelFrameShouldChangeNotification];
 	super.contentView = aView;
 	[self.contentView PG_addObserver:self selector:@selector(frameShouldChange:) name:PGBezelPanelFrameShouldChangeNotification];
 }
-- (void)setParentWindow:(NSWindow *)aWindow
+- (void)setParentWindow:(nullable NSWindow *)aWindow
 {
 	[self.parentWindow PG_removeObserver:self name:NSWindowDidResizeNotification];
 	super.parentWindow = aWindow;
@@ -238,3 +240,5 @@ NSString *const PGBezelPanelFrameDidChangeNotification    = @"PGBezelPanelFrameD
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

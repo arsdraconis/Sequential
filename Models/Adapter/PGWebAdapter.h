@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Models
 #import "PGURLLoad.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGWebAdapter : PGResourceAdapter <PGURLLoadDelegate>
 #if !__has_feature(objc_arc)
 {
@@ -37,3 +39,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

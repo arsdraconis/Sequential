@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Views
 @class PGTimerButton;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGTimerPanelController : PGFloatingPanelController
 #if !__has_feature(objc_arc)
 {
@@ -45,3 +47,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)displayControllerTimerDidChange:(NSNotification *)aNotif;
 
 @end
+
+NS_ASSUME_NONNULL_END

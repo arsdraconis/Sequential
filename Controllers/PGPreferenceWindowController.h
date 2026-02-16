@@ -23,6 +23,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGPreferenceWindowControllerBackgroundPatternColorDidChangeNotification;
 extern NSString *const PGPreferenceWindowControllerBackgroundColorUsedInFullScreenDidChangeNotification;
 extern NSString *const PGPreferenceWindowControllerDisplayScreenDidChangeNotification;
@@ -53,10 +55,12 @@ extern NSString *const PGPreferenceWindowControllerDisplayScreenDidChangeNotific
 
 #if __has_feature(objc_arc)
 @property (readonly) NSColor *backgroundPatternColor;
-@property (nonatomic, strong) NSScreen *displayScreen;
+@property (nonatomic, strong, nullable) NSScreen *displayScreen;
 #else
 @property(readonly) NSColor *backgroundPatternColor;
 @property(retain) NSScreen *displayScreen;
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFloatingPanelController.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGActivityPanelController :
 	PGFloatingPanelController <NSOutlineViewDataSource, NSOutlineViewDelegate, PGFloatingPanelProtocol>
 #if !__has_feature(objc_arc)
@@ -40,3 +42,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (IBAction)cancelLoad:(id)sender;
 
 @end
+
+NS_ASSUME_NONNULL_END

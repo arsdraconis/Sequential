@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation NSAttributedString(PGAdditions)
 
 //	MARK: NSAttributedString(PGAdditions)
@@ -55,7 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 				   range:NSMakeRange(0, result.length)];
 	return result;
 }
-+ (NSMutableAttributedString *)PG_attributedStringWithFileIcon:(NSImage *)anImage name:(NSString *)fileName
++ (NSMutableAttributedString *)PG_attributedStringWithFileIcon:(nullable NSImage *)anImage name:(NSString *)fileName
 {
 #if __has_feature(objc_arc)
 	return [self PG_attributedStringWithAttachmentCell:[[PGIconAttachmentCell alloc] initImageCell:anImage]
@@ -72,7 +74,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: NSTextAttachmentCell
 
-- (void)drawWithFrame:(NSRect)aRect inView:(NSView *)aView
+- (void)drawWithFrame:(NSRect)aRect inView:(nullable NSView *)aView
 {
 	[NSGraphicsContext saveGraphicsState];
 	[NSGraphicsContext currentContext].imageInterpolation = NSImageInterpolationHigh;
@@ -93,7 +95,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - NSCell
 
-- (instancetype)initImageCell:(NSImage *)anImage
+- (instancetype)initImageCell:(nullable NSImage *)anImage
 {
 	if(anImage) return [super initImageCell:anImage];
 #if __has_feature(objc_arc)
@@ -105,3 +107,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

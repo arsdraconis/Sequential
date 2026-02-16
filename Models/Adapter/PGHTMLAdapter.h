@@ -26,6 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <WebKit/WKNavigationDelegate.h>
 #import "PGContainerAdapter.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGDOMDocumentKey;
 
 @interface PGHTMLAdapter : PGContainerAdapter <WKNavigationDelegate>
@@ -38,3 +40,5 @@ extern NSString *const PGDOMDocumentKey;
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

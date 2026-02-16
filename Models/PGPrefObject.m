@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGPrefObjectShowsInfoDidChangeNotification = @"PGPrefObjectShowsInfoDidChange";
 NSString *const PGPrefObjectShowsThumbnailsDidChangeNotification = @"PGPrefObjectShowsThumbnailsDidChange";
 NSString *const PGPrefObjectReadingDirectionDidChangeNotification = @"PGPrefObjectReadingDirectionDidChange";
@@ -274,3 +276,5 @@ static NSString *const PGBaseOrientationKey = @"PGBaseOrientation";
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

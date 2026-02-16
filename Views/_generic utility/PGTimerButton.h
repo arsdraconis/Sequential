@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGAppKitAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGTimerButton : NSButton
 
 @property(assign) AEIconType iconType;
@@ -51,3 +53,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -26,9 +26,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @class PGDocument;
 @class PGContainerAdapter;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol PGNodeParenting
 
 @property(readonly) PGDocument *document;
-@property(readonly) PGContainerAdapter *containerAdapter;
+@property(readonly, nullable) PGContainerAdapter *containerAdapter;
 
 @end
+
+NS_ASSUME_NONNULL_END

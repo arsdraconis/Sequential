@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGImageView : NSView
 #if !__has_feature(objc_arc)
 {
@@ -55,7 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 + (NSArray *)pasteboardTypes;
 
 #if __has_feature(objc_arc)
-@property (readonly) NSImageRep *rep;
+@property (readonly, nullable) NSImageRep *rep;
 @property (readonly) PGOrientation orientation;
 @property (readonly) NSSize size;
 @property (readonly) NSSize originalSize;
@@ -86,15 +88,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @property(assign, nonatomic, getter = isPaused) BOOL paused;
 #endif
 
-- (void)setImageRep:(NSImageRep *)rep orientation:(PGOrientation)orientation size:(NSSize)size;
+- (void)setImageRep:(nullable NSImageRep *)rep orientation:(PGOrientation)orientation size:(NSSize)size;
 - (void)setSize:(NSSize)size allowAnimation:(BOOL)flag; // Use this function to control how big the image is displayed. PGImageView manages its own frame size.
 - (void)stopAnimatedSizeTransition;
 - (NSPoint)rotateToDegrees:(CGFloat)val adjustingPoint:(NSPoint)aPoint;
 - (NSPoint)rotateByDegrees:(CGFloat)val adjustingPoint:(NSPoint)aPoint;
 
-- (BOOL)writeToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types;
+- (BOOL)writeToPasteboard:(nullable NSPasteboard *)pboard types:(NSArray *)types;
 
 - (void)appDidHide:(NSNotification *)aNotif;
 - (void)appDidUnhide:(NSNotification *)aNotif;
 
 @end
+
+NS_ASSUME_NONNULL_END

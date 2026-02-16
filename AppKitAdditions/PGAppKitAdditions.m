@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation NSBezierPath(PGAppKitAdditions)
 
 //	MARK: Class Methods
@@ -266,7 +268,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //	MARK: -
 @implementation NSScreen(PGAppKitAdditions)
 
-+ (NSScreen *)PG_mainScreen
++ (nullable NSScreen *)PG_mainScreen
 {
 	NSArray *const screens = [self screens];
 	return screens.count ? screens[0] : nil;
@@ -357,3 +359,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

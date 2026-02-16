@@ -26,6 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Controllers
 @class PGDisplayController;
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef enum PGFloatingPanelToggleInstruction {
 	PGFloatingPanelToggleInstructionHide = 0,
 	PGFloatingPanelToggleInstructionDoNothing = 1,
@@ -55,7 +57,7 @@ typedef enum PGFloatingPanelToggleInstruction {
 //	this was -(BOOL)setDisplayController: but that signature is non-standard
 //	(because it returns a BOOL), and produces an error when compiling under
 //	ARC, so use a similarly-named method:
-- (BOOL)setDisplayControllerReturningWasChanged:(PGDisplayController *)controller;
+- (BOOL)setDisplayControllerReturningWasChanged:(nullable PGDisplayController *)controller;
 
 @end
 
@@ -64,3 +66,5 @@ typedef enum PGFloatingPanelToggleInstruction {
 - (void)windowWillShow;
 - (void)windowWillClose;
 @end
+
+NS_ASSUME_NONNULL_END

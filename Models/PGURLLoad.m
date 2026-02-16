@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define PGMaxSimultaneousConnections 4
 
 static NSString *PGUserAgent = nil;
@@ -44,10 +46,10 @@ static NSUInteger PGSimultaneousConnections = 0;
 
 @property (nonatomic, assign) BOOL loaded;
 @property (nonatomic, weak) NSObject<PGURLLoadDelegate> *delegate;
-@property (nonatomic, strong) NSURLConnection *connection;
+@property (nonatomic, strong, nullable) NSURLConnection *connection;
 @property (nonatomic, strong) NSURLRequest *request;
 @property (nonatomic, strong) NSURLResponse *response;
-@property (nonatomic, strong) NSMutableData *data;
+@property (nonatomic, strong, nullable) NSMutableData *data;
 @property (nonatomic, strong) PGActivity *activity;
 
 - (BOOL)_start;
@@ -105,7 +107,7 @@ static NSUInteger PGSimultaneousConnections = 0;
 
 //	MARK: -
 
-- (NSObject<PGURLLoadDelegate> *)delegate
+- (nullable NSObject<PGURLLoadDelegate> *)delegate
 {
 	return _delegate;
 }
@@ -279,3 +281,5 @@ static NSUInteger PGSimultaneousConnections = 0;
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

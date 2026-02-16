@@ -75,7 +75,7 @@ typedef NS_ENUM(NSUInteger, PGNodeStatus) {
 #endif
 @property(readonly) PGResourceAdapter *resourceAdapter;
 @property(readonly) PGDisplayableIdentifier *identifier;
-@property(readonly) NSImage *thumbnail;
+@property(readonly, nullable) NSImage *thumbnail;
 @property(readonly) BOOL isViewable;
 @property(readonly) PGNode *viewableAncestor;
 @property(readonly) NSMenuItem *menuItem;
@@ -98,11 +98,11 @@ typedef NS_ENUM(NSUInteger, PGNodeStatus) {
 - (void)removeFromDocument;
 - (void)detachFromTree;
 - (NSComparisonResult)compare:(PGNode *)node; // Uses the document's sort mode.
-- (BOOL)writeToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types;
+- (BOOL)writeToPasteboard:(nullable NSPasteboard *)pboard types:(NSArray *)types;
 - (void)addToMenu:(NSMenu *)menu flatten:(BOOL)flatten;
 
 - (PGNode *)ancestorThatIsChildOfNode:(PGNode *)aNode;
-- (BOOL)isDescendantOfNode:(PGNode *)aNode;
+- (BOOL)isDescendantOfNode:(nullable PGNode *)aNode;
 
 - (void)identifierIconDidChange:(NSNotification *)aNotif;
 - (void)identifierDisplayNameDidChange:(NSNotification *)aNotif;

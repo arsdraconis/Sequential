@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @protocol PGThumbnailViewDataSource;
 @protocol PGThumbnailViewDelegate;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGThumbnailView : NSView
 #if !__has_feature(objc_arc)
 {
@@ -45,11 +47,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #if __has_feature(objc_arc)
 @property (nonatomic, weak) IBOutlet NSObject<PGThumbnailViewDataSource> *dataSource;
 @property (nonatomic, weak) IBOutlet NSObject<PGThumbnailViewDelegate> *delegate;
-@property (nonatomic, strong) id representedObject;
+@property (nonatomic, strong, nullable) id representedObject;
 @property (nonatomic, assign) PGOrientation thumbnailOrientation;
 
 @property (readonly) NSArray *items;
-@property (nonatomic, copy) NSSet *selection;
+@property (nonatomic, copy, nullable) NSSet *selection;
 //@property (nonatomic, readonly) NSSet *selection;
 @property (readonly, weak) id selectionAnchor;
 #else
@@ -62,9 +64,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @property(copy, nonatomic) NSSet *selection;
 @property(readonly) id selectionAnchor;
 #endif
-- (void)selectItem:(id)item byExtendingSelection:(BOOL)extend;
+- (void)selectItem:(nullable id)item byExtendingSelection:(BOOL)extend;
 - (void)deselectItem:(id)item;
-- (void)toggleSelectionOfItem:(id)item;
+- (void)toggleSelectionOfItem:(nullable id)item;
 - (void)moveUp:(BOOL)up byExtendingSelection:(BOOL)ext;
 //- (void)selectAll;	//	2023/09/18
 - (BOOL)selectActiveNodeIfDisplayedInThisView;
@@ -87,7 +89,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @protocol PGThumbnailViewDataSource <NSObject>
 
 @required	//@optional
-- (NSArray *)itemsForThumbnailView:(PGThumbnailView *)sender;
+- (nullable NSArray *)itemsForThumbnailView:(PGThumbnailView *)sender;
 - (NSImage *)thumbnailView:(PGThumbnailView *)sender thumbnailForItem:(id)item;
 - (BOOL)thumbnailView:(PGThumbnailView *)sender canSelectItem:(id)item;
 - (BOOL)thumbnailView:(PGThumbnailView *)sender isContainerItem:(id)item;
@@ -119,3 +121,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)thumbnailView:(PGThumbnailView *)sender selectAllDirectChildrenOf:(id)item;	//	2023/09/18
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 static NSArray *PGIgnoredPaths = nil;
 
 @interface PGDiskFolderDataProvider : PGResourceDataProvider	//	2023/10/22
@@ -47,7 +49,7 @@ static NSArray *PGIgnoredPaths = nil;
 @implementation PGDiskFolderDataProvider
 
 //	MARK: PGDataProvider
-- (NSString *)UTIType
+- (nullable NSString *)UTIType
 {
 	if (@available(macOS 11.0, *))
 		return UTTypeFolder.identifier;
@@ -75,7 +77,7 @@ static NSArray *PGIgnoredPaths = nil;
 //	MARK: +PGDataProviderCustomizing
 
 //	2023/10/22
-+ (PGDataProvider *)customDataProviderWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name
++ (nullable PGDataProvider *)customDataProviderWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name
 {
 	if(!ident.isFileIdentifier)
 		return nil;
@@ -183,3 +185,5 @@ IsVisibleInFinder(NSURL* pageURL) {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

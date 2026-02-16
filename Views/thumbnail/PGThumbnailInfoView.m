@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGDocumentController.h"	//	for thumbnail userDefault keys
 
+NS_ASSUME_NONNULL_BEGIN
+
 //	2023/10/02 for _infoWindow:
 typedef enum SizeFormat { SizeFormatNone, SizeFormatBase10, SizeFormatBase2, SizeFormatBytes } SizeFormat;
 extern	NSString*	StringForByteSizeWithFormat(SizeFormat format, uint64_t bytes, int nDecimalDigits);
@@ -147,10 +149,10 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 
 //	MARK: - NSObject(NSKeyValueObserving)
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-					  ofObject:(id)object
-						change:(NSDictionary *)change
-					   context:(void *)context
+- (void)observeValueForKeyPath:(nullable NSString *)keyPath
+					  ofObject:(nullable id)object
+						change:(nullable NSDictionary *)change
+					   context:(nullable void *)context
 {
 	if(PGEqualObjects(keyPath, PGThumbnailSizeFormatKey))
 		self.needsDisplay	=	YES;
@@ -178,3 +180,5 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

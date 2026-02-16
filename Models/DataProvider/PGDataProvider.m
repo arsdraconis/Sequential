@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 //#import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGURLResponseDataProvider : PGDataProvider
 #if !__has_feature(objc_arc)
 {
@@ -53,7 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: +PGDataProvider(PGDataProviderCreation)
 
-+ (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name
++ (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(nullable NSString *)name
 {
 	for(NSString *const classString in [NSBundle bundleForClass:self].infoDictionary[@"PGDataProviderCustomizers"]) {
 		Class const class = NSClassFromString(classString);
@@ -71,7 +73,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 {
 	return [self providerWithResourceIdentifier:ident displayableName:nil];
 }
-+ (instancetype)providerWithURLResponse:(NSURLResponse *)response data:(NSData *)data
++ (instancetype)providerWithURLResponse:(NSURLResponse *)response data:(nullable NSData *)data
 {
 	for(NSString *const classString in [NSBundle bundleForClass:self].infoDictionary[@"PGDataProviderCustomizers"]) {
 		Class const class = NSClassFromString(classString);
@@ -88,18 +90,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - PGDataProvider
 
-- (PGResourceIdentifier *)identifier
+- (nullable PGResourceIdentifier *)identifier
 {
 	return nil;
 }
-- (NSURLResponse *)response
+- (nullable NSURLResponse *)response
 {
 	return nil;
 }
 
 //	MARK: -
 
-- (NSData *)data
+- (nullable NSData *)data
 {
 	return nil;
 }
@@ -112,18 +114,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 		return (uint64_t) fullData.length;	//	widening cast so OK
 	}
 }
-- (NSDate *)dateModified
+- (nullable NSDate *)dateModified
 {
 	return nil;
 }
-- (NSDate *)dateCreated
+- (nullable NSDate *)dateCreated
 {
 	return nil;
 }
 
 //	MARK: -
 
-- (NSString *)UTIType
+- (nullable NSString *)UTIType
 {
 	return nil;
 }
@@ -135,7 +137,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 {
 	return 0;
 } */
-- (NSString *)extension
+- (nullable NSString *)extension
 {
 	return nil;
 }
@@ -157,7 +159,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 		return [NSNumber numberWithUnsignedInteger:size];
 	}
 } */
-- (NSData *)fourCCData
+- (nullable NSData *)fourCCData
 {
 	NSData *fourCCData;
 	@autoreleasepool {
@@ -210,7 +212,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	if(extension) return [NSWorkspace.sharedWorkspace iconForFileType:extension];
 	return nil;
 }
-- (NSString *)kindString
+
+- (nullable NSString *)kindString
 {
 	NSString *const utiType = self.UTIType;
 	NSString *kind = utiType ? [NSWorkspace.sharedWorkspace localizedDescriptionForType:utiType] : nil; // Ugly ("Portable Network Graphics image"), but more accurate than file extensions.
@@ -276,7 +279,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - <NSCopying>
 
-- (id)copyWithZone:(NSZone *)zone
+- (id)copyWithZone:(nullable NSZone *)zone
 {
 #if __has_feature(objc_arc)
 	return self;
@@ -306,7 +309,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - PGDataProvider
 
-- (PGResourceIdentifier *)identifier
+- (nullable PGResourceIdentifier *)identifier
 {
 	return _response.URL.PG_resourceIdentifier;
 }
@@ -328,7 +331,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: -
 
-- (NSString *)UTIType
+- (nullable NSString *)UTIType
 {
 #if __has_feature(objc_arc)
 	if (@available(macOS 11.0, *))
@@ -344,7 +347,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 {
 	return _response.MIMEType;
 }
-- (NSString *)extension
+- (nullable NSString *)extension
 {
 	return _response.suggestedFilename.pathExtension.lowercaseString;
 }
@@ -361,3 +364,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

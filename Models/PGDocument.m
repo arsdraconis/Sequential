@@ -43,6 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGDocumentWillRemoveNodesNotification          = @"PGDocumentWillRemoveNodes";
 NSString *const PGDocumentSortedNodesDidChangeNotification     = @"PGDocumentSortedNodesDidChange";
 NSString *const PGDocumentNodeIsViewableDidChangeNotification  = @"PGDocumentNodeIsViewableDidChange";
@@ -64,10 +66,10 @@ NSString *const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively";
 @property (nonatomic, strong) NSMutableArray<PGNode *> *cachedNodes;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
-@property (nonatomic, strong) PGNode *storedNode;
-@property (nonatomic, strong) PGImageView *storedImageView;
+@property (nonatomic, strong, nullable) PGNode *storedNode;
+@property (nonatomic, strong, nullable) PGImageView *storedImageView;
 @property (nonatomic, assign) NSSize storedOffset;
-@property (nonatomic, strong) NSString *storedQuery;
+@property (nonatomic, strong, nullable) NSString *storedQuery;
 @property (nonatomic, assign) NSRect storedFrame;
 
 @property (nonatomic, strong) PGDisplayableIdentifier *initialIdentifier;
@@ -141,7 +143,7 @@ NSString *const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively";
 	return [[_displayController retain] autorelease];
 }
 #endif
-- (void)setDisplayController:(PGDisplayController *)controller
+- (void)setDisplayController:(nullable PGDisplayController *)controller
 {
 	if(controller == _displayController) return;
 	if(_displayController.activeDocument == self)
@@ -512,9 +514,11 @@ NSString *const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively";
 {
 	return self;
 }
-- (PGContainerAdapter *)containerAdapter
+- (nullable PGContainerAdapter *)containerAdapter
 {
 	return nil;
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

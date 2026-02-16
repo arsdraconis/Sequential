@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGPrefObject.h"
 #import "PGNodeParenting.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGMaxDepthKey;
 
 @interface PGContainerAdapter : PGResourceAdapter
@@ -51,13 +53,13 @@ extern NSString *const PGMaxDepthKey;
 
 @property (readonly) uint64_t byteSizeOfAllChildren;
 
-- (PGNode *)childForIdentifier:(PGResourceIdentifier *)anIdent;
+- (nullable PGNode *)childForIdentifier:(PGResourceIdentifier *)anIdent;
 - (NSUInteger)viewableIndexOfChild:(PGNode *)aNode;
-- (PGNode *)outwardSearchForward:(BOOL)forward
-					   fromChild:(PGNode *)start
-					   inclusive:(BOOL)inclusive
-					withSelector:(SEL)sel
-						 context:(id)context;
+- (nullable PGNode *)outwardSearchForward:(BOOL)forward
+                                fromChild:(PGNode *)start
+                                inclusive:(BOOL)inclusive
+                             withSelector:(SEL)sel
+                                  context:(nullable id)context;
 /* The selector 'sel' should have one of the following forms:
 - (PGNode *)selector;
 - (PGNode *)selectorForward:(BOOL)flag;
@@ -70,3 +72,5 @@ extern NSString *const PGMaxDepthKey;
 
 @interface PGContainerAdapter(PGResourceAdapterMethods) <PGNodeParenting>
 @end
+
+NS_ASSUME_NONNULL_END

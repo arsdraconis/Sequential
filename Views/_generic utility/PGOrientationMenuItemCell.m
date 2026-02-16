@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 @interface PGOrientationMenuIconCell ()
 
@@ -82,7 +84,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - NSTextAttachmentCell
 
-- (void)drawWithFrame:(NSRect)aRect inView:(NSView *)aView
+- (void)drawWithFrame:(NSRect)aRect inView:(nullable NSView *)aView
 {
 	[NSGraphicsContext saveGraphicsState];
 	PGOrientation orientation = _item.tag;
@@ -94,3 +96,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGActivityPanelController ()
@@ -42,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @property (nonatomic, weak) IBOutlet NSTableColumn *identifierColumn;
 @property (nonatomic, weak) IBOutlet NSTableColumn *progressColumn;
 @property (nonatomic, weak) IBOutlet NSButton      *cancelButton;
-@property (nonatomic, strong) NSTimer *updateTimer;
+@property (nonatomic, strong, nullable) NSTimer *updateTimer;
 
 - (void)_update;
 
@@ -258,3 +260,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGResourceDataProvider ()
@@ -72,7 +74,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	return [val autorelease];
 } */
 
-- (id)valueForResourceKey:(NSURLResourceKey)key {
+- (nullable id)valueForResourceKey:(NSURLResourceKey)key {
 	NSError* error = nil;
 	id value = nil;
 	if(![_identifier.URL getResourceValue:&value forKey:key error:&error] || error)
@@ -80,7 +82,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	return value;
 }
 
-- (id)valueForFMAttributeName:(NSString *)name
+- (nullable id)valueForFMAttributeName:(NSString *)name
 {
 	return _identifier.isFileIdentifier ? [[NSFileManager defaultManager] attributesOfItemAtPath:_identifier.URL.path error:NULL][name] : nil;
 }
@@ -98,7 +100,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //	return _displayableName ? _displayableName : [self valueForLSAttributeName:kLSItemDisplayName];
 	return _displayableName ? _displayableName : [self valueForResourceKey:NSURLLocalizedNameKey];
 }
-- (NSData *)data
+- (nullable NSData *)data
 {
 	return [NSData dataWithContentsOfURL:_identifier.URL
 								 options:NSDataReadingMapped | NSDataReadingUncached
@@ -111,7 +113,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: -
 
-- (NSString *)UTIType
+- (nullable NSString *)UTIType
 {
 //	return [self valueForLSAttributeName:kLSItemContentType];
 	return [self valueForResourceKey:NSURLTypeIdentifierKey];
@@ -124,7 +126,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 {
 	return PGOSTypeFromString([self valueForLSAttributeName:kLSItemFileType]);
 } */
-- (NSString *)extension
+- (nullable NSString *)extension
 {
 //	return [[self valueForLSAttributeName:kLSItemExtension] lowercaseString];
 	return _identifier.URL.pathExtension;
@@ -132,11 +134,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: -
 
-- (NSDate *)dateModified
+- (nullable NSDate *)dateModified
 {
 	return [self valueForFMAttributeName:NSFileModificationDate];
 }
-- (NSDate *)dateCreated
+- (nullable NSDate *)dateCreated
 {
 	return [self valueForFMAttributeName:NSFileCreationDate];
 }
@@ -183,3 +185,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

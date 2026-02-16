@@ -22,6 +22,9 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
+
+NS_ASSUME_NONNULL_BEGIN
+
 typedef NS_OPTIONS(NSUInteger, PGDelayedPerformingOptions) {
 	PGRetainTarget = 1 << 0,
 	PGCompareArgumentPointer = 1 << 1,
@@ -30,9 +33,11 @@ typedef NS_OPTIONS(NSUInteger, PGDelayedPerformingOptions) {
 
 @interface NSObject(PGDelayedPerforming)
 
-- (NSTimer *)PG_performSelector:(SEL)aSel withObject:(id)anArgument fireDate:(NSDate *)date interval:(NSTimeInterval)interval options:(PGDelayedPerformingOptions)opts;
-- (NSTimer *)PG_performSelector:(SEL)aSel withObject:(id)anArgument fireDate:(NSDate *)date interval:(NSTimeInterval)interval options:(PGDelayedPerformingOptions)opts mode:(NSString *)mode;
+- (NSTimer *)PG_performSelector:(SEL)aSel withObject:(nullable id)anArgument fireDate:(nullable NSDate *)date interval:(NSTimeInterval)interval options:(PGDelayedPerformingOptions)opts;
+- (NSTimer *)PG_performSelector:(SEL)aSel withObject:(nullable id)anArgument fireDate:(nullable NSDate *)date interval:(NSTimeInterval)interval options:(PGDelayedPerformingOptions)opts mode:(NSString *)mode;
 - (void)PG_cancelPreviousPerformRequests;
-- (void)PG_cancelPreviousPerformRequestsWithSelector:(SEL)aSel object:(id)anArgument;
+- (void)PG_cancelPreviousPerformRequestsWithSelector:(SEL)aSel object:(nullable id)anArgument;
 
 @end
+
+NS_ASSUME_NONNULL_END

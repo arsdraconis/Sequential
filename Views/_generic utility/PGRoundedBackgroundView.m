@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGAppKitAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation PGRoundedBackgroundView
 
 //	MARK: - NSView
@@ -50,3 +52,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)rightMouseDown:(NSEvent *)anEvent {}
 
 @end
+
+NS_ASSUME_NONNULL_END

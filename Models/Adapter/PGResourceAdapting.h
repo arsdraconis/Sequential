@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @class PGNode;
 @class PGContainerAdapter;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol PGResourceAdapting
 
 @required
@@ -39,3 +41,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (void)noteSortOrderDidChange;
 
 @end
+
+NS_ASSUME_NONNULL_END

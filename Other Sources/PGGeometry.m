@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGGeometry.h"
 #include <tgmath.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //	MARK: NSPoint
 
 NSPoint PGIntegralPoint(NSPoint aPoint)
@@ -257,3 +259,5 @@ CGFloat PGLagCounteractionSpeedup(NSTimeInterval *timeOfFrame, CGFloat desiredFr
 	*timeOfFrame = currentTime;
 	return speedup;
 }
+
+NS_ASSUME_NONNULL_END

@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Models
 #import "PGNode.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface PGArchiveAdapter : PGContainerAdapter
 #if !__has_feature(objc_arc)
 {
@@ -41,3 +43,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 - (NSArray *)nodesUnderPath:(NSString *)path parentAdapter:(PGContainerAdapter *)parent remainingIndexes:(NSMutableIndexSet *)indexes;
 
 @end
+
+NS_ASSUME_NONNULL_END

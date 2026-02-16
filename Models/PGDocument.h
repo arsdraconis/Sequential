@@ -42,6 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGDocumentWillRemoveNodesNotification;
 extern NSString *const PGDocumentSortedNodesDidChangeNotification;
 extern NSString *const PGDocumentNodeIsViewableDidChangeNotification;
@@ -86,7 +88,7 @@ extern NSString *const PGDocumentUpdateRecursivelyKey;
 #if __has_feature(objc_arc)
 @property (readonly) PGDisplayableIdentifier *rootIdentifier;
 @property (readonly) PGNode *node;
-@property (nonatomic, strong) PGDisplayController *displayController;
+@property (nonatomic, strong, nullable) PGDisplayController *displayController;
 @property (readonly, getter = isOnline) BOOL online;
 @property (readonly) NSMenu *pageMenu;
 @property (nonatomic, getter = isProcessingNodes) BOOL processingNodes; // Batch changes for performance.
@@ -99,7 +101,7 @@ extern NSString *const PGDocumentUpdateRecursivelyKey;
 @property(getter = isProcessingNodes) BOOL processingNodes; // Batch changes for performance.
 #endif
 
-- (void)getStoredNode:(out PGNode **)outNode imageView:(out PGImageView **)outImageView offset:(out NSSize *)outOffset query:(out NSString **)outQuery; // No arguments may be NULL.
+- (void)getStoredNode:(out PGNode *_Nullable*_Nullable)outNode imageView:(out PGImageView *_Nullable*_Nullable)outImageView offset:(out NSSize *)outOffset query:(out NSString *_Nullable*_Nullable)outQuery; // No arguments may be NULL.
 - (void)storeNode:(PGNode *)node imageView:(PGImageView *)imageView offset:(NSSize)offset query:(NSString *)query;
 - (BOOL)getStoredWindowFrame:(out NSRect *)outFrame;
 - (void)storeWindowFrame:(NSRect)frame;
@@ -120,3 +122,5 @@ extern NSString *const PGDocumentUpdateRecursivelyKey;
 - (void)subscriptionEventDidOccur:(NSNotification *)aNotif;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -40,12 +40,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Models
 #import "PGDocument.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #if __has_feature(objc_arc)
 
 @interface PGFullscreenController ()
 
 @property (nonatomic, assign) BOOL isExitingFullscreen;
-@property (nonatomic, strong) NSMutableArray *shieldWindows;
+@property (nonatomic, strong, nullable) NSMutableArray *shieldWindows;
 
 - (void)_setMenuBarHidden:(BOOL)hidden delayed:(BOOL)delayed; // Delaying prevents the menu bar from messing up when the application unhides on Leopard.
 - (void)_hideMenuBar;
@@ -131,7 +133,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: - PGDisplayController
 
-- (BOOL)setActiveDocument:(PGDocument *)document closeIfAppropriate:(BOOL)flag
+- (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag
 {
 	if(document || _isExitingFullscreen) return [super setActiveDocument:document closeIfAppropriate:NO];
 	if(!self.activeDocument) return NO;
@@ -145,7 +147,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	[super setActiveDocument:nextDoc closeIfAppropriate:NO]; // PGDocumentController knows when to close us, so don't close ourselves.
 	return NO;
 }
-- (NSWindow *)windowForSheet
+- (nullable NSWindow *)windowForSheet
 {
 	return nil;
 }
@@ -318,3 +320,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

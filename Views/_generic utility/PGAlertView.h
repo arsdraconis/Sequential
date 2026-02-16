@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAppKitAdditions.h"
 #import "PGBezelPanel.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef NS_ENUM(NSUInteger, PGAlertGraphicType) {
 	PGSingleImageGraphic,
 	PGInterImageGraphic
@@ -99,3 +101,5 @@ typedef NS_ENUM(NSUInteger, PGAlertGraphicType) {
 - (instancetype)init NS_UNAVAILABLE;
 
 @end
+
+NS_ASSUME_NONNULL_END

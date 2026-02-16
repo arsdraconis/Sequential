@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAppKitAdditions.h"
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString *const PGPreferenceWindowControllerBackgroundPatternColorDidChangeNotification
                 = @"PGPreferenceWindowControllerBackgroundPatternColorDidChange";
 NSString *const PGPreferenceWindowControllerBackgroundColorUsedInFullScreenDidChangeNotification
@@ -174,7 +176,7 @@ PreferenceIsCustomColor(void) {
 	return [[_displayScreen retain] autorelease];
 }
 #endif
-- (void)setDisplayScreen:(NSScreen *)aScreen
+- (void)setDisplayScreen:(nullable NSScreen *)aScreen
 {
 #if __has_feature(objc_arc)
 	_displayScreen = aScreen;
@@ -397,7 +399,7 @@ PreferenceIsCustomColor(void) {
 
 //	MARK: - NSObject(NSKeyValueObserving)
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+- (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary *)change context:(nullable void *)context
 {
 	if(context != (__bridge void * _Nullable)self)
 		return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -423,7 +425,7 @@ PreferenceIsCustomColor(void) {
 
 //	MARK: - <NSToolbarDelegate>
 
-- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)ident willBeInsertedIntoToolbar:(BOOL)flag
+- (nullable NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)ident willBeInsertedIntoToolbar:(BOOL)flag
 {
 #if __has_feature(objc_arc)
 	NSToolbarItem *const item = [[NSToolbarItem alloc] initWithItemIdentifier:ident];
@@ -462,3 +464,5 @@ PreferenceIsCustomColor(void) {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
