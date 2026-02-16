@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *const PGNodeLoadingDidProgressNotification;
 extern NSString *const PGNodeReadyForViewingNotification;
 
@@ -66,21 +68,13 @@ typedef NS_ENUM(NSUInteger, PGNodeStatus) {
 }
 #endif
 
-+ (NSArray *)pasteboardTypes;
-
-- (instancetype)initWithParent:(id<PGNodeParenting>)parent identifier:(PGDisplayableIdentifier *)ident NS_DESIGNATED_INITIALIZER;
-@property(readonly) PGDisplayableIdentifier *identifier;
-
 #if __has_feature(objc_arc)
 @property(nonatomic, strong) PGDataProvider *dataProvider;
 #else
 @property(retain) PGDataProvider *dataProvider;
 #endif
-- (void)reload;
 @property(readonly) PGResourceAdapter *resourceAdapter;
-- (void)loadFinishedForAdapter:(PGResourceAdapter *)adapter;
-- (void)fallbackFromFailedAdapter:(PGResourceAdapter *)adapter;
-
+@property(readonly) PGDisplayableIdentifier *identifier;
 @property(readonly) NSImage *thumbnail;
 @property(readonly) BOOL isViewable;
 @property(readonly) PGNode *viewableAncestor;
@@ -88,10 +82,18 @@ typedef NS_ENUM(NSUInteger, PGNodeStatus) {
 @property(readonly) BOOL canBookmark;
 @property(readonly) PGBookmark *bookmark;
 
++ (NSArray *)pasteboardTypes;
+
+- (nullable instancetype)initWithParent:(id<PGNodeParenting>)parent identifier:(PGDisplayableIdentifier *)ident NS_DESIGNATED_INITIALIZER;
+
+- (void)reload;
+- (void)loadFinishedForAdapter:(PGResourceAdapter *)adapter;
+- (void)fallbackFromFailedAdapter:(PGResourceAdapter *)adapter;
+
 - (void)becomeViewed;
 - (void)readIfNecessary;
 - (void)setIsReading:(BOOL)reading;	//	2023/10/21
-- (void)readFinishedWithImageRep:(NSImageRep *)aRep;
+- (void)readFinishedWithImageRep:(nullable NSImageRep *)aRep;
 
 - (void)removeFromDocument;
 - (void)detachFromTree;
@@ -108,3 +110,5 @@ typedef NS_ENUM(NSUInteger, PGNodeStatus) {
 - (void)noteIsViewableDidChange;
 
 @end
+
+NS_ASSUME_NONNULL_END

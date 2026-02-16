@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAppKitAdditions.h"
 #import "PGFoundationAdditions.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 static
 NSComparisonResult
 CompareByteSize(uint64_t a, uint64_t b) {
@@ -124,7 +126,7 @@ enum {
 
 //	MARK: - PGNode
 
-- (instancetype)initWithParent:(id<PGNodeParenting>)parent identifier:(PGDisplayableIdentifier *)ident
+- (nullable instancetype)initWithParent:(id<PGNodeParenting>)parent identifier:(PGDisplayableIdentifier *)ident
 {
 	if(!(self = [super init])) return nil;
 	if(!ident) {
@@ -269,7 +271,7 @@ enum {
 	else
 		_status &= ~PGNodeReading;
 }
-- (void)readFinishedWithImageRep:(NSImageRep *)aRep
+- (void)readFinishedWithImageRep:(nullable NSImageRep *)aRep
 {
 	NSParameterAssert((PGNodeLoadingOrReading & _status) == PGNodeReading);
 	_status &= ~PGNodeReading;
@@ -599,3 +601,5 @@ enum {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
