@@ -198,7 +198,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	_openPanel.allowedFileTypes	=	nil;
 	if(window) {
 		[_openPanel beginSheetModalForWindow:window completionHandler:^(NSModalResponse result) {
-			[self openPanelDidEnd:_openPanel returnCode:result contextInfo:NULL];
+            [self openPanelDidEnd:self.openPanel returnCode:result contextInfo:NULL];
 		}];
 	} else {
 		[self openPanelDidEnd:_openPanel returnCode:[_openPanel runModal] contextInfo:NULL];
@@ -308,7 +308,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 		[alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)].keyEquivalent = @"\r";
 		[alert beginSheetModalForWindow:_openPanel completionHandler:^(NSModalResponse returnCode) {
 			if(NSAlertFirstButtonReturn == returnCode)
-				_saveOnSheetClose = YES;
+                self.saveOnSheetClose = YES;
 		}];
 
 		if(outError)

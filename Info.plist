@@ -652,7 +652,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Sequential</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.SequentialX.Sequential</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -734,9 +734,15 @@
 			</array>
 			<key>PGBundleTypeFourCCs</key>
 			<array>
-				<data>UEsDBA==</data>
-				<data>UmFyIQ==</data>
-				<data>N3rCvMKv</data>
+				<data>
+				UEsDBA==
+				</data>
+				<data>
+				UmFyIQ==
+				</data>
+				<data>
+				N3rCvMKv
+				</data>
 			</array>
 		</dict>
 		<key>PGFlickrAdapter</key>
@@ -930,7 +936,9 @@
 			</array>
 			<key>PGBundleTypeFourCC</key>
 			<array>
-				<data>JVBERg==</data>
+				<data>
+				JVBERg==
+				</data>
 			</array>
 		</dict>
 		<key>PGResourceAdapter</key>

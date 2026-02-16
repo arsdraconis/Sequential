@@ -333,13 +333,6 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 
 //	MARK: - NSObject
 
-- (instancetype)init
-{
-	if(self = [super init]) {
-		_byteSizeAllChildren	=	~0ull;
-	}
-	return self;
-}
 - (void)dealloc
 {
 	[_unsortedChildren makeObjectsPerformSelector:@selector(detachFromTree)];

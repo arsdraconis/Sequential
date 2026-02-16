@@ -1996,7 +1996,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 		if(@selector(skipBeforeFolder:) == action) return NO;
 		if(@selector(skipPastFolder:) == action) return NO;
 	}
-	return [super validateMenuItem:anItem];
+    return [self respondsToSelector:anItem.action];
 }
 
 //	MARK: - NSObject(NSServicesRequests)
@@ -2227,11 +2227,11 @@ proposedFrame.size.width, proposedFrame.size.height); */
 	} completionHandler:^{
 	//	[self.window setLevel:previousWindowLevel];
 
-		NSAssert(0 != _bs, @"");
+		NSAssert(0 != self.bs, @"");
 		(void) [PGDocumentController.sharedDocumentController
 					togglePanelsForExitingFullScreen:NO
-									 withBeforeState:_bs];
-		_bs = 0;
+                withBeforeState:self.bs];
+		self.bs = 0;
 	}];
 #if 0
 }
@@ -2297,8 +2297,8 @@ proposedFrame.size.width, proposedFrame.size.height); */
 		window.level = NSNormalWindowLevel;
 		NSAssert(NSNormalWindowLevel == window.level, @"");
 
-		NSAssert(NSEqualRects(window.frame, _windowFrameForNonFullScreenMode), @"");
-		_windowFrameForNonFullScreenMode = NSZeroRect;
+		NSAssert(NSEqualRects(window.frame, self.windowFrameForNonFullScreenMode), @"");
+		self.windowFrameForNonFullScreenMode = NSZeroRect;
 	}];
 }
 
@@ -2436,7 +2436,7 @@ proposedFrame.size.width, proposedFrame.size.height); */
 	[_imageView setUsesCaching:YES];
 	CGFloat const deg = _imageView.rotationInDegrees;
 	_imageView.rotationInDegrees = 0.0f;
-	PGOrientation o;
+	PGOrientation o = 0;
 	switch((NSInteger)round((deg + 360.0f) / 90.0f) % 4) {
 		case 0: o = PGUpright; break;
 		case 1: o = PGRotated90CCW; break;

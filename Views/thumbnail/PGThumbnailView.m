@@ -405,19 +405,31 @@ StringForByteSizeAsBaseTen(uint64_t bytes, int nDecimalDigits) {
 	if(bytes < kB_1)
 		return [NSString stringWithFormat:@"%llu B", bytes];
 
-	char	units[2] = { '?', '\0' };
+	char units[2] = { '?', '\0' };
 
 	if(bytes < MB_1)
-		return units[0] = 'k', StringForByteSizeWithUnit(kB_1, units, bytes, nDecimalDigits);
+    {
+        units[0] = 'k';
+        return StringForByteSizeWithUnit(kB_1, units, bytes, nDecimalDigits);
+    }
 
 	if(bytes < GB_1)
-		return units[0] = 'M', StringForByteSizeWithUnit(MB_1, units, bytes, nDecimalDigits);
+    {
+        units[0] = 'M';
+        return StringForByteSizeWithUnit(MB_1, units, bytes, nDecimalDigits);
+    }
 
 	if(bytes < TB_1)
-		return units[0] = 'G', StringForByteSizeWithUnit(GB_1, units, bytes, nDecimalDigits);
+    {
+        units[0] = 'G';
+        return StringForByteSizeWithUnit(GB_1, units, bytes, nDecimalDigits);
+    }
 
 //	if(bytes < PB_1)	//	peta??
-		return units[0] = 'T', StringForByteSizeWithUnit(TB_1, units, bytes, nDecimalDigits);
+    {
+        units[0] = 'T';
+        return StringForByteSizeWithUnit(TB_1, units, bytes, nDecimalDigits);
+    }
 }
 
 static
@@ -431,19 +443,31 @@ StringForByteSizeAsBaseTwo(uint64_t bytes, int nDecimalDigits) {
 	if(bytes < kiB_1)
 		return [NSString stringWithFormat:@"%llu B", bytes];
 
-	char	units[4] = { '?', 'i', '\0', '\0' };
+	char units[4] = { '?', 'i', '\0', '\0' };
 
 	if(bytes < MiB_1)
-		return units[0] = 'k', StringForByteSizeWithUnit(kiB_1, units, bytes, nDecimalDigits);
+    {
+        units[0] = 'k';
+        return StringForByteSizeWithUnit(kiB_1, units, bytes, nDecimalDigits);
+    }
 
 	if(bytes < GiB_1)
-		return units[0] = 'M', StringForByteSizeWithUnit(MiB_1, units, bytes, nDecimalDigits);
+    {
+        units[0] = 'M';
+        return StringForByteSizeWithUnit(MiB_1, units, bytes, nDecimalDigits);
+    }
 
 	if(bytes < TiB_1)
-		return units[0] = 'G', StringForByteSizeWithUnit(GiB_1, units, bytes, nDecimalDigits);
+    {
+        units[0] = 'G';
+        return StringForByteSizeWithUnit(GiB_1, units, bytes, nDecimalDigits);
+    }
 
 //	if(bytes < PiB_1)	//	peta??
-		return units[0] = 'T', StringForByteSizeWithUnit(TiB_1, units, bytes, nDecimalDigits);
+    {
+        units[0] = 'T';
+        return StringForByteSizeWithUnit(TiB_1, units, bytes, nDecimalDigits);
+    }
 }
 
 static

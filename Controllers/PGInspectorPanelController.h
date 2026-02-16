@@ -25,7 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFloatingPanelController.h"
 
 @interface PGInspectorPanelController :
-	PGFloatingPanelController <NSTableViewDataSource, NSTableViewDelegate>
+	PGFloatingPanelController <NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation>
 #if !__has_feature(objc_arc)
 {
 	IBOutlet NSTableView *propertiesTable;

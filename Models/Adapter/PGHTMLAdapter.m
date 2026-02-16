@@ -94,9 +94,9 @@ NSString *const PGDOMDocumentKey = @"PGDOMDocument";
 #if 1
 	{
 		WKPreferences* preferences = [WKPreferences new];
-		preferences.javaEnabled = NO;
-		preferences.plugInsEnabled = NO;
-		preferences.javaScriptEnabled = NO;
+//		preferences.javaEnabled = NO;
+//		preferences.plugInsEnabled = NO;
+//		preferences.javaScriptEnabled = NO;
 		preferences.javaScriptCanOpenWindowsAutomatically = NO;
 	//	preferences.loadsImagesAutomatically = NO;
 		if(@available(macOS 10.15, *))

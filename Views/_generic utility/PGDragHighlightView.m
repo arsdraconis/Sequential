@@ -55,7 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 		_highlightPath = [[NSBezierPath bezierPathWithRect:NSInsetRect([self bounds], 2.0f, 2.0f)] retain];
 #endif
 		_highlightPath.lineWidth = 4;
-		_highlightPath.lineJoinStyle = NSRoundLineJoinStyle;
+        _highlightPath.lineJoinStyle = NSLineJoinStyleRound;
 	}
 
 	NSInteger i;
@@ -64,7 +64,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 	[[NSColor clearColor] set];
 	while(i--) NSRectFill(rects[i]);
 
-	[[NSColor alternateSelectedControlColor] set];
+	[[NSColor selectedContentBackgroundColor] set];
 	[_highlightPath stroke];
 }
 

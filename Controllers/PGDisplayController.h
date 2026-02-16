@@ -51,7 +51,7 @@ extern NSString *const PGDisplayControllerActiveNodeDidChangeNotification;
 extern NSString *const PGDisplayControllerActiveNodeWasReadNotification;
 extern NSString *const PGDisplayControllerTimerDidChangeNotification;
 
-@interface PGDisplayController : NSWindowController <NSWindowDelegate,
+@interface PGDisplayController : NSWindowController <NSWindowDelegate, NSMenuItemValidation,
 	PGClipViewDelegate, PGDocumentWindowDelegate>
 #if !__has_feature(objc_arc)
 {

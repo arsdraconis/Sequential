@@ -605,7 +605,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #else
 	if(@selector(copy:) == action && ![[propertiesTable selectedRowIndexes] count]) return NO;
 #endif
-	return [super validateMenuItem:anItem];
+    return [self respondsToSelector:anItem.action];
 }
 
 //	MARK: id<NSTableViewDataSource>

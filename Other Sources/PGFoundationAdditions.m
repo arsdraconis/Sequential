@@ -251,13 +251,6 @@ OSType PGOSTypeFromString(NSString *str)
 	return originalImplementation;
 }
 
-//	MARK: <NSMenuValidation>
-
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem
-{
-	return [self respondsToSelector:anItem.action];
-}
-
 @end
 
 //	MARK: -

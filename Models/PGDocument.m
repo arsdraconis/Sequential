@@ -283,7 +283,7 @@ NSString *const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively";
 		[_storedNode release];
 		_storedNode = [newStoredNode retain];
 #endif
-		_storedOffset = PGRectEdgeMaskToSizeWithMagnitude(PGReadingDirectionAndLocationToRectEdgeMask(self.readingDirection, PGHomeLocation), CGFLOAT_MAX);
+		_storedOffset = PGRectEdgeMaskToSizeWithMagnitude(PGReadingDirectionAndLocationToRectEdgeMask(PGHomeLocation,self.readingDirection), CGFLOAT_MAX);
 	}
 	[self PG_postNotificationName:PGDocumentWillRemoveNodesNotification userInfo:@{PGDocumentNodeKey: node, PGDocumentRemovedChildrenKey: anArray}];
 }

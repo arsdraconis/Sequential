@@ -381,7 +381,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 	NSBezierPath *const wall = [NSBezierPath bezierPath];
 	wall.lineWidth = 20.0f * f;
-	wall.lineCapStyle = NSRoundLineCapStyle;
+    wall.lineCapStyle = NSLineCapStyleRound;
 	[wall moveToPoint:NSMakePoint(210.0f * f, 220.0f * f)];
 	[wall lineToPoint:NSMakePoint(210.0f * f,  80.0f * f)];
 	[wall stroke];

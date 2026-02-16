@@ -176,6 +176,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 - (NSImage *)icon
 {
+    NSString *const MIMEType = self.MIMEType;
+    if (MIMEType)
+    {
+        UTType *contentType = [UTType typeWithMIMEType:MIMEType];
+        return [NSWorkspace.sharedWorkspace iconForContentType: contentType];
+    }
+    /* Old implementation
 	NSString *const MIMEType = self.MIMEType;
 	OSType typeCode = self.typeCode;
 	if(MIMEType || typeCode) {
@@ -198,7 +205,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 			return icon;
 		}
 #endif
-	}
+	}*/
 	NSString *const extension = self.extension;
 	if(extension) return [NSWorkspace.sharedWorkspace iconForFileType:extension];
 	return nil;

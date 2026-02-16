@@ -92,6 +92,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 }
 
 //	MARK: - NSObject(NSControlSubclassNotifications)
+// MARK: - <NSControlTextEditingDelegate>
 
 - (void)controlTextDidChange:(NSNotification *)aNotification
 {

@@ -58,7 +58,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 		}
 		case AEPauseIcon:
 			p.lineWidth = scale / 4.0f;
-			p.lineCapStyle = NSRoundLineCapStyle;
+			p.lineCapStyle = NSLineCapStyleRound;
 			[p moveToPoint:NSMakePoint(NSMinX(b) + NSWidth(b) * 0.25f, NSMinY(b) + NSHeight(b) * 0.85f)];
 			[p lineToPoint:NSMakePoint(NSMinX(b) + NSWidth(b) * 0.25f, NSMinY(b) + NSHeight(b) * 0.15f)];
 			[p moveToPoint:NSMakePoint(NSMinX(b) + NSWidth(b) * 0.75f, NSMinY(b) + NSHeight(b) * 0.85f)];
@@ -74,7 +74,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 + (void)PG_drawSpinnerInRect:(NSRect)r startAtPetal:(NSInteger)petal
 {
 	[NSBezierPath setDefaultLineWidth:MIN(NSWidth(r), NSHeight(r)) / 11.0f];
-	[NSBezierPath setDefaultLineCapStyle:NSRoundLineCapStyle];
+    [NSBezierPath setDefaultLineCapStyle:NSLineCapStyleRound];
 	NSUInteger i = 0;
 //	const CGFloat PI = M_PI;
 	const CGFloat PIx2 = M_PI * 2;
@@ -83,7 +83,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 		[NSBezierPath strokeLineFromPoint:NSMakePoint(NSMidX(r) + cosf(PIx2 * i / 12.0f) * NSWidth(r) / 4.0f, NSMidY(r) + sinf(PIx2 * i / 12.0f) * NSHeight(r) / 4.0f) toPoint:NSMakePoint(NSMidX(r) + cosf(PIx2 * i / 12.0f) * NSWidth(r) / 2.0f, NSMidY(r) + sinf(PIx2 * i / 12.0f) * NSHeight(r) / 2.0f)];
 	}
 	[NSBezierPath setDefaultLineWidth:1];
-	[NSBezierPath setDefaultLineCapStyle:NSMiterLineJoinStyle];
+    [NSBezierPath setDefaultLineJoinStyle:NSLineJoinStyleMiter];
 }
 
 //	MARK: Instance Methods

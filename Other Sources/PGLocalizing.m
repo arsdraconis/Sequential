@@ -183,47 +183,48 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 //	MARK: -
 
-static BOOL (*PGNSBundleLoadNibFileExternalNameTableWithZone)(id, SEL, NSString *, NSDictionary *, NSZone *);
-@interface PGBundle : NSBundle
-@end
-
-//	MARK: -
-@implementation NSBundle(PGLocalizing)
-
-+ (void)PG_prepareToAutoLocalize
-{
-	if(PGNSBundleLoadNibFileExternalNameTableWithZone)
-		return;
-
-	//	swizzle +[NSBundle loadNibFile:externalNameTable:withZone:]
-	typedef BOOL(*LoadNibFileMethod)(id, SEL, NSString *, NSDictionary *, NSZone *);
-	PGNSBundleLoadNibFileExternalNameTableWithZone = (LoadNibFileMethod)
-			[self PG_useInstance:NO
-		 implementationFromClass:[PGBundle class]
-					 forSelector:@selector(loadNibFile:externalNameTable:withZone:)];
-}
-
-@end
-
-//	MARK: -
-@implementation PGBundle
-
-//	MARK: PGBundle(NSNibLoading)
-
-+ (BOOL)loadNibFile:(NSString *)fileName externalNameTable:(NSDictionary *)context withZone:(NSZone *)zone
-{
-	if(!context[NSNibTopLevelObjects]) {
-#if __has_feature(objc_arc)
-		NSMutableDictionary *const dict = [context mutableCopy];
-#else
-		NSMutableDictionary *const dict = [[context mutableCopy] autorelease];
-#endif
-		dict[NSNibTopLevelObjects] = [NSMutableArray array];
-		context = dict;
-	}
-	if(!PGNSBundleLoadNibFileExternalNameTableWithZone(self, _cmd, fileName, context, zone)) return NO;
-	[context[NSNibTopLevelObjects] PG_localizeFromTable:fileName.lastPathComponent.stringByDeletingPathExtension];
-	return YES;
-}
-
-@end
+// FIXME: Commented out until I understand how localization works
+//static BOOL (*PGNSBundleLoadNibFileExternalNameTableWithZone)(id, SEL, NSString *, NSDictionary *, NSZone *);
+//@interface PGBundle : NSBundle
+//@end
+//
+////	MARK: -
+//@implementation NSBundle(PGLocalizing)
+//
+//+ (void)PG_prepareToAutoLocalize
+//{
+//	if(PGNSBundleLoadNibFileExternalNameTableWithZone)
+//		return;
+//
+//	//	swizzle +[NSBundle loadNibFile:externalNameTable:withZone:]
+//	typedef BOOL(*LoadNibFileMethod)(id, SEL, NSString *, NSDictionary *, NSZone *);
+//	PGNSBundleLoadNibFileExternalNameTableWithZone = (LoadNibFileMethod)
+//			[self PG_useInstance:NO
+//		 implementationFromClass:[PGBundle class]
+//					 forSelector:@selector(loadNibFile:externalNameTable:withZone:)];
+//}
+//
+//@end
+//
+////	MARK: -
+//@implementation PGBundle
+//
+////	MARK: PGBundle(NSNibLoading)
+//
+//+ (BOOL)loadNibFile:(NSString *)fileName externalNameTable:(NSDictionary *)context withZone:(NSZone *)zone
+//{
+//	if(!context[NSNibTopLevelObjects]) {
+//#if __has_feature(objc_arc)
+//		NSMutableDictionary *const dict = [context mutableCopy];
+//#else
+//		NSMutableDictionary *const dict = [[context mutableCopy] autorelease];
+//#endif
+//		dict[NSNibTopLevelObjects] = [NSMutableArray array];
+//		context = dict;
+//	}
+//	if(!PGNSBundleLoadNibFileExternalNameTableWithZone(self, _cmd, fileName, context, zone)) return NO;
+//	[context[NSNibTopLevelObjects] PG_localizeFromTable:fileName.lastPathComponent.stringByDeletingPathExtension];
+//	return YES;
+//}
+//
+//@end

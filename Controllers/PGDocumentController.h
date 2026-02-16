@@ -86,7 +86,7 @@ typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
 @class PGDisplayableIdentifier;	//	2023/10/29 to specify static type
 
 @interface PGDocumentController :
-	NSResponder <NSApplicationDelegate, NSMenuDelegate>
+	NSResponder <NSApplicationDelegate, NSMenuDelegate, NSMenuItemValidation>
 #if !__has_feature(objc_arc)
 {
 	@private

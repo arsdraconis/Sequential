@@ -976,7 +976,7 @@ HandlePostEnterFullScreen(PGFloatingPanelController *panel, BeforeState state) {
 	if(!self.recentDocumentIdentifiers.count) {
 		if(@selector(clearRecentDocuments:) == action) return NO;
 	}
-	return [super validateMenuItem:anItem];
+    return [self respondsToSelector:anItem.action];
 }
 
 //	MARK: - NSObject(NSNibAwaking)
@@ -1123,7 +1123,7 @@ static void (*PGNSMenuItemSetEnabled)(id, SEL, BOOL);
 	struct rlimit const lim = {RLIM_INFINITY, RLIM_INFINITY};
 	(void)setrlimit(RLIMIT_NOFILE, &lim); // We use a lot of file descriptors.
 
-	[NSBundle PG_prepareToAutoLocalize];
+//	[NSBundle PG_prepareToAutoLocalize];
 }
 - (void)sendEvent:(NSEvent *)anEvent
 {
