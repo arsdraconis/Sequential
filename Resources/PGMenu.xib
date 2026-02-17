@@ -43,12 +43,6 @@
                             <menuItem isSeparatorItem="YES" id="144">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="&lt;&lt;DO NOT LOCALIZE&gt;&gt;" keyEquivalent="f" id="439">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                <connections>
-                                    <action selector="switchToFileManager:" target="277" id="1207"/>
-                                </connections>
-                            </menuItem>
                             <menuItem title="Hide Sequential" keyEquivalent="h" id="134">
                                 <connections>
                                     <action selector="hide:" target="-2" id="152"/>
