@@ -37,14 +37,6 @@ typedef NS_ENUM(NSUInteger, AEIconType)
     AEStopIcon  = 3
 };
 
-@interface NSBezierPath (PGAppKitAdditions)
-
-+ (void)PG_drawIcon:(AEIconType)type inRect:(NSRect)r;
-+ (void)PG_drawSpinnerInRect:(NSRect)aRect startAtPetal:(NSInteger)petal;
-
-@end
-
-
 @interface NSEvent (PGAppKitAdditions)
 
 - (NSPoint)PG_locationInView:(NSView *)view;
@@ -57,13 +49,6 @@ typedef NS_ENUM(NSUInteger, AEIconType)
 /// Uses undocumented calls to highlight the item appropriately. Returns whether the item was
 /// enabled (and the action was performed).
 - (BOOL)PG_performAction;
-
-@end
-
-@interface NSScreen (PGAppKitAdditions)
-
-/// Returns the real main screen (the screen containing the menu bar).
-+ (nullable NSScreen *)PG_mainScreen;
 
 @end
 

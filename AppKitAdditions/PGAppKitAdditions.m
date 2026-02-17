@@ -32,90 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation NSBezierPath (PGAppKitAdditions)
-
-+ (void)PG_drawIcon:(AEIconType)type inRect:(NSRect)b
-{
-    NSBezierPath * const p = [self bezierPath];
-    CGFloat const scale    = MIN(NSWidth(b), NSHeight(b));
-    switch (type)
-    {
-        case AEPlayIcon:
-        {
-            CGFloat const r = round(scale / 10.0f);
-            [p appendBezierPathWithArcWithCenter:NSMakePoint(round(NSMaxX(b) - r),
-                                                             round(NSMidY(b)))
-                                          radius:r
-                                      startAngle:60.0f
-                                        endAngle:-60.0f
-                                       clockwise:YES];
-            [p appendBezierPathWithArcWithCenter:NSMakePoint(round(NSMinX(b) + NSWidth(b) * 0.1f + r),
-                                                             round(NSMinY(b)
-                                                                   + NSHeight(b) * 0.05f
-                                                                   + r * 1.0f))
-                                          radius:r
-                                      startAngle:-60.0f
-                                        endAngle:180.0f
-                                       clockwise:YES];
-            [p appendBezierPathWithArcWithCenter:NSMakePoint(round(NSMinX(b) + NSWidth(b) * 0.1f + r),
-                                                             round(NSMinY(b)
-                                                                   + NSHeight(b) * 0.95f
-                                                                   - r * 1.0f))
-                                          radius:r
-                                      startAngle:180.0f
-                                        endAngle:60.0f
-                                       clockwise:YES];
-            [p fill];
-            break;
-        }
-
-        case AEPauseIcon:
-            p.lineWidth    = scale / 4.0f;
-            p.lineCapStyle = NSLineCapStyleRound;
-            [p moveToPoint:NSMakePoint(NSMinX(b) + NSWidth(b) * 0.25f,
-                                       NSMinY(b) + NSHeight(b) * 0.85f)];
-            [p lineToPoint:NSMakePoint(NSMinX(b) + NSWidth(b) * 0.25f,
-                                       NSMinY(b) + NSHeight(b) * 0.15f)];
-            [p moveToPoint:NSMakePoint(NSMinX(b) + NSWidth(b) * 0.75f,
-                                       NSMinY(b) + NSHeight(b) * 0.85f)];
-            [p lineToPoint:NSMakePoint(NSMinX(b) + NSWidth(b) * 0.75f,
-                                       NSMinY(b) + NSHeight(b) * 0.15f)];
-            [p stroke];
-            break;
-
-        case AEStopIcon:
-            NSRectFillUsingOperation(NSIntegralRect(NSInsetRect(b, NSWidth(b) * 0.15f, NSHeight(b) * 0.15f)),
-                                     NSCompositingOperationSourceOver);
-            break;
-
-        default:
-            return;
-    }
-}
-
-+ (void)PG_drawSpinnerInRect:(NSRect)r startAtPetal:(NSInteger)petal
-{
-    [NSBezierPath setDefaultLineWidth:MIN(NSWidth(r), NSHeight(r)) / 11.0f];
-    [NSBezierPath setDefaultLineCapStyle:NSLineCapStyleRound];
-    NSUInteger i = 0;
-//    const CGFloat PI = M_PI;
-    const CGFloat PIx2 = M_PI * 2;
-    for (; i < 12; i++)
-    {
-        [[[NSColor PG_bezelForegroundColor]
-            colorWithAlphaComponent:petal < 0.0f ? 0.1f : ((petal + i) % 12) / -12.0f + 1.0f] set];
-        [NSBezierPath
-            strokeLineFromPoint:NSMakePoint(NSMidX(r) + cosf(PIx2 * i / 12.0f) * NSWidth(r) / 4.0f,
-                                            NSMidY(r) + sinf(PIx2 * i / 12.0f) * NSHeight(r) / 4.0f)
-                        toPoint:NSMakePoint(NSMidX(r) + cosf(PIx2 * i / 12.0f) * NSWidth(r) / 2.0f,
-                                            NSMidY(r) + sinf(PIx2 * i / 12.0f) * NSHeight(r) / 2.0f)];
-    }
-    [NSBezierPath setDefaultLineWidth:1];
-    [NSBezierPath setDefaultLineJoinStyle:NSLineJoinStyleMiter];
-}
-
-@end
-
 //	MARK: -
 @implementation NSEvent (PGAppKitAdditions)
 
@@ -172,17 +88,6 @@ NS_ASSUME_NONNULL_BEGIN
                    options:(NSUInteger)options
                      error:(out NSError **)outError;
 - (NSUInteger)desktopImageOptionsForScreen:(NSScreen *)screen;
-@end
-
-//	MARK: -
-@implementation NSScreen (PGAppKitAdditions)
-
-+ (nullable NSScreen *)PG_mainScreen
-{
-    NSArray * const screens = [self screens];
-    return screens.count ? screens[0] : nil;
-}
-
 @end
 
 

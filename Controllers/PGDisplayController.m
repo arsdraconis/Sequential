@@ -23,6 +23,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDisplayController.h"
+
+#import "Sequential-Swift.h"
+
 #import <unistd.h>
 #import <tgmath.h>
 #import <QuartzCore/QuartzCore.h>	//	2024/08/14 added for -invertColors:
