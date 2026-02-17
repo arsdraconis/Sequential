@@ -589,8 +589,6 @@ NSLog(@"-mouseMoved:");
 				if(ULONG_MAX != bsoac)
 					byteSizeTotal += bsoac;
 			}
-		//	NSParameterAssert(node.dataProvider.dataLength);
-		//	byteSizeTotal += node.dataProvider.dataLength.unsignedLongValue;
 		}
 		[(PGThumbnailInfoView*)_infoView setImageCount:count byteSizeTotal:byteSizeTotal];
 		[self _updateInfoWindowFrame];

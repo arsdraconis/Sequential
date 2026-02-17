@@ -531,13 +531,6 @@ StringAtDepth(NSInteger depth) {
 {
 	return nil; // Too slow.
 }
-/* - (NSNumber *)dataLength
-{	2023/09/17 deprecated
-	@synchronized(_archive) {
-		return [NSNumber numberWithLongLong:[_archive representativeSizeOfEntry:_entry]];
-	}
-	return nil;
-} */
 
 //	MARK: PGDataProvider(PGArchiveDataProvider)
 

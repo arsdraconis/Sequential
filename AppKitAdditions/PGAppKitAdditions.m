@@ -81,14 +81,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-//	MARK: -
-@interface NSWorkspace (PGSnowLeopardOrLater)
-- (BOOL)setDesktopImageURL:(NSURL *)URL
-                 forScreen:(NSScreen *)screen
-                   options:(NSUInteger)options
-                     error:(out NSError **)outError;
-- (NSUInteger)desktopImageOptionsForScreen:(NSScreen *)screen;
-@end
 
 
 //	MARK: -

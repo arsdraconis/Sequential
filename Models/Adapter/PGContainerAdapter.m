@@ -141,7 +141,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 			//	2023/09/23 total now includes the non-viewable files like
 			//	text or video or line art files
 			byteSize	+=	child.dataProvider.dataByteSize;
-		//	byteSize	+=	child.dataProvider.dataLength.unsignedLongValue;
 		}
 	}
 	return byteSize;
@@ -252,7 +251,6 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 			//	2023/09/23 total now includes the non-viewable files like
 			//	text or video or line art files
 			_byteSizeDirectChildren	+=	child.dataProvider.dataByteSize;
-		//	_byteSizeDirectChildren	+=	child.dataProvider.dataLength.unsignedLongValue;
 
 			if(child.isViewable)
 				++_imageCount;

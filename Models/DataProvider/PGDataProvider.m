@@ -23,29 +23,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
-
 #import "PGDataProvider.h"
 
-// Models
-#import "PGResourceIdentifier.h"
-#import "PGResourceDataProvider.h"
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
-// Other Sources
-//#import "PGFoundationAdditions.h"
+// Models
+#import "PGResourceDataProvider.h"
+#import "PGResourceIdentifier.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGURLResponseDataProvider : PGDataProvider
-#if !__has_feature(objc_arc)
-{
-	@private
-	NSURLResponse *_response;
-	NSData *_data;
-}
-#endif
 
-- (instancetype)initWithURLResponse:(NSURLResponse *)response data:(NSData *)data NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithURLResponse:(NSURLResponse *)response
+                               data:(NSData *)data NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
 @end
@@ -55,237 +46,217 @@ NS_ASSUME_NONNULL_BEGIN
 
 //	MARK: +PGDataProvider(PGDataProviderCreation)
 
-+ (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(nullable NSString *)name
++ (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident
+                               displayableName:(nullable NSString *)name
 {
-	for(NSString *const classString in [NSBundle bundleForClass:self].infoDictionary[@"PGDataProviderCustomizers"]) {
-		Class const class = NSClassFromString(classString);
-		if(![class respondsToSelector:@selector(customDataProviderWithResourceIdentifier:displayableName:)]) continue;
-		PGDataProvider *const provider = [class customDataProviderWithResourceIdentifier:ident displayableName:name];
-		if(provider) return provider;
-	}
-#if __has_feature(objc_arc)
-	return [[PGResourceDataProvider alloc] initWithResourceIdentifier:ident displayableName:name];
-#else
-	return [[[PGResourceDataProvider alloc] initWithResourceIdentifier:ident displayableName:name] autorelease];
-#endif
+    for (NSString * const classString in [NSBundle bundleForClass:self]
+             .infoDictionary[@"PGDataProviderCustomizers"])
+    {
+        Class const class = NSClassFromString(classString);
+        if (![class respondsToSelector:@selector(customDataProviderWithResourceIdentifier:
+                                                                          displayableName:)])
+            continue;
+        PGDataProvider * const provider = [class customDataProviderWithResourceIdentifier:ident
+                                                                          displayableName:name];
+        if (provider) return provider;
+    }
+    return [[PGResourceDataProvider alloc] initWithResourceIdentifier:ident displayableName:name];
 }
+
 + (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident
 {
-	return [self providerWithResourceIdentifier:ident displayableName:nil];
+    return [self providerWithResourceIdentifier:ident displayableName:nil];
 }
+
 + (instancetype)providerWithURLResponse:(NSURLResponse *)response data:(nullable NSData *)data
 {
-	for(NSString *const classString in [NSBundle bundleForClass:self].infoDictionary[@"PGDataProviderCustomizers"]) {
-		Class const class = NSClassFromString(classString);
-		if(![class respondsToSelector:@selector(customDataProviderWithURLResponse:data:)]) continue;
-		PGDataProvider *const provider = [class customDataProviderWithURLResponse:response data:data];
-		if(provider) return provider;
-	}
-#if __has_feature(objc_arc)
-	return [[PGURLResponseDataProvider alloc] initWithURLResponse:response data:data];
-#else
-	return [[[PGURLResponseDataProvider alloc] initWithURLResponse:response data:data] autorelease];
-#endif
+    for (NSString * const classString in [NSBundle bundleForClass:self]
+             .infoDictionary[@"PGDataProviderCustomizers"])
+    {
+        Class const class = NSClassFromString(classString);
+        if (![class respondsToSelector:@selector(customDataProviderWithURLResponse:data:)])
+            continue;
+        PGDataProvider * const provider = [class customDataProviderWithURLResponse:response
+                                                                              data:data];
+        if (provider) return provider;
+    }
+    return [[PGURLResponseDataProvider alloc] initWithURLResponse:response data:data];
 }
 
 //	MARK: - PGDataProvider
 
 - (nullable PGResourceIdentifier *)identifier
 {
-	return nil;
+    return nil;
 }
+
 - (nullable NSURLResponse *)response
 {
-	return nil;
+    return nil;
 }
 
 //	MARK: -
 
 - (nullable NSData *)data
 {
-	return nil;
+    return nil;
 }
+
 - (uint64_t)dataByteSize
 {
-	@autoreleasepool {
-		NSData *const fullData = self.data;
-		if(!fullData)
-			return 0;
-		return (uint64_t) fullData.length;	//	widening cast so OK
-	}
+    @autoreleasepool
+    {
+        NSData * const fullData = self.data;
+        if (!fullData) return 0;
+        return (uint64_t)fullData.length;    //	widening cast so OK
+    }
 }
+
 - (nullable NSDate *)dateModified
 {
-	return nil;
+    return nil;
 }
+
 - (nullable NSDate *)dateCreated
 {
-	return nil;
+    return nil;
 }
 
 //	MARK: -
 
 - (nullable NSString *)UTIType
 {
-	return nil;
+    return nil;
 }
-/* - (NSString *)MIMEType
-{
-	return nil;
-}
-- (OSType)typeCode
-{
-	return 0;
-} */
+
 - (nullable NSString *)extension
 {
-	return nil;
+    return nil;
 }
 
 //	MARK: -
 
 - (BOOL)hasData
 {
-	@autoreleasepool {
-		return !!self.data;
-	}
+    @autoreleasepool
+    {
+        return !!self.data;
+    }
 }
-/*	2023/09/17 deprecated
-- (NSNumber *)dataLength
-{
-	@autoreleasepool {
-		NSData *const fullData = [self data];
-		NSUInteger const size = [fullData length];
-		return [NSNumber numberWithUnsignedInteger:size];
-	}
-} */
+
 - (nullable NSData *)fourCCData
 {
-	NSData *fourCCData;
-	@autoreleasepool {
-		NSData *const fullData = self.data;
-#if __has_feature(objc_arc)
-		fourCCData = fullData.length > 4 ? [fullData subdataWithRange:NSMakeRange(0, 4)] : nil;
-#else
-		fourCCData = [fullData length] > 4 ? [[fullData subdataWithRange:NSMakeRange(0, 4)] retain] : nil;
-#endif
-	}
-#if __has_feature(objc_arc)
-	return fourCCData;
-#else
-	return [fourCCData autorelease];
-#endif
+    NSData *fourCCData;
+    @autoreleasepool
+    {
+        NSData * const fullData = self.data;
+        fourCCData = fullData.length > 4 ? [fullData subdataWithRange:NSMakeRange(0, 4)] : nil;
+    }
+    return fourCCData;
 }
+
 - (NSImage *)icon
 {
-    NSString *const MIMEType = self.MIMEType;
+    NSString * const MIMEType = self.MIMEType;
     if (MIMEType)
     {
         UTType *contentType = [UTType typeWithMIMEType:MIMEType];
-        return [NSWorkspace.sharedWorkspace iconForContentType: contentType];
+        return [NSWorkspace.sharedWorkspace iconForContentType:contentType];
     }
     /* Old implementation
-	NSString *const MIMEType = self.MIMEType;
-	OSType typeCode = self.typeCode;
-	if(MIMEType || typeCode) {
-		IconRef iconRef = NULL;
+    NSString *const MIMEType = self.MIMEType;
+    OSType typeCode = self.typeCode;
+    if(MIMEType || typeCode) {
+        IconRef iconRef = NULL;
 
-		if('fold' == typeCode)
-			typeCode = kGenericFolderIcon;
+        if('fold' == typeCode)
+            typeCode = kGenericFolderIcon;
 #if __has_feature(objc_arc)
-		if(noErr == GetIconRefFromTypeInfo('????', typeCode, NULL, (__bridge CFStringRef)MIMEType,
-											kIconServicesNormalUsageFlag, &iconRef) && iconRef) {
-			NSImage *const icon = [[NSImage alloc] initWithIconRef:iconRef];
-			ReleaseIconRef(iconRef);
-			return icon;
-		}
+        if(noErr == GetIconRefFromTypeInfo('????', typeCode, NULL, (__bridge CFStringRef)MIMEType,
+                                            kIconServicesNormalUsageFlag, &iconRef) && iconRef) {
+            NSImage *const icon = [[NSImage alloc] initWithIconRef:iconRef];
+            ReleaseIconRef(iconRef);
+            return icon;
+        }
 #else
-		if(noErr == GetIconRefFromTypeInfo('????', typeCode, NULL, (CFStringRef)MIMEType,
-											kIconServicesNormalUsageFlag, &iconRef) && iconRef) {
-			NSImage *const icon = [[[NSImage alloc] initWithIconRef:iconRef] autorelease];
-			ReleaseIconRef(iconRef);
-			return icon;
-		}
+        if(noErr == GetIconRefFromTypeInfo('????', typeCode, NULL, (CFStringRef)MIMEType,
+                                            kIconServicesNormalUsageFlag, &iconRef) && iconRef) {
+            NSImage *const icon = [[[NSImage alloc] initWithIconRef:iconRef] autorelease];
+            ReleaseIconRef(iconRef);
+            return icon;
+        }
 #endif
-	}*/
-	NSString *const extension = self.extension;
-	if(extension) return [NSWorkspace.sharedWorkspace iconForFileType:extension];
-	return nil;
+    }*/
+    NSString * const extension = self.extension;
+    if (extension) return [NSWorkspace.sharedWorkspace iconForFileType:extension];
+    return nil;
 }
 
 - (nullable NSString *)kindString
 {
-	NSString *const utiType = self.UTIType;
-	NSString *kind = utiType ? [NSWorkspace.sharedWorkspace localizedDescriptionForType:utiType] : nil; // Ugly ("Portable Network Graphics image"), but more accurate than file extensions.
-	if(kind) return kind;
+    NSString * const utiType = self.UTIType;
+    NSString *kind = utiType ? [NSWorkspace.sharedWorkspace localizedDescriptionForType:utiType]
+                             : nil;    // Ugly ("Portable Network Graphics image"), but more
+                                       // accurate than file extensions.
+    if (kind) return kind;
 #if 1
-	if(utiType) {
-		if (@available(macOS 11.0, *))
-			return [UTType typeWithIdentifier:utiType].localizedDescription;
-	#if __has_feature(objc_arc)
-		CFStringRef desc = UTTypeCopyDescription((__bridge CFStringRef) utiType);
-		if(desc)
-			return (NSString*)CFBridgingRelease(desc);
-	#else
-		CFStringRef desc = UTTypeCopyDescription((CFStringRef) utiType);
-		if(desc)
-			return [(NSString*)desc autorelease];
-	#endif
-	}
+    if (utiType)
+    {
+        if (@available(macOS 11.0, *))
+            return [UTType typeWithIdentifier:utiType].localizedDescription;
+        CFStringRef desc = UTTypeCopyDescription((__bridge CFStringRef)utiType);
+        if (desc) return (NSString *)CFBridgingRelease(desc);
+    }
 
-	NSString *const mimeType = self.MIMEType;
-	if(mimeType) {
-		if (@available(macOS 11.0, *))
-			return [UTType typeWithMIMEType:mimeType].localizedDescription;
+    NSString * const mimeType = self.MIMEType;
+    if (mimeType)
+    {
+        if (@available(macOS 11.0, *))
+            return [UTType typeWithMIMEType:mimeType].localizedDescription;
 
-		CFStringRef uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType,
-												(__bridge CFStringRef)mimeType, NULL);
-		if(uti) {
-			CFStringRef desc = UTTypeCopyDescription(uti);
-			CFRelease(uti);
-			if(desc)
-	#if __has_feature(objc_arc)
-				return (NSString *)CFBridgingRelease(desc);
-	#else
-				return [(NSString*)desc autorelease];
-	#endif
-		}
-	}
+        CFStringRef uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType,
+                                                                (__bridge CFStringRef)mimeType, NULL);
+        if (uti)
+        {
+            CFStringRef desc = UTTypeCopyDescription(uti);
+            CFRelease(uti);
+            if (desc) return (NSString *)CFBridgingRelease(desc);
+        }
+    }
 
-	NSString *const extension = self.extension;
-	if(extension) {
-		if (@available(macOS 11.0, *))
-			return [UTType typeWithFilenameExtension:extension].localizedDescription;
+    NSString * const extension = self.extension;
+    if (extension)
+    {
+        if (@available(macOS 11.0, *))
+            return [UTType typeWithFilenameExtension:extension].localizedDescription;
 
-		CFStringRef uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
-														(__bridge CFStringRef)extension, NULL);
-		if(uti) {
-			CFStringRef desc = UTTypeCopyDescription(uti);
-			CFRelease(uti);
-			if(desc)
-	#if __has_feature(objc_arc)
-				return (NSString *)CFBridgingRelease(desc);
-	#else
-				return [(NSString*)desc autorelease];
-	#endif
-		}
-	}
-#else	//	original code:
-	if(noErr == LSCopyKindStringForTypeInfo(kLSUnknownType, kLSUnknownCreator, (CFStringRef)[self extension], (CFStringRef *)&kind)) return [kind autorelease];
-	if(noErr == LSCopyKindStringForMIMEType((CFStringRef)[self MIMEType], (CFStringRef *)&kind)) return [kind autorelease]; // Extremely ugly ("TextEdit.app Document"), worst case.
+        CFStringRef uti =
+            UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
+                                                  (__bridge CFStringRef)extension, NULL);
+        if (uti)
+        {
+            CFStringRef desc = UTTypeCopyDescription(uti);
+            CFRelease(uti);
+            if (desc) return (NSString *)CFBridgingRelease(desc);
+        }
+    }
+#else
+    //	original code:
+    if (noErr
+        == LSCopyKindStringForTypeInfo(kLSUnknownType, kLSUnknownCreator,
+                                       (CFStringRef)[self extension], (CFStringRef *)&kind))
+        return [kind autorelease];
+    if (noErr == LSCopyKindStringForMIMEType((CFStringRef)[self MIMEType], (CFStringRef *)&kind))
+        return [kind autorelease];    // Extremely ugly ("TextEdit.app Document"), worst case.
 #endif
-	return nil;
+    return nil;
 }
 
 //	MARK: - <NSCopying>
 
 - (id)copyWithZone:(nullable NSZone *)zone
 {
-#if __has_feature(objc_arc)
-	return self;
-#else
-	return [self retain];
-#endif
+    return self;
 }
 
 @end
@@ -293,75 +264,48 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGURLResponseDataProvider
 
-#if __has_feature(objc_arc)
 @synthesize response = _response;
-@synthesize data = _data;
-#endif
+@synthesize data     = _data;
 
 - (instancetype)initWithURLResponse:(NSURLResponse *)response data:(NSData *)data
 {
-	if((self = [super init])) {
-		_response = [response copy];
-		_data = [data copy];
-	}
-	return self;
+    if ((self = [super init]))
+    {
+        _response = [response copy];
+        _data     = [data copy];
+    }
+    return self;
 }
 
 //	MARK: - PGDataProvider
 
 - (nullable PGResourceIdentifier *)identifier
 {
-	return _response.URL.PG_resourceIdentifier;
+    return _response.URL.PG_resourceIdentifier;
 }
-#if !__has_feature(objc_arc)
-- (NSURLResponse *)response
-{
-	return [[_response retain] autorelease];
-}
-#endif
 
 //	MARK: -
-
-#if !__has_feature(objc_arc)
-- (NSData *)data
-{
-	return [[_data retain] autorelease];
-}
-#endif
 
 //	MARK: -
 
 - (nullable NSString *)UTIType
 {
-#if __has_feature(objc_arc)
-	if (@available(macOS 11.0, *))
-		return [UTType typeWithMIMEType:self.MIMEType].identifier;
+    if (@available(macOS 11.0, *)) return [UTType typeWithMIMEType:self.MIMEType].identifier;
 
-	return (NSString *)CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType,
-													   (__bridge CFStringRef)self.MIMEType, NULL));
-#else
-	return [(NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)[self MIMEType], NULL) autorelease];
-#endif
+    return (NSString *)CFBridgingRelease(
+        UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType,
+                                              (__bridge CFStringRef)self.MIMEType, NULL));
 }
+
 - (NSString *)MIMEType
 {
-	return _response.MIMEType;
+    return _response.MIMEType;
 }
+
 - (nullable NSString *)extension
 {
-	return _response.suggestedFilename.pathExtension.lowercaseString;
+    return _response.suggestedFilename.pathExtension.lowercaseString;
 }
-
-//	MARK: - NSObject
-
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-	[_response release];
-	[_data release];
-	[super dealloc];
-}
-#endif
 
 @end
 

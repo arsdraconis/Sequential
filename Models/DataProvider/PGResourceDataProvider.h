@@ -22,37 +22,26 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-//
-//  PGResourceDataProvider.h
-//  Sequential
-//
-//  Created 2023/10/22.
-//
 
 #ifndef PGResourceDataProvider_h
 #define PGResourceDataProvider_h
+
+#import <Cocoa/Cocoa.h>
 
 #import "PGDataProvider.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGResourceDataProvider : PGDataProvider
-#if !__has_feature(objc_arc)
-{
-	@private
-	PGResourceIdentifier *_identifier;
-	NSString *_displayableName;
-}
-#endif
 
-- (instancetype)initWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithResourceIdentifier:(PGResourceIdentifier *)ident
+                           displayableName:(NSString *)name NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
-//- (id)valueForLSAttributeName:(CFStringRef)name;
 - (nullable id)valueForResourceKey:(NSURLResourceKey)key;
 - (nullable id)valueForFMAttributeName:(NSString *)name;
 
 @end
 
-#endif /* PGResourceDataProvider_h */
-
 NS_ASSUME_NONNULL_END
+
+#endif /* PGResourceDataProvider_h */

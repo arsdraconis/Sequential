@@ -23,21 +23,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-//
-//  PGResourceDataProvider.m
-//  Created 2023/10/22.
-//
 #import "PGResourceDataProvider.h"
 
-// Models
+#import "PGFoundationAdditions.h"
 #import "PGResourceIdentifier.h"
 
-// Other Sources
-#import "PGFoundationAdditions.h"
-
 NS_ASSUME_NONNULL_BEGIN
-
-#if __has_feature(objc_arc)
 
 @interface PGResourceDataProvider ()
 
@@ -45,144 +36,91 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#endif
-
 @implementation PGResourceDataProvider
 
-#if __has_feature(objc_arc)
 @synthesize identifier = _identifier;
-#endif
 
-- (instancetype)initWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name
+- (instancetype)initWithResourceIdentifier:(PGResourceIdentifier *)ident
+                           displayableName:(NSString *)name
 {
-	if((self = [super init])) {
-#if __has_feature(objc_arc)
-		_identifier = ident;
-#else
-		_identifier = [ident retain];
-#endif
-		_displayableName = [name copy];
-	}
-	return self;
+    if ((self = [super init]))
+    {
+        _identifier      = ident;
+        _displayableName = [name copy];
+    }
+    return self;
 }
-/* - (id)valueForLSAttributeName:(CFStringRef)name
-{
-	FSRef ref;
-	if(![_identifier getRef:&ref byFollowingAliases:NO]) return nil;
-	id val = nil;
-	if(noErr != LSCopyItemAttribute(&ref, kLSRolesViewer, name, (CFTypeRef *)&val)) return nil;
-	return [val autorelease];
-} */
 
-- (nullable id)valueForResourceKey:(NSURLResourceKey)key {
-	NSError* error = nil;
-	id value = nil;
-	if(![_identifier.URL getResourceValue:&value forKey:key error:&error] || error)
-		return nil;
-	return value;
+- (nullable id)valueForResourceKey:(NSURLResourceKey)key
+{
+    NSError *error = nil;
+    id value       = nil;
+    if (![_identifier.URL getResourceValue:&value forKey:key error:&error] || error) return nil;
+    return value;
 }
 
 - (nullable id)valueForFMAttributeName:(NSString *)name
 {
-	return _identifier.isFileIdentifier ? [[NSFileManager defaultManager] attributesOfItemAtPath:_identifier.URL.path error:NULL][name] : nil;
+    return _identifier.isFileIdentifier
+               ? [[NSFileManager defaultManager] attributesOfItemAtPath:_identifier.URL.path
+                                                                  error:NULL][name]
+               : nil;
 }
 
 //	MARK: - PGDataProvider
 
-#if !__has_feature(objc_arc)
-- (PGResourceIdentifier *)identifier
-{
-	return [[_identifier retain] autorelease];
-}
-#endif
 - (NSString *)displayableName
 {
-//	return _displayableName ? _displayableName : [self valueForLSAttributeName:kLSItemDisplayName];
-	return _displayableName ? _displayableName : [self valueForResourceKey:NSURLLocalizedNameKey];
+    return _displayableName ? _displayableName : [self valueForResourceKey:NSURLLocalizedNameKey];
 }
+
 - (nullable NSData *)data
 {
-	return [NSData dataWithContentsOfURL:_identifier.URL
-								 options:NSDataReadingMapped | NSDataReadingUncached
-								   error:NULL];
+    return [NSData dataWithContentsOfURL:_identifier.URL
+                                 options:NSDataReadingMapped | NSDataReadingUncached
+                                   error:NULL];
 }
+
 - (uint64_t)dataByteSize
 {
-	return (uint64_t) [[self valueForFMAttributeName:NSFileSize] unsignedLongValue];
+    return (uint64_t)[[self valueForFMAttributeName:NSFileSize] unsignedLongValue];
 }
 
 //	MARK: -
 
 - (nullable NSString *)UTIType
 {
-//	return [self valueForLSAttributeName:kLSItemContentType];
-	return [self valueForResourceKey:NSURLTypeIdentifierKey];
+    return [self valueForResourceKey:NSURLTypeIdentifierKey];
 }
-/* - (NSString *)MIMEType
-{
-	return [(NSString *)UTTypeCopyPreferredTagWithClass((CFStringRef)[self UTIType], kUTTagClassMIMEType) autorelease];
-}
-- (OSType)typeCode
-{
-	return PGOSTypeFromString([self valueForLSAttributeName:kLSItemFileType]);
-} */
+
 - (nullable NSString *)extension
 {
-//	return [[self valueForLSAttributeName:kLSItemExtension] lowercaseString];
-	return _identifier.URL.pathExtension;
+    return _identifier.URL.pathExtension;
 }
 
 //	MARK: -
 
 - (nullable NSDate *)dateModified
 {
-	return [self valueForFMAttributeName:NSFileModificationDate];
+    return [self valueForFMAttributeName:NSFileModificationDate];
 }
+
 - (nullable NSDate *)dateCreated
 {
-	return [self valueForFMAttributeName:NSFileCreationDate];
+    return [self valueForFMAttributeName:NSFileCreationDate];
 }
 
 //	MARK: -
 
 - (BOOL)hasData
 {
-	return PGEqualObjects([self valueForFMAttributeName:NSFileType], NSFileTypeRegular);
+    return PGEqualObjects([self valueForFMAttributeName:NSFileType], NSFileTypeRegular);
 }
-/* - (NSNumber *)dataLength
-{	2023/09/17 deprecated
-	return [self valueForFMAttributeName:NSFileSize];
-} */
+
 - (NSImage *)icon
 {
-	return [[NSWorkspace sharedWorkspace] iconForFile:_identifier.URL.path];
+    return [[NSWorkspace sharedWorkspace] iconForFile:_identifier.URL.path];
 }
-/* this method does (more or less) the same thing as the superclass, so removed
-- (NSString *)kindString
-{
-	NSString* uniformTypeIdentifier = [self UTIType];
-	NSParameterAssert(uniformTypeIdentifier);
-#if __has_feature(objc_arc)
-	CFStringRef desc = UTTypeCopyDescription((__bridge CFStringRef) uniformTypeIdentifier);
-	NSParameterAssert(desc);
-	return (NSString *)CFBridgingRelease(desc);
-#else
-	CFStringRef desc = UTTypeCopyDescription((CFStringRef) uniformTypeIdentifier);
-	NSParameterAssert(desc);
-	return [(NSString *)desc autorelease];
-#endif
-} */
-
-//	MARK: - NSObject
-
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-	[_identifier release];
-	[_displayableName release];
-	[super dealloc];
-}
-#endif
 
 @end
 

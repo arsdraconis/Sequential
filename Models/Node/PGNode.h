@@ -22,10 +22,13 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-// Models
-@class PGDocument;
+#import <Cocoa/Cocoa.h>
+
+#import "PGGeometryTypes.h"
 #import "PGNodeParenting.h"
 #import "PGResourceAdapting.h"
+
+@class PGDocument;
 @class PGResourceAdapter;
 @class PGContainerAdapter;
 @class PGResourceIdentifier;
@@ -33,58 +36,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 @class PGDataProvider;
 @class PGBookmark;
 
-// Other Sources
-#import "PGGeometryTypes.h"
-
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PGNodeLoadingDidProgressNotification;
-extern NSString *const PGNodeReadyForViewingNotification;
+extern NSString * const PGNodeLoadingDidProgressNotification;
+extern NSString * const PGNodeReadyForViewingNotification;
 
-extern NSString *const PGImageRepKey;
+extern NSString * const PGImageRepKey;
 
-extern NSString *const PGNodeErrorDomain;
+extern NSString * const PGNodeErrorDomain;
 
 typedef NS_ENUM(NSUInteger, PGNodeStatus) {
-	PGGenericError  = 1,
-	PGPasswordError = 2,
+    PGGenericError  = 1,
+    PGPasswordError = 2,
 };
 
 @interface PGNode : NSObject <PGResourceAdapting>
-#if !__has_feature(objc_arc)
-{
-	@private
-	id<PGNodeParenting> _parent;
-	PGDisplayableIdentifier *_identifier;
 
-	PGDataProvider *_dataProvider;
-	NSMutableArray *_potentialAdapters;
-	PGResourceAdapter *_resourceAdapter; // was: *_adapter;
-	PGNodeStatus _status;
-
-	BOOL _viewable;
-	NSMenuItem *_menuItem;
-	BOOL _allowMenuItemUpdates;
-}
-#endif
-
-#if __has_feature(objc_arc)
-@property(nonatomic, strong) PGDataProvider *dataProvider;
-#else
-@property(retain) PGDataProvider *dataProvider;
-#endif
-@property(readonly) PGResourceAdapter *resourceAdapter;
-@property(readonly) PGDisplayableIdentifier *identifier;
-@property(readonly, nullable) NSImage *thumbnail;
-@property(readonly) BOOL isViewable;
-@property(readonly) PGNode *viewableAncestor;
-@property(readonly) NSMenuItem *menuItem;
-@property(readonly) BOOL canBookmark;
-@property(readonly) PGBookmark *bookmark;
+@property (nonatomic, strong) PGDataProvider *dataProvider;
+@property (readonly) PGResourceAdapter *resourceAdapter;
+@property (readonly) PGDisplayableIdentifier *identifier;
+@property (readonly, nullable) NSImage *thumbnail;
+@property (readonly) BOOL isViewable;
+@property (readonly) PGNode *viewableAncestor;
+@property (readonly) NSMenuItem *menuItem;
+@property (readonly) BOOL canBookmark;
+@property (readonly) PGBookmark *bookmark;
 
 + (NSArray *)pasteboardTypes;
 
-- (nullable instancetype)initWithParent:(id<PGNodeParenting>)parent identifier:(PGDisplayableIdentifier *)ident NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithParent:(id<PGNodeParenting>)parent
+                             identifier:(PGDisplayableIdentifier *)ident NS_DESIGNATED_INITIALIZER;
 
 - (void)reload;
 - (void)loadFinishedForAdapter:(PGResourceAdapter *)adapter;
@@ -92,12 +73,12 @@ typedef NS_ENUM(NSUInteger, PGNodeStatus) {
 
 - (void)becomeViewed;
 - (void)readIfNecessary;
-- (void)setIsReading:(BOOL)reading;	//	2023/10/21
+- (void)setIsReading:(BOOL)reading;    // 2023/10/21
 - (void)readFinishedWithImageRep:(nullable NSImageRep *)aRep;
 
 - (void)removeFromDocument;
 - (void)detachFromTree;
-- (NSComparisonResult)compare:(PGNode *)node; // Uses the document's sort mode.
+- (NSComparisonResult)compare:(PGNode *)node;    // Uses the document's sort mode.
 - (BOOL)writeToPasteboard:(nullable NSPasteboard *)pboard types:(NSArray *)types;
 - (void)addToMenu:(NSMenu *)menu flatten:(BOOL)flatten;
 

@@ -22,6 +22,9 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
+
+#import <Cocoa/Cocoa.h>
+
 // Models
 @class PGResourceIdentifier;
 
@@ -29,31 +32,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PGDataProvider : NSObject <NSCopying>
 
-@property(readonly, nullable) PGResourceIdentifier *identifier;
-@property(readonly, nullable) NSURLResponse *response;
+@property (readonly, nullable) PGResourceIdentifier *identifier;
+@property (readonly, nullable) NSURLResponse *response;
 // TODO: Add -fileName/-displayableName/-attributedString properties.
 
-@property(readonly, nullable) NSData *data;
-@property(readonly) uint64_t dataByteSize;	//	2023/09/17
-@property(readonly, nullable) NSDate *dateModified;
-@property(readonly, nullable) NSDate *dateCreated;
+@property (readonly, nullable) NSData *data;
+@property (readonly) uint64_t dataByteSize;    // 2023/09/17
+@property (readonly, nullable) NSDate *dateModified;
+@property (readonly, nullable) NSDate *dateCreated;
 
-@property(readonly, nullable) NSString *UTIType;
-@property(readonly) NSString *MIMEType;
-@property(readonly) OSType typeCode;
-@property(readonly, nullable) NSString *extension;
+@property (readonly, nullable) NSString *UTIType;
+@property (readonly) NSString *MIMEType;
+@property (readonly) OSType typeCode;
+@property (readonly, nullable) NSString *extension;
 
-@property(readonly) NSImage *icon;
-@property(readonly, nullable) NSString *kindString;
-@property(readonly) BOOL hasData;
-@property(readonly, nullable) NSData *fourCCData;
-//@property(readonly) NSNumber *dataLength;	//	2023/09/17 deprecated; use dataByteSize instead
+@property (readonly) NSImage *icon;
+@property (readonly, nullable) NSString *kindString;
+@property (readonly) BOOL hasData;
+@property (readonly, nullable) NSData *fourCCData;
 
 @end
 
-@interface PGDataProvider(PGDataProviderCreation)
+@interface PGDataProvider (PGDataProviderCreation)
 
-+ (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(nullable NSString *)name;
++ (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident
+                               displayableName:(nullable NSString *)name;
 + (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident;
 + (instancetype)providerWithURLResponse:(NSURLResponse *)response data:(nullable NSData *)data;
 
@@ -62,7 +65,8 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol PGDataProviderCustomizing
 
 @optional
-+ (PGDataProvider *)customDataProviderWithResourceIdentifier:(PGResourceIdentifier *)ident displayableName:(NSString *)name;
++ (PGDataProvider *)customDataProviderWithResourceIdentifier:(PGResourceIdentifier *)ident
+                                             displayableName:(NSString *)name;
 + (PGDataProvider *)customDataProviderWithURLResponse:(NSURLResponse *)response data:(NSData *)data;
 
 @end
