@@ -149,27 +149,24 @@ NS_ASSUME_NONNULL_BEGIN
 	NSRect const b = self.bounds;
 
 	//	[1] fill the background region
-	{
-		NSBezierPath *const bezel = [NSBezierPath PG_bezierPathWithRoundRect:b cornerRadius:PGCornerRadius];
-		[[NSColor PG_bezelBackgroundColor] set];
-		[bezel fill];
-	}
+    NSBezierPath *const bezel = [NSBezierPath bezierPathWithRoundedRect:b xRadius:PGCornerRadius yRadius:PGCornerRadius];
+    [[NSColor PG_bezelBackgroundColor] set];
+    [bezel fill];
 
-    if(self.showsProgressBar) {
+    if(self.showsProgressBar)
+    {
         BOOL const canAlignToBackingStore = [self respondsToSelector:@selector(backingAlignedRect:options:)];	//	10.7+
-        CGFloat const origin = self.originCorner == PGMaxXMinYCorner ?
-        NSMaxX(b) - 1.0f - PGProgressBarBorder : PGProgressBarBorder;
-        NSRect progressBarRect = NSMakeRect(
-                                            self.originCorner == PGMinXMinYCorner ? 0.5f + origin : 0.5f + origin - PGProgressBarWidth,
-                                            0.5f + PGProgressBarBorder, PGProgressBarWidth, PGProgressBarHeight);
+        CGFloat const origin = self.originCorner == PGMaxXMinYCorner
+            ? NSMaxX(b) - 1.0f - PGProgressBarBorder
+            : PGProgressBarBorder;
+        NSRect progressBarRect = NSMakeRect(self.originCorner == PGMinXMinYCorner ? 0.5f + origin : 0.5f + origin - PGProgressBarWidth, 0.5f + PGProgressBarBorder, PGProgressBarWidth, PGProgressBarHeight);
         
         //	if possible, draw the outline in a backing store aligned rectangle;
         //	doing so will look better on high pixel density display devices
-        NSBezierPath *const progressBarOutline =
-        [NSBezierPath PG_bezierPathWithRoundRect:(canAlignToBackingStore ?
-                                                  [self backingAlignedRect:progressBarRect options:NSAlignAllEdgesNearest] :
-                                                  progressBarRect)
-                                    cornerRadius:PGProgressBarRadius];
+        NSRect pathRect = canAlignToBackingStore
+            ? [self backingAlignedRect:progressBarRect options:NSAlignAllEdgesNearest]
+            : progressBarRect;
+        NSBezierPath *const progressBarOutline = [NSBezierPath bezierPathWithRoundedRect:pathRect xRadius:PGProgressBarRadius yRadius:PGProgressBarRadius];
         
 #define	COLOR_FILLED_BAR_IS_ENTIRE_PROGRESS	1
         
@@ -199,8 +196,7 @@ NS_ASSUME_NONNULL_BEGIN
                     //	using a backing aligned rect causes the progress to look jerky as several indexes
                     //	end up drawing to the same rectangle whereas a rect with a fractional width
                     //	appears to progress smoothly, so use progressBarRect unaligned (as it is)
-                    NSBezierPath *const folderProgress = [NSBezierPath PG_bezierPathWithRoundRect:progressBarRect
-                                                                                     cornerRadius:PGProgressBarRadius];
+                    NSBezierPath *const folderProgress = [NSBezierPath bezierPathWithRoundedRect:progressBarRect xRadius:PGProgressBarRadius yRadius:PGProgressBarRadius];
 #if 0	//	debugging only:
                     if(needsClipping) {
                         /*	this does not work because system colors are dynamic
@@ -260,8 +256,10 @@ NS_ASSUME_NONNULL_BEGIN
                         NSRect const knobRect = NSMakeRect(x + (0.5f - PGProgressThreeQuartersKnobSize / 2.0f),
                                                            0.5f + PGProgressBarHeight / 2.0f,
                                                            PGProgressThreeQuartersKnobSize, PGProgressThreeQuartersKnobSize);
-                        NSBezierPath *const knob = [NSBezierPath PG_bezierPathWithRoundRect:knobRect
-                                                                               cornerRadius:PGProgressThreeQuartersKnobSize / 2.0f];
+                        CGFloat knobRadius = PGProgressThreeQuartersKnobSize / 2.0f;
+                        NSBezierPath *const knob = [NSBezierPath bezierPathWithRoundedRect:knobRect
+                                                                                   xRadius:knobRadius
+                                                                                   yRadius:knobRadius];
                         [knob fill];
 #else
                         //	original code: draws unaliased diamond at integral locations

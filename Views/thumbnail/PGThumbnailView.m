@@ -283,8 +283,9 @@ DrawTextInBubbleBy(NSColor *const backGroundColor, NSRect const frame,
 								measuredText->textSize.height));
 
 	[[(backGroundColor ? backGroundColor : NSColor.controlBackgroundColor) colorWithAlphaComponent:0.6f] set];
-	[[NSBezierPath PG_bezierPathWithRoundRect:NSInsetRect(labelRect, measuredText->margins.dx, measuredText->margins.dy)
-								 cornerRadius:6.0f] fill];
+    [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(labelRect, measuredText->margins.dx, measuredText->margins.dy)
+                                     xRadius:6.0f
+                                     yRadius:6.0f] fill];
 
 	[layoutManager drawGlyphsForGlyphRange:measuredText->glyphRange
 								   atPoint:labelRect.origin];
@@ -1616,20 +1617,16 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 	NSRect const leftHoleRect = NSMakeRect(PGBackgroundHoleSpacingWidth, 0.0f, PGBackgroundHoleWidth, PGBackgroundHoleHeight);
 	NSRect const rightHoleRect = NSMakeRect(PGInnerTotalWidth - PGThumbnailMarginWidth + PGBackgroundHoleSpacingWidth, 0.0f, PGBackgroundHoleWidth, PGBackgroundHoleHeight);
 	[[NSColor colorWithDeviceWhite:1.0f alpha:0.2f] set];
-	[[NSBezierPath PG_bezierPathWithRoundRect:leftHoleRect cornerRadius:2.0f] fill];
-	[[NSBezierPath PG_bezierPathWithRoundRect:rightHoleRect cornerRadius:2.0f] fill];
+	[[NSBezierPath bezierPathWithRoundedRect:leftHoleRect xRadius:2.0f yRadius:2.0f] fill];
+    [[NSBezierPath bezierPathWithRoundedRect:rightHoleRect xRadius:2.0f yRadius:2.0f] fill];
 	[[NSColor clearColor] set];
 
-#if 1
 	[NSGraphicsContext saveGraphicsState];
 	[NSGraphicsContext currentContext].compositingOperation = NSCompositingOperationCopy;
-	[[NSBezierPath PG_bezierPathWithRoundRect:NSOffsetRect(leftHoleRect, 0.0f, 1.0f) cornerRadius:2.0f] fill];
-	[[NSBezierPath PG_bezierPathWithRoundRect:NSOffsetRect(rightHoleRect, 0.0f, 1.0f) cornerRadius:2.0f] fill];
+    [[NSBezierPath bezierPathWithRoundedRect: NSOffsetRect(leftHoleRect, 0.0f, 1.0f) xRadius:2.0f yRadius:2.0f] fill];
+	[[NSBezierPath bezierPathWithRoundedRect: NSOffsetRect(rightHoleRect, 0.0f, 1.0f) xRadius:2.0f yRadius:2.0f] fill];
 	[NSGraphicsContext restoreGraphicsState];
-#else
-	[[NSBezierPath PG_bezierPathWithRoundRect:NSOffsetRect(leftHoleRect, 0.0f, 1.0f) cornerRadius:2.0f] PG_fillUsingOperation:NSCompositingOperationCopy];
-	[[NSBezierPath PG_bezierPathWithRoundRect:NSOffsetRect(rightHoleRect, 0.0f, 1.0f) cornerRadius:2.0f] PG_fillUsingOperation:NSCompositingOperationCopy];
-#endif
+
 
 	CGContextEndTransparencyLayer(imageContext);
 	[background unlockFocus];
@@ -1731,7 +1728,7 @@ NSMutableString *logStr = [NSMutableString stringWithFormat:@"self %p activeNode
 		id const item = _items[i];
 		if([self _isItemSelected:item]) {
 			[nilShadow set];
-#if 1
+            
 	#if 0	//	debugging
 if(activeNode == item)
 	[logStr appendFormat:@" [%lu]%p*", i, (__bridge const void *)item];
@@ -1755,9 +1752,6 @@ else
 					bgType = PGBackground_Selected_NotActive_NotMainWindow;
 			}
 			[[self _backgroundColorWithType:bgType] set];
-#else
-			[[self _backgroundColorWithType:[self PG_isActive] ? PGBackgroundSelectedActive : PGBackgroundSelectedInactive] set];
-#endif
 		//	[NSColor.yellowColor set];
 			NSRectFill(frameWithMargin);
 			[shadow set];

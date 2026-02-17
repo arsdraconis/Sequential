@@ -1201,7 +1201,7 @@ EnableViews(NSView *view, BOOL enabled, BOOL recursive) {
 - (void)setEnabled:(BOOL)flag
 {
 	PGNSMenuItemSetEnabled(self, _cmd, flag);
-	EnableViews(self.view, flag, YES);	//	[[self view] PG_setEnabled:flag recursive:YES];
+	EnableViews(self.view, flag, YES);
 }
 
 @end

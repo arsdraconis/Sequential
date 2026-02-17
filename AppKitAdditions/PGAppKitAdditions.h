@@ -39,10 +39,8 @@ typedef NS_ENUM(NSUInteger, AEIconType)
 
 @interface NSBezierPath (PGAppKitAdditions)
 
-+ (NSBezierPath *)PG_bezierPathWithRoundRect:(NSRect)aRect cornerRadius:(CGFloat)radius;
 + (void)PG_drawIcon:(AEIconType)type inRect:(NSRect)r;
 + (void)PG_drawSpinnerInRect:(NSRect)aRect startAtPetal:(NSInteger)petal;
-//- (void)PG_fillUsingOperation:(NSCompositingOperation)op;
 
 @end
 
@@ -51,15 +49,8 @@ typedef NS_ENUM(NSUInteger, AEIconType)
 + (NSColor *)PG_bezelBackgroundColor;
 + (NSColor *)PG_bezelForegroundColor;
 - (NSColor *)PG_checkerboardPatternColor;
-- (NSColor *)PG_patternColorWithImage:(NSImage *)image fraction:(CGFloat)fraction;
 
 @end
-
-/* @interface NSControl(PGAppKitAdditions)
-
-- (void)PG_setAttributedStringValue:(NSAttributedString *)str; // Keeps existing attributes.
-
-@end */
 
 @interface NSEvent (PGAppKitAdditions)
 
@@ -67,21 +58,8 @@ typedef NS_ENUM(NSUInteger, AEIconType)
 
 @end
 
-/* @interface NSImageRep(PGAppKitAdditions)
-
-- (NSBitmapImageRep *)PG_thumbnailWithMaxSize:(NSSize)size orientation:(PGOrientation)orientation opaque:(BOOL)opaque;
-
-@end
-
-@interface NSMenu(PGAppKitAdditions)
-
-- (void)PG_removeAllItems; // -[NSMenu removeAllItems] requires 10.6.
-
-@end */
-
 @interface NSMenuItem (PGAppKitAdditions)
 
-- (void)PG_addAfterItem:(NSMenuItem *)anItem;
 - (void)PG_removeFromMenu;
 /// Uses undocumented calls to highlight the item appropriately. Returns whether the item was
 /// enabled (and the action was performed).
@@ -93,16 +71,8 @@ typedef NS_ENUM(NSUInteger, AEIconType)
 
 /// Returns the real main screen (the screen containing the menu bar).
 + (nullable NSScreen *)PG_mainScreen;
-//- (BOOL)PG_setDesktopImageURL:(NSURL *)URL;
 
 @end
-
-/* @interface NSView(PGAppKitAdditions)
-
-- (void)PG_setEnabled:(BOOL)enabled recursive:(BOOL)recursive;
-- (BOOL)PG_isActive;
-
-@end */
 
 @interface NSWindow (PGAppKitAdditions)
 

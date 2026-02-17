@@ -286,7 +286,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 - (IBAction)setAsDesktopPicture:(nullable id)sender
 {
 	PGResourceIdentifier *const ident = self.activeNode.identifier;
-//	if(![ident isFileIdentifier] || ![[NSScreen PG_mainScreen] PG_setDesktopImageURL:[ident URLByFollowingAliases:YES]]) NSBeep();
 	if(!ident.isFileIdentifier ||
 		!SetDesktopImage([NSScreen PG_mainScreen], [ident URLByFollowingAliases:YES]))
 		NSBeep();
@@ -1171,7 +1170,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 #if __has_feature(objc_arc)
 			SetControlAttributedStringValue(_errorLabel,
 				[_activeNode.resourceAdapter.dataProvider attributedString]);
-		//	[_errorLabel PG_setAttributedStringValue:[[[_activeNode resourceAdapter] dataProvider] attributedString]];
 			_errorMessage.stringValue = error.localizedDescription;
 			[_errorView setFrameSize:NSMakeSize(NSWidth(_errorView.frame), NSHeight(_errorView.frame) - NSHeight(_errorMessage.frame) + [_errorMessage.cell cellSizeForBounds:NSMakeRect(0.0f, 0.0f, NSWidth(_errorMessage.frame), CGFLOAT_MAX)].height)];
 			[_reloadButton setEnabled:YES];
@@ -1179,7 +1177,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 #else
 			SetControlAttributedStringValue(errorLabel,
 				[_activeNode.resourceAdapter.dataProvider attributedString]);
-		//	[errorLabel PG_setAttributedStringValue:[[[_activeNode resourceAdapter] dataProvider] attributedString]];
 			[errorMessage setStringValue:[error localizedDescription]];
 			[errorView setFrameSize:NSMakeSize(NSWidth([errorView frame]), NSHeight([errorView frame]) - NSHeight([errorMessage frame]) + [[errorMessage cell] cellSizeForBounds:NSMakeRect(0.0f, 0.0f, NSWidth([errorMessage frame]), CGFLOAT_MAX)].height)];
 			[reloadButton setEnabled:YES];
@@ -1190,13 +1187,11 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 #if __has_feature(objc_arc)
 			SetControlAttributedStringValue(_passwordLabel,
 				[_activeNode.resourceAdapter.dataProvider attributedString]);
-		//	[_passwordLabel PG_setAttributedStringValue:[[[_activeNode resourceAdapter] dataProvider] attributedString]];
 			_passwordField.stringValue = @"";
 			_clipView.documentView = _passwordView;
 #else
 			SetControlAttributedStringValue(passwordLabel,
 				[_activeNode.resourceAdapter.dataProvider attributedString]);
-		//	[passwordLabel PG_setAttributedStringValue:[[[_activeNode resourceAdapter] dataProvider] attributedString]];
 			[passwordField setStringValue:@""];
 			[clipView setDocumentView:passwordView];
 #endif
@@ -1619,7 +1614,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 //	NSURL *const URL = [[savePanel filename] PG_fileURL];
 	NSURL *const URL = savePanel.URL;
 	[self.activeNode.resourceAdapter.data writeToURL:URL atomically:NO];
-//	if(![[NSScreen PG_mainScreen] PG_setDesktopImageURL:URL]) NSBeep();
 	if(!SetDesktopImage([NSScreen PG_mainScreen], URL)) NSBeep();
 }
 - (void)_offerToOpenBookmarkAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode bookmark:(PGBookmark *)bookmark

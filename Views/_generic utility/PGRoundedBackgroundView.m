@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)drawRect:(NSRect)aRect
 {
 	[[NSColor windowBackgroundColor] set];
-	[[NSBezierPath PG_bezierPathWithRoundRect:NSInsetRect(self.bounds, 1.0f, 1.0f) cornerRadius:20.0f] fill];
+	[[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(self.bounds, 1.0f, 1.0f) xRadius:20.0f yRadius:20.0f] fill];
 }
 
 //	MARK: - NSResponder

@@ -39,13 +39,19 @@ NS_ASSUME_NONNULL_BEGIN
 	if(self.hidden) return;
 
 	[[NSColor colorWithDeviceWhite:0.9f alpha:0.8f] set];
-	[[NSBezierPath PG_bezierPathWithRoundRect:NSInsetRect(aRect, 0.5f, 0.5f) cornerRadius:(NSHeight(aRect) - 1.0f) / 2.0f] stroke];
+    CGFloat cornerRadius = (NSHeight(aRect) - 1.0f) / 2.0;
+    [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(aRect, 0.5f, 0.5f)
+                                     xRadius:cornerRadius
+                                     yRadius:cornerRadius] stroke];
 
 	NSRect r = aRect;
 	r.size.width = (CGFloat)ceil(NSWidth(aRect) * [[self objectValue] doubleValue]);
 	[NSGraphicsContext saveGraphicsState];
 	NSRectClip(r);
-	[[NSBezierPath PG_bezierPathWithRoundRect:NSInsetRect(aRect, 2.0f, 2.0f) cornerRadius:(NSHeight(aRect) - 4.0f) / 2.0f] addClip];
+    cornerRadius = (NSHeight(aRect) - 4.0f) / 2.0f;
+	[[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(aRect, 2.0f, 2.0f)
+                                     xRadius:cornerRadius
+                                     yRadius:cornerRadius] addClip];
 	
 	r.size.height = ceil(NSHeight(r) / 2.0f);
 	[[NSColor colorWithDeviceWhite:0.95f alpha:0.8f] set];

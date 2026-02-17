@@ -32,31 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation NSBezierPath (PGAppKitAdditions)
 
-//	MARK: Class Methods
-
-+ (NSBezierPath *)PG_bezierPathWithRoundRect:(NSRect)aRect cornerRadius:(CGFloat)radius
-{
-    NSBezierPath * const path = [self bezierPath];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(aRect) - radius, NSMaxY(aRect) - radius)
-                                     radius:radius
-                                 startAngle:0.0f
-                                   endAngle:90.0f];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(aRect) + radius, NSMaxY(aRect) - radius)
-                                     radius:radius
-                                 startAngle:90.0f
-                                   endAngle:180.0f];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(aRect) + radius, NSMinY(aRect) + radius)
-                                     radius:radius
-                                 startAngle:180.0f
-                                   endAngle:270.0f];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(aRect) - radius, NSMinY(aRect) + radius)
-                                     radius:radius
-                                 startAngle:270.0f
-                                   endAngle:0.0f];
-    [path closePath];
-    return path;
-}
-
 + (void)PG_drawIcon:(AEIconType)type inRect:(NSRect)b
 {
     NSBezierPath * const p = [self bezierPath];
@@ -137,16 +112,6 @@ NS_ASSUME_NONNULL_BEGIN
     [NSBezierPath setDefaultLineJoinStyle:NSLineJoinStyleMiter];
 }
 
-//	MARK: Instance Methods
-
-/* - (void)PG_fillUsingOperation:(NSCompositingOperation)op
-{
-    [NSGraphicsContext saveGraphicsState];
-    [[NSGraphicsContext currentContext] setCompositingOperation:op];
-    [self fill];
-    [NSGraphicsContext restoreGraphicsState];
-} */
-
 @end
 
 //	MARK: -
@@ -168,19 +133,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSColor *)PG_checkerboardPatternColor
 {
-    return [self PG_patternColorWithImage:[NSImage imageNamed:@"Checkerboard"] fraction:0.05f];
-}
-
-- (NSColor *)PG_patternColorWithImage:(NSImage *)image fraction:(CGFloat)fraction
-{
-    NSParameterAssert(image);
+    NSImage *image = [NSImage imageNamed:@"Checkerboard"];
+    CGFloat fraction = 0.05f;
+    
     NSSize const s = image.size;
     NSRect const r = (NSRect){NSZeroPoint, s};
-#if __has_feature(objc_arc)
     NSImage * const pattern = [[NSImage alloc] initWithSize:s];
-#else
-    NSImage * const pattern = [[[NSImage alloc] initWithSize:s] autorelease];
-#endif
+    
     [pattern lockFocus];
     [self set];
     NSRectFill(r);
@@ -190,22 +149,8 @@ NS_ASSUME_NONNULL_BEGIN
     return [NSColor colorWithPatternImage:pattern];
 }
 
+
 @end
-
-/* @implementation NSControl(PGAppKitAdditions)
-
-- (void)PG_setAttributedStringValue:(NSAttributedString *)anObject
-{
-#if __has_feature(objc_arc)
-    NSMutableAttributedString *const str = [anObject mutableCopy];
-#else
-    NSMutableAttributedString *const str = [[anObject mutableCopy] autorelease];
-#endif
-	[str addAttributes:[[self attributedStringValue] attributesAtIndex:0 effectiveRange:NULL] range:NSMakeRange(0, [str length])];
-	[self setAttributedStringValue:str];
-}
-
-@end */
 
 //	MARK: -
 @implementation NSEvent (PGAppKitAdditions)
@@ -219,60 +164,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-/* @implementation NSImageRep(PGAppKitAdditions)
-
-- (NSBitmapImageRep *)PG_thumbnailWithMaxSize:(NSSize)size
-                                  orientation:(PGOrientation)orientation
-                                       opaque:(BOOL)opaque
-{
-	if(!self) return nil;
-	NSSize const originalSize = PGRotated90CCW & orientation ? NSMakeSize([self pixelsHigh], [self pixelsWide]) : NSMakeSize([self pixelsWide], [self pixelsHigh]);
-	NSSize const s = PGIntegralSize(PGScaleSizeByFloat(originalSize, MIN(1.0f, MIN(size.width / originalSize.width, size.height / originalSize.height))));
-#if __has_feature(objc_arc)
-	NSBitmapImageRep *const thumbRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-																			   pixelsWide:s.width
-																			   pixelsHigh:s.height
-																			bitsPerSample:8
-																		  samplesPerPixel:4
-																				 hasAlpha:YES
-																				 isPlanar:NO
-																		   colorSpaceName:NSDeviceRGBColorSpace
-																			  bytesPerRow:0
-																			 bitsPerPixel:0];
-#else
-	NSBitmapImageRep *const thumbRep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:s.width pixelsHigh:s.height bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSDeviceRGBColorSpace bytesPerRow:0 bitsPerPixel:0] autorelease];
-#endif
-	if(!thumbRep) return nil;
-	NSGraphicsContext *const context = [NSGraphicsContext graphicsContextWithBitmapImageRep:thumbRep];
-	[NSGraphicsContext setCurrentContext:context];
-	[context setImageInterpolation:NSImageInterpolationHigh];
-	NSRect rect = NSMakeRect(0.0f, 0.0f, s.width, s.height);
-	if(PGUpright != orientation) [[NSAffineTransform PG_transformWithRect:&rect orientation:orientation] concat];
-	if(opaque) {
-		[[NSColor whiteColor] set];
-		NSRectFill(rect);
-	}
-	[self drawInRect:rect];
-	[context flushGraphics];
-	return thumbRep;
-}
-
-@end
-
-@interface NSMenu(PGSnowLeopardOrLater)
-- (void)removeAllItems;
-@end
-
-@implementation NSMenu(PGAppKitAdditions)
-
-- (void)PG_removeAllItems
-{
-    if(PGIsSnowLeopardOrLater()) [self removeAllItems];
-    else while([self numberOfItems]) [self removeItemAtIndex:0];
-}
-
-@end */
-
 //	MARK: -
 @interface NSMenu (AEUndocumented)
 - (id)_menuImpl;
@@ -283,13 +174,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @implementation NSMenuItem (PGAppKitAdditions)
-
-- (void)PG_addAfterItem:(NSMenuItem *)anItem
-{
-    NSMenu * const menu = anItem.menu;
-    NSAssert(menu, @"Can't add item after an item not in a menu.");
-    [menu insertItem:self atIndex:[menu indexOfItem:anItem] + 1];
-}
 
 - (void)PG_removeFromMenu
 {
@@ -335,82 +219,16 @@ NS_ASSUME_NONNULL_BEGIN
     return screens.count ? screens[0] : nil;
 }
 
-/* - (BOOL)PG_setDesktopImageURL:(NSURL *)URL
-{
-#if 1
-    NSWorkspace *const ws = [NSWorkspace sharedWorkspace];
-    return [ws setDesktopImageURL:URL
-                        forScreen:self
-                          options:[ws desktopImageOptionsForScreen:self]
-                            error:NULL];
-#else
-	if(PGIsSnowLeopardOrLater()) return [[NSWorkspace sharedWorkspace] setDesktopImageURL:URL forScreen:self options:[[NSWorkspace sharedWorkspace] desktopImageOptionsForScreen:self] error:NULL];
-	NSParameterAssert([URL isFileURL]);
-	NSParameterAssert([NSScreen PG_mainScreen] == self);
-
-	FSRef ref;
-	if(FSPathMakeRef((UInt8 const *)[[URL path] fileSystemRepresentation], &ref, NULL) != noErr) return NO;
-	AliasHandle aliasHandle = NULL;
-	if(FSNewAliasMinimal(&ref, &aliasHandle) != noErr || !aliasHandle) return NO;
-
-	// Now we create an AEDesc containing the alias to the image.
-	SInt8 const handleState = HGetState((Handle)aliasHandle);
-	HLock((Handle)aliasHandle);
-	AEDesc descriptor = {typeNull, NULL};
-	OSErr const descErr = AECreateDesc(typeAlias, *aliasHandle, GetHandleSize((Handle)aliasHandle), &descriptor);
-	HSetState((Handle)aliasHandle, handleState);
-	DisposeHandle((Handle)aliasHandle);
-	if(noErr != descErr) return NO;
-
-	OSType const sig = 'MACS'; // The app signature for the Finder.
-	AppleEvent event;
-	if(AEBuildAppleEvent(kAECoreSuite, kAESetData, typeApplSignature, &sig, sizeof(sig), kAutoGenerateReturnID, kAnyTransactionID, &event, NULL, "'----':'obj '{want:type(prop), form:prop, seld:type('dpic'), from:'null'()}, data:(@)", &descriptor) != noErr) return NO;
-
-	// Finally we can go ahead and send the Apple Event using AESend.
-	AppleEvent reply = {typeNull, NULL};
-	OSErr const sendErr = AESend(&event, &reply, kAENoReply, kAENormalPriority, kAEDefaultTimeout, NULL, NULL);
-	AEDisposeDesc(&event);
-	return noErr == sendErr;
-#endif
-} */
-
 @end
 
-//@implementation NSView(PGAppKitAdditions)
-
-/* removed - was only used by one caller
-- (void)PG_setEnabled:(BOOL)enabled recursive:(BOOL)recursive
-{
-	if([self respondsToSelector:@selector(setEnabled:)]) [(NSControl *)self setEnabled:enabled];
-	if(recursive) for(NSView *const subview in [self subviews]) [subview PG_setEnabled:enabled recursive:YES];
-} */
-
-/* this does not work because it uses incorrect tests, so removed; replaced with _isDisplayControllerTheMainWindow
-- (BOOL)PG_isActive
-{
-    NSWindow *const w = [self window];
-    return [w isKeyWindow] && [w firstResponder] == self;
-} */
-
-//@end
 
 //	MARK: -
 @implementation NSWindow (PGAppKitAdditions)
 
 - (NSRect)PG_contentRect
 {
-#if __LP64__
     // TODO: Make sure this works correctly when the window is being dragged/resized.
     return [self contentRectForFrameRect:self.frame];
-#else
-    HIRect rect;
-    HIWindowGetBounds([self windowRef], kWindowContentRgn, kHICoordSpace72DPIGlobal,
-                      &rect);    // Updated in realtime, unlike -frame. See
-                                 // http://web.archive.org/web/20100113062205/http://rentzsch.com/cocoa/nswindowFrameLies.
-    NSRect const r = NSRectFromCGRect(rect);
-    return NSMakeRect(NSMinX(r), (CGFloat)CGDisplayPixelsHigh(kCGDirectMainDisplay) - NSMaxY(r),
-                      NSWidth(r), NSHeight(r));
-#endif
 }
 
 - (void)PG_setContentRect:(NSRect)aRect
