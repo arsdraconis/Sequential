@@ -29,24 +29,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, AEIconType) {
-	AENoIcon = 0,
-	AEPlayIcon = 1,
-	AEPauseIcon = 2,
-	AEStopIcon = 3
+typedef NS_ENUM(NSUInteger, AEIconType)
+{
+    AENoIcon    = 0,
+    AEPlayIcon  = 1,
+    AEPauseIcon = 2,
+    AEStopIcon  = 3
 };
 
-@interface NSBezierPath(PGAppKitAdditions)
+@interface NSBezierPath (PGAppKitAdditions)
 
 + (NSBezierPath *)PG_bezierPathWithRoundRect:(NSRect)aRect cornerRadius:(CGFloat)radius;
 + (void)PG_drawIcon:(AEIconType)type inRect:(NSRect)r;
 + (void)PG_drawSpinnerInRect:(NSRect)aRect startAtPetal:(NSInteger)petal;
-
 //- (void)PG_fillUsingOperation:(NSCompositingOperation)op;
 
 @end
 
-@interface NSColor(PGAppKitAdditions)
+@interface NSColor (PGAppKitAdditions)
 
 + (NSColor *)PG_bezelBackgroundColor;
 + (NSColor *)PG_bezelForegroundColor;
@@ -61,7 +61,7 @@ typedef NS_ENUM(NSUInteger, AEIconType) {
 
 @end */
 
-@interface NSEvent(PGAppKitAdditions)
+@interface NSEvent (PGAppKitAdditions)
 
 - (NSPoint)PG_locationInView:(NSView *)view;
 
@@ -79,15 +79,17 @@ typedef NS_ENUM(NSUInteger, AEIconType) {
 
 @end */
 
-@interface NSMenuItem(PGAppKitAdditions)
+@interface NSMenuItem (PGAppKitAdditions)
 
 - (void)PG_addAfterItem:(NSMenuItem *)anItem;
 - (void)PG_removeFromMenu;
-- (BOOL)PG_performAction; // Uses undocumented calls to highlight the item appropriately. Returns whether the item was enabled (and the action was performed).
+/// Uses undocumented calls to highlight the item appropriately. Returns whether the item was
+/// enabled (and the action was performed).
+- (BOOL)PG_performAction;
 
 @end
 
-@interface NSScreen(PGAppKitAdditions)
+@interface NSScreen (PGAppKitAdditions)
 
 /// Returns the real main screen (the screen containing the menu bar).
 + (nullable NSScreen *)PG_mainScreen;
@@ -102,7 +104,7 @@ typedef NS_ENUM(NSUInteger, AEIconType) {
 
 @end */
 
-@interface NSWindow(PGAppKitAdditions)
+@interface NSWindow (PGAppKitAdditions)
 
 - (NSRect)PG_contentRect;
 - (void)PG_setContentRect:(NSRect)aRect;
