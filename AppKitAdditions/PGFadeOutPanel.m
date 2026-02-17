@@ -26,10 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define PGFadeOutPanelFrameRate (1.0 / 30.0)
-#define PGFadeOutPanelDuration  0.20
+NSTimeInterval const PGFadeOutPanelFrameRate = (1.0 / 30.0);
+NSTimeInterval const PGFadeOutPanelDuration = 0.20;
 
-#if __has_feature(objc_arc)
 @interface PGFadeOutPanel ()
 
 @property (readonly) unsigned frameCount;
@@ -38,75 +37,75 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#endif
 
 //	MARK: -
 @implementation PGFadeOutPanel
 
 - (BOOL)isFadingOut
 {
-	return _frameCount != 0;
+    return _frameCount != 0;
 }
+
 - (void)fadeOut
 {
-#if !__has_feature(objc_arc)
-	[[self retain] autorelease];
-#endif
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOut) object:nil];
-	if(!self.isFadingOut) {
-		_savedAlphaValue = self.alphaValue;
-		_savedIgnoresMouseEvents = self.ignoresMouseEvents;
-		[self setIgnoresMouseEvents:YES];
-	}
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOut) object:nil];
+    if (!self.isFadingOut)
+    {
+        _savedAlphaValue         = self.alphaValue;
+        _savedIgnoresMouseEvents = self.ignoresMouseEvents;
+        [self setIgnoresMouseEvents:YES];
+    }
 
-	float const x = ++_frameCount / (PGFadeOutPanelDuration / PGFadeOutPanelFrameRate) - 1;
-	if(x >= 0) return [self close];
-	self.alphaValue = _savedAlphaValue * powf(x, 2);
-	[self performSelector:@selector(fadeOut) withObject:nil afterDelay:PGFadeOutPanelFrameRate inModes:@[(NSString *)kCFRunLoopCommonModes]];
+    float const x = ++_frameCount / (PGFadeOutPanelDuration / PGFadeOutPanelFrameRate) - 1;
+    if (x >= 0) return [self close];
+    self.alphaValue = _savedAlphaValue * powf(x, 2);
+    [self performSelector:@selector(fadeOut)
+               withObject:nil
+               afterDelay:PGFadeOutPanelFrameRate
+                  inModes:@[(NSString *)kCFRunLoopCommonModes]];
 }
+
 - (void)cancelFadeOut
 {
-	if(!self.isFadingOut) return;
-	self.alphaValue = _savedAlphaValue;
-	self.ignoresMouseEvents = _savedIgnoresMouseEvents;
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOut) object:nil];
-	_frameCount = 0;
+    if (!self.isFadingOut) return;
+    self.alphaValue         = _savedAlphaValue;
+    self.ignoresMouseEvents = _savedIgnoresMouseEvents;
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOut) object:nil];
+    _frameCount = 0;
 }
 
 //	MARK: - NSWindow
 
 - (IBAction)makeKeyAndOrderFront:(nullable id)sender
 {
-	[self cancelFadeOut];
-	[super makeKeyAndOrderFront:sender];
+    [self cancelFadeOut];
+    [super makeKeyAndOrderFront:sender];
 }
+
 - (IBAction)orderFront:(nullable id)sender
 {
-	[self cancelFadeOut];
-	[super orderFront:sender];
+    [self cancelFadeOut];
+    [super orderFront:sender];
 }
 
 - (void)orderFrontRegardless
 {
-	[self cancelFadeOut];
-	[super orderFrontRegardless];
+    [self cancelFadeOut];
+    [super orderFrontRegardless];
 }
 
 - (void)close
 {
-	[self.parentWindow removeChildWindow:self];
-	[super close];
-	[self cancelFadeOut];
+    [self.parentWindow removeChildWindow:self];
+    [super close];
+    [self cancelFadeOut];
 }
 
 //	MARK: - NSObject
 
 - (void)dealloc
 {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self];
-#if !__has_feature(objc_arc)
-	[super dealloc];
-#endif
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
 
 @end

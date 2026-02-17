@@ -27,14 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGFadeOutPanel : NSPanel
-#if !__has_feature(objc_arc)
-{
-	@private
-	unsigned _frameCount;
-	float _savedAlphaValue; // was: _alphaValue;
-	BOOL _savedIgnoresMouseEvents; // was: _ignoresMouseEvents;
-}
-#endif
 
 - (BOOL)isFadingOut;
 - (void)fadeOut;

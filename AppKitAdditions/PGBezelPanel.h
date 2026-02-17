@@ -30,21 +30,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PGBezelPanelFrameShouldChangeNotification;
-extern NSString *const PGBezelPanelFrameDidChangeNotification;
+extern NSString * const PGBezelPanelFrameShouldChangeNotification;
+extern NSString * const PGBezelPanelFrameDidChangeNotification;
 
 @interface PGBezelPanel : PGFadeOutPanel
-#if !__has_feature(objc_arc)
-{
-	@private
-	BOOL _acceptsEvents;
-	BOOL _canBecomeKey;
-	PGInset _frameInset;
-}
-#endif
 
 - (instancetype)initWithContentView:(NSView *)aView NS_DESIGNATED_INITIALIZER;
-- (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag NS_UNAVAILABLE;
+- (instancetype)initWithContentRect:(NSRect)contentRect
+                          styleMask:(NSWindowStyleMask)style
+                            backing:(NSBackingStoreType)backingStoreType
+                              defer:(BOOL)flag NS_UNAVAILABLE;
 
 - (void)displayOverWindow:(NSWindow *)aWindow;
 
@@ -62,15 +57,17 @@ extern NSString *const PGBezelPanelFrameDidChangeNotification;
 
 @end
 
-@interface NSView(PGBezelPanelContentView)
+@interface NSView (PGBezelPanelContentView)
 
-+ (id)PG_bezelPanel; // Returns a bezel panel with an instance of the receiver as the content view.
++ (id)PG_bezelPanel;    // Returns a bezel panel with an instance of the receiver as the content view.
 
 @end
 
 @protocol PGBezelPanelContentView <NSObject>
 
-- (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)scaleFactor;
+- (NSRect)bezelPanel:(PGBezelPanel *)sender
+    frameForContentRect:(NSRect)aRect
+                  scale:(CGFloat)scaleFactor;
 
 @end
 
