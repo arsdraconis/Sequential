@@ -23,43 +23,26 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+#import <Cocoa/Cocoa.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSString *const PGPreferenceWindowControllerBackgroundPatternColorDidChangeNotification;
 extern NSString *const PGPreferenceWindowControllerBackgroundColorUsedInFullScreenDidChangeNotification;
 extern NSString *const PGPreferenceWindowControllerDisplayScreenDidChangeNotification;
 
-@interface PGPreferenceWindowController : NSWindowController<NSApplicationDelegate, NSToolbarDelegate>
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet NSView *generalView;
-	IBOutlet NSColorWell *customColorWell;	//	2023/08/17 added
-	IBOutlet NSPopUpButton *screensPopUp;
-	NSScreen *_displayScreen;
+@interface PGPreferenceWindowController : NSWindowController<NSToolbarDelegate>
 
-	IBOutlet NSView *thumbnailView;	//	2023/10/01 added
+@property (readonly) NSColor *backgroundPatternColor;
+@property (nonatomic, strong, nullable) NSScreen *displayScreen;
 
-	IBOutlet NSView *navigationView;
-	IBOutlet NSTextField *secondaryMouseActionLabel;
-
-	IBOutlet NSView *updateView;
-}
-#endif
-
-+ (id)sharedPrefController;
++ (PGPreferenceWindowController *)sharedPrefController;
 
 - (IBAction)changeDisplayScreen:(id)sender;
 - (IBAction)showPrefsHelp:(id)sender;
 - (IBAction)changePane:(NSToolbarItem *)sender; // Gets the pane name from [sender itemIdentifier].
 
-#if __has_feature(objc_arc)
-@property (readonly) NSColor *backgroundPatternColor;
-@property (nonatomic, strong, nullable) NSScreen *displayScreen;
-#else
-@property(readonly) NSColor *backgroundPatternColor;
-@property(retain) NSScreen *displayScreen;
-#endif
+- (void)onScreenParametersDidChange;
 
 @end
 

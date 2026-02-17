@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAppKitAdditions.h"
 
+#import "Sequential-Swift.h"
+
 // Other Sources
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
@@ -111,44 +113,6 @@ NS_ASSUME_NONNULL_BEGIN
     [NSBezierPath setDefaultLineWidth:1];
     [NSBezierPath setDefaultLineJoinStyle:NSLineJoinStyleMiter];
 }
-
-@end
-
-//	MARK: -
-@implementation NSColor (PGAppKitAdditions)
-
-//	MARK: +NSColor(PGAppKitAdditions)
-
-+ (NSColor *)PG_bezelBackgroundColor
-{
-    return [NSColor colorWithDeviceWhite:48.0f / 255.0f alpha:0.75f];
-}
-
-+ (NSColor *)PG_bezelForegroundColor
-{
-    return [NSColor colorWithDeviceWhite:0.95f alpha:0.9f];
-}
-
-//	MARK: NSColor(PGAppKitAdditions)
-
-- (NSColor *)PG_checkerboardPatternColor
-{
-    NSImage *image = [NSImage imageNamed:@"Checkerboard"];
-    CGFloat fraction = 0.05f;
-    
-    NSSize const s = image.size;
-    NSRect const r = (NSRect){NSZeroPoint, s};
-    NSImage * const pattern = [[NSImage alloc] initWithSize:s];
-    
-    [pattern lockFocus];
-    [self set];
-    NSRectFill(r);
-    [image drawInRect:r fromRect:NSZeroRect operation:NSCompositingOperationSourceAtop
-             fraction:fraction];
-    [pattern unlockFocus];
-    return [NSColor colorWithPatternImage:pattern];
-}
-
 
 @end
 

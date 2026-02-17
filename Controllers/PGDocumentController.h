@@ -23,106 +23,83 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-// Models
-@class PGDocument;
-@class PGResourceIdentifier;
-@class PGBookmark;
-
-// Controllers
-@class PGDisplayController;
-#if !__has_feature(objc_arc)
-@class PGFullscreenController;
-@class PGInspectorPanelController;
-@class PGTimerPanelController;
-@class PGActivityPanelController;
-#endif
+#import <Cocoa/Cocoa.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class PGDocument;
+@class PGResourceIdentifier;
+@class PGBookmark;
+@class PGDisplayController;
+@class PGDisplayableIdentifier;    // 2023/10/29 to specify static type
+
 //	general prefs pane
-extern NSString *const PGBackgroundColorSourceKey;	//	2023/08/17
-extern NSString *const PGBackgroundColorKey;
-extern NSString *const PGBackgroundPatternKey;
-extern NSString *const PGBackgroundColorUsedInFullScreenKey;	//	2023/08/14
+extern NSString * const PGBackgroundColorSourceKey;	//	2023/08/17
+extern NSString * const PGBackgroundColorKey;
+extern NSString * const PGBackgroundPatternKey;
+extern NSString * const PGBackgroundColorUsedInFullScreenKey;	//	2023/08/14
 
-extern NSString *const PGAntialiasWhenUpscalingKey;
-extern NSString *const PGImageScaleConstraintKey;
+extern NSString * const PGAntialiasWhenUpscalingKey;
+extern NSString * const PGImageScaleConstraintKey;
 
-extern NSString *const PGEscapeKeyMappingKey;
-extern NSString *const PGDimOtherScreensKey;
+extern NSString * const PGEscapeKeyMappingKey;
+extern NSString * const PGDimOtherScreensKey;
 
 //	thumbnail prefs pane
-extern NSString *const PGShowThumbnailImageNameKey;	//	2023/10/01 added
-extern NSString *const PGShowThumbnailImageSizeKey;	//	2023/10/01 added
-extern NSString *const PGShowThumbnailContainerNameKey;	//	2023/10/01 added
-extern NSString *const PGShowThumbnailContainerChildCountKey;	//	2023/10/01 added
-extern NSString *const PGShowThumbnailContainerChildSizeTotalKey;	//	2023/10/01 added
-extern NSString *const PGThumbnailSizeFormatKey;	//	2023/10/01 added
+extern NSString * const PGShowThumbnailImageNameKey;	//	2023/10/01 added
+extern NSString * const PGShowThumbnailImageSizeKey;	//	2023/10/01 added
+extern NSString * const PGShowThumbnailContainerNameKey;	//	2023/10/01 added
+extern NSString * const PGShowThumbnailContainerChildCountKey;	//	2023/10/01 added
+extern NSString * const PGShowThumbnailContainerChildSizeTotalKey;	//	2023/10/01 added
+extern NSString * const PGThumbnailSizeFormatKey;	//	2023/10/01 added
 
 //extern NSString *const PGShowFileNameOnImageThumbnailKey;	//	2022/10/15 added; 2023/10/01 removed
 //extern NSString *const PGShowCountsAndSizesOnContainerThumbnailKey;	//	2022/10/15 added; 2023/09/11 removed
 //extern NSString *const PGThumbnailContainerLabelTypeKey;	//	2023/09/11
 
 //	navigation prefs pane
-extern NSString *const PGMouseClickActionKey;
-extern NSString *const PGBackwardsInitialLocationKey;
+extern NSString * const PGMouseClickActionKey;
+extern NSString * const PGBackwardsInitialLocationKey;
+extern NSString * const PGBackwardsInitialLocationKey;
 
-enum {
+typedef NS_ENUM(NSUInteger, PGAction) {
 	PGNextPreviousAction = 0,
 	PGLeftRightAction    = 1,
 	PGRightLeftAction    = 2
 };
-enum {
+
+typedef NS_ENUM(NSUInteger, PGEscapeMapping) {
 	PGFullscreenMapping = 0,
 	PGQuitMapping       = 1
 };
+
 typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
 	PGScaleFreely = 0,
 	PGDownscaleOnly = 1,
 	PGUpscaleOnly = 2,
 };
 
+typedef NSUInteger BeforeState;
+
 #define PGScaleMax 16.0f
 #define PGScaleMin (1.0f / 16.0f)
 
-@class PGDisplayableIdentifier;	//	2023/10/29 to specify static type
-
 @interface PGDocumentController :
-	NSResponder <NSApplicationDelegate, NSMenuDelegate, NSMenuItemValidation>
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet NSMenu *orientationMenu;
+	NSResponder <NSMenuDelegate, NSMenuItemValidation>
 
-	IBOutlet NSMenuItem *toggleFullscreen;
-	IBOutlet NSMenuItem *zoomIn;
-	IBOutlet NSMenuItem *zoomOut;
-	IBOutlet NSMenuItem *scaleSliderItem;
-	IBOutlet NSSlider *scaleSlider;
-
-	IBOutlet NSMenuItem *pageMenuItem;
-	IBOutlet NSMenu *defaultPageMenu;
-
-	IBOutlet NSMenu *windowsMenu;
-	IBOutlet NSMenuItem *windowsMenuSeparator;
-	IBOutlet NSMenuItem *selectPreviousDocument;
-	IBOutlet NSMenuItem *selectNextDocument;
-
-	NSArray<PGDisplayableIdentifier*> *_recentDocumentIdentifiers;	//	2023/10/29 specified static type
-	BOOL _fullscreen;
-
-	PGDocument *_currentDocument;
-	NSMutableArray<__kindof PGDocument*> *_documents;	//	2023/10/29 specified static type
-	PGFullscreenController *_fullscreenController;
-	BOOL _inFullscreen;
-
-	PGInspectorPanelController *_inspectorPanel;
-	PGTimerPanelController *_timerPanel;
-	PGActivityPanelController *_activityPanel;
-
-//	NSMutableDictionary *_classesByExtension;	2023/10/29 not used; removed
-}
-#endif
+@property (nonatomic, copy, nonnull) NSArray<PGDisplayableIdentifier*> *recentDocumentIdentifiers;    //    2023/10/29 specified static type
+@property (readonly) NSUInteger maximumRecentDocumentCount;
+@property (readonly, nonnull) PGDisplayController *displayControllerForNewDocument;
+@property (nonatomic, assign, getter = isFullscreen) BOOL fullscreen;
+@property (readonly) BOOL canToggleFullscreen;
+@property (nonatomic, assign) BOOL usesEntireScreenWhenInFullScreen;    //    2023/08/14 added
+@property (readonly) BOOL canToggleUsesEntireScreenWhenInFullScreen;    //    2023/08/14 added
+@property (readonly, nonnull) NSArray *documents;    //    removed copy attribute to silence static analyzer warning
+@property (readonly, nonnull) NSMenu *scaleMenu;
+@property (nonatomic, weak) IBOutlet NSSlider *scaleSlider;
+@property (readonly, strong, nonnull) IBOutlet NSMenu *defaultPageMenu;
+@property (nonatomic, weak, nullable) PGDocument *currentDocument;
+@property (readonly) BOOL pathFinderRunning;
 
 + (PGDocumentController *)sharedDocumentController;
 
@@ -150,39 +127,6 @@ typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
 - (BOOL)performZoomOut;
 - (BOOL)performToggleFullscreen;
 
-#if __has_feature(objc_arc)
-
-@property (nonatomic, copy) NSArray<PGDisplayableIdentifier*> *recentDocumentIdentifiers;	//	2023/10/29 specified static type
-@property (readonly) NSUInteger maximumRecentDocumentCount;
-@property (readonly) PGDisplayController *displayControllerForNewDocument;
-@property (nonatomic, assign, getter = isFullscreen) BOOL fullscreen;
-@property (readonly) BOOL canToggleFullscreen;
-@property (nonatomic, assign) BOOL usesEntireScreenWhenInFullScreen;	//	2023/08/14 added
-@property (readonly) BOOL canToggleUsesEntireScreenWhenInFullScreen;	//	2023/08/14 added
-@property (readonly) NSArray *documents;	//	removed copy attribute to silence static analyzer warning
-@property (readonly) NSMenu *scaleMenu;
-@property (nonatomic, weak) IBOutlet NSSlider *scaleSlider;
-@property (readonly, strong) IBOutlet NSMenu *defaultPageMenu;
-@property (nonatomic, weak, nullable) PGDocument *currentDocument;
-@property (readonly) BOOL pathFinderRunning;
-
-#else
-
-@property(copy, nonatomic) NSArray<PGDisplayableIdentifier*> *recentDocumentIdentifiers;	//	2023/10/29 specified static type
-@property(readonly) NSUInteger maximumRecentDocumentCount;
-@property(readonly) PGDisplayController *displayControllerForNewDocument;
-@property(assign, nonatomic, getter = isFullscreen) BOOL fullscreen;
-@property(readonly) BOOL canToggleFullscreen;
-@property(assign, nonatomic) BOOL usesEntireScreenWhenInFullScreen;	//	2023/08/14 added
-@property(readonly) BOOL canToggleUsesEntireScreenWhenInFullScreen;	//	2023/08/14 added
-@property(readonly, copy) NSArray *documents;
-@property(readonly) NSMenu *scaleMenu;
-@property(readonly) NSSlider *scaleSlider;
-@property(readonly) NSMenu *defaultPageMenu;
-@property(assign, nonatomic) PGDocument *currentDocument;
-@property(readonly) BOOL pathFinderRunning;
-
-#endif
 
 - (void)addDocument:(PGDocument *)document;
 - (void)removeDocument:(PGDocument *)document;
@@ -190,9 +134,9 @@ typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
 - (nullable PGDocument *)next:(BOOL)flag documentBeyond:(PGDocument *)document;
 - (nullable NSMenuItem *)windowsMenuItemForDocument:(PGDocument *)document;
 
-- (id)openDocumentWithContentsOfIdentifier:(PGResourceIdentifier *)ident display:(BOOL)flag;
-- (id)openDocumentWithContentsOfURL:(NSURL *)URL display:(BOOL)flag;
-- (id)openDocumentWithBookmark:(PGBookmark *)aBookmark display:(BOOL)flag;
+- (nullable id)openDocumentWithContentsOfIdentifier:(PGResourceIdentifier *)ident display:(BOOL)flag;
+- (nullable id)openDocumentWithContentsOfURL:(NSURL *)URL display:(BOOL)flag;
+- (nullable id)openDocumentWithBookmark:(PGBookmark *)aBookmark display:(BOOL)flag;
 - (void)noteNewRecentDocument:(PGDocument *)document;
 - (void)noteDeletedRecentDocument:(PGDocument *)document;
 
@@ -200,7 +144,6 @@ typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
 
 - (void)recentDocumentIdentifierDidChange:(nullable NSNotification *)aNotif;
 
-typedef NSUInteger BeforeState;
 - (BeforeState)togglePanelsForExitingFullScreen:(BOOL)exitingFullScreen
 								withBeforeState:(BeforeState)state;
 

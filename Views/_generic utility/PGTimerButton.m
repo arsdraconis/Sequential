@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGTimerButton.h"
 
+#import "Sequential-Swift.h"
+
 // Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGGeometry.h"

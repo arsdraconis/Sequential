@@ -154,6 +154,8 @@
 		4BF35D1B2B062F6A008FC486 /* PGFullSizeContentTitlebarAccessoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4BF35D1A2B062F6A008FC486 /* PGFullSizeContentTitlebarAccessoryViewController.xib */; };
 		8D15AC310486D014006FF6A4 /* PGDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* PGDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		AB0742792F44035700628E02 /* NSColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0742782F44035700628E02 /* NSColor+Extensions.swift */; };
+		AB07427B2F44084800628E02 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB07427A2F44084800628E02 /* AppDelegate.swift */; };
 		B581795C121490A60041F0F4 /* PGXMLAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = B581795B121490A60041F0F4 /* PGXMLAdapter.m */; };
 		B5FE96BD11F5C9C10010BBCA /* Sequential.help in Resources */ = {isa = PBXBuildFile; fileRef = B5FE965911F5C9C10010BBCA /* Sequential.help */; };
 		F1CA6DD726BA57BB00ECE823 /* libXADMaster.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1E534FE26AD801F0057A129 /* libXADMaster.a */; };
@@ -595,6 +597,9 @@
 		4BF35D1A2B062F6A008FC486 /* PGFullSizeContentTitlebarAccessoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PGFullSizeContentTitlebarAccessoryViewController.xib; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Sequential.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sequential.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB0742772F44035700628E02 /* Sequential-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Sequential-Bridging-Header.h"; sourceTree = "<group>"; };
+		AB0742782F44035700628E02 /* NSColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSColor+Extensions.swift"; sourceTree = "<group>"; };
+		AB07427A2F44084800628E02 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B573CFF3122AC22200F4B7CA /* PGNodeParenting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGNodeParenting.h; sourceTree = "<group>"; };
 		B581795A121490A60041F0F4 /* PGXMLAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGXMLAdapter.h; sourceTree = "<group>"; };
 		B581795B121490A60041F0F4 /* PGXMLAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGXMLAdapter.m; sourceTree = "<group>"; };
@@ -754,6 +759,7 @@
 		2A37F4AAFDCFA73011CA2CEA /* Pornograph */ = {
 			isa = PBXGroup;
 			children = (
+				AB0742762F44033800628E02 /* Utilities */,
 				4BC9AEAC2AF28A51001F9CBC /* distribution */,
 				4BC63F6D291628360099C1FF /* README.md */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
@@ -822,6 +828,8 @@
 				0EC11DEE0CA02B7B003E492C /* PGZooming.h */,
 				0EC11DEF0CA02B7B003E492C /* PGZooming.m */,
 				F1CA6DDA26BA587100ECE823 /* only_for_linking_cpp_dylib.cpp */,
+				AB0742772F44035700628E02 /* Sequential-Bridging-Header.h */,
+				AB07427A2F44084800628E02 /* AppDelegate.swift */,
 			);
 			path = "Other Sources";
 			sourceTree = "<group>";
@@ -1011,6 +1019,14 @@
 			path = distribution;
 			sourceTree = "<group>";
 		};
+		AB0742762F44033800628E02 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				AB0742782F44035700628E02 /* NSColor+Extensions.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		F1601B7F26D2C8380012FD2B /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1083,6 +1099,11 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					8D15AC270486D014006FF6A4 = {
+						LastSwiftMigration = 2620;
+					};
+				};
 			};
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "Sequential" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1363,6 +1384,7 @@
 				4BD905F82AE4D36F001FECBD /* PGResourceDataProvider.m in Sources */,
 				0EF5431E0DC128B600905391 /* PGNode.m in Sources */,
 				0E1D39F40A7F24E700C542A6 /* PGFullscreenWindow.m in Sources */,
+				AB0742792F44035700628E02 /* NSColor+Extensions.swift in Sources */,
 				0E1D3A4C0A7FA7B500C542A6 /* PGClipView.m in Sources */,
 				0ECD9FFE0CB3961B0059C754 /* PGFindView.m in Sources */,
 				0E90195C0DF55F50004B6F69 /* PGDocumentWindow.m in Sources */,
@@ -1373,6 +1395,7 @@
 				0E20FDBA10967449007EE24A /* PGOrientationMenuItemCell.m in Sources */,
 				0E255BA70E3A9D2E00EDF04C /* PGTimerButton.m in Sources */,
 				0EC33E3F0E29B0A700450CF8 /* PGProgressIndicatorCell.m in Sources */,
+				AB07427B2F44084800628E02 /* AppDelegate.swift in Sources */,
 				0E9016AB0DF44A7E004B6F69 /* PGColorWell.m in Sources */,
 				0EA89C9E0BD540E60077BEEE /* PGImageView.m in Sources */,
 				0E04EBD10C253BB100078EC2 /* PGInfoView.m in Sources */,
@@ -1642,6 +1665,7 @@
 		C05733C808A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = ../;
@@ -1657,6 +1681,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.SequentialX.Sequential;
 				PRODUCT_NAME = Sequential;
+				SWIFT_OBJC_BRIDGING_HEADER = "Other Sources/Sequential-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
+				SWIFT_VERSION = 6.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1664,6 +1692,7 @@
 		C05733C908A9546B00998B17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1680,6 +1709,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.SequentialX.Sequential;
 				PRODUCT_NAME = Sequential;
+				SWIFT_OBJC_BRIDGING_HEADER = "Other Sources/Sequential-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
+				SWIFT_VERSION = 6.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

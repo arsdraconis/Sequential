@@ -44,13 +44,6 @@ typedef NS_ENUM(NSUInteger, AEIconType)
 
 @end
 
-@interface NSColor (PGAppKitAdditions)
-
-+ (NSColor *)PG_bezelBackgroundColor;
-+ (NSColor *)PG_bezelForegroundColor;
-- (NSColor *)PG_checkerboardPatternColor;
-
-@end
 
 @interface NSEvent (PGAppKitAdditions)
 

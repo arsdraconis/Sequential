@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGPreferenceWindowController.h"
 
+#import "Sequential-Swift.h"
+
 // Models
 #import "PGPrefObject.h"
 
@@ -107,13 +109,9 @@ static PGPreferenceWindowController *PGSharedPrefController = nil;
 
 //	MARK: +PGPreferenceWindowController
 
-+ (id)sharedPrefController
++ (PGPreferenceWindowController *)sharedPrefController
 {
-#if __has_feature(objc_arc)
 	return PGSharedPrefController ? PGSharedPrefController : [self new];
-#else
-	return PGSharedPrefController ? PGSharedPrefController : [[[self alloc] init] autorelease];
-#endif
 }
 
 //	MARK: - PGPreferenceWindowController
@@ -253,7 +251,7 @@ PreferenceIsCustomColor(void) {
 #endif
 }
 
-- (void)_onScreenParametersChanged
+- (void)onScreenParametersDidChange
 {
 	NSArray *const screens = [NSScreen screens];
 #if __has_feature(objc_arc)
@@ -319,7 +317,7 @@ PreferenceIsCustomColor(void) {
 	[self _setCurrentPane:PGGeneralPaneIdentifier];
 	[w center];
 	[self _updateSecondaryMouseActionLabel];
-	[self _onScreenParametersChanged];	//	[self applicationDidChangeScreenParameters:nil];	2021/07/21
+	[self onScreenParametersDidChange];	//	[self applicationDidChangeScreenParameters:nil];	2021/07/21
 	[self _enableColorWell];	//	2023/08/17
 }
 
@@ -420,7 +418,7 @@ PreferenceIsCustomColor(void) {
 
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotif
 {
-	[self _onScreenParametersChanged];	//	2021/07/21
+	[self onScreenParametersDidChange];	//	2021/07/21
 }
 
 //	MARK: - <NSToolbarDelegate>

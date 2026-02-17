@@ -254,8 +254,9 @@ static PGDocumentController *PGSharedDocumentController = nil;
 #endif
 	if(response == NSModalResponseOK) {
 		PGDocument *const oldDoc = self.currentDocument;
-	//	[self application:NSApp openFiles:[openPanel filenames]];
-		[self application:NSApp openURLs:openPanel.URLs];
+        for (NSURL *url in openPanel.URLs) {
+            [self openDocumentWithContentsOfURL:url display:YES];
+        }
 
 		if((openPanel.currentEvent.modifierFlags & NSEventModifierFlagOption) && self.currentDocument != oldDoc)
 			[oldDoc close];
@@ -564,7 +565,7 @@ extern	const NSString* const	PGUseEntireScreenWhenInFullScreenKey;
 
 //	MARK: -
 
-- (id)openDocumentWithContentsOfIdentifier:(PGResourceIdentifier *)ident display:(BOOL)flag
+- (nullable id)openDocumentWithContentsOfIdentifier:(PGResourceIdentifier *)ident display:(BOOL)flag
 {
 	if(!ident) return nil;
 	PGDocument *const doc = [self documentForIdentifier:ident];
@@ -576,11 +577,11 @@ extern	const NSString* const	PGUseEntireScreenWhenInFullScreenKey;
 	return [self _openNew:!doc document:doc ? doc : [[(PGDocument *)[PGDocument alloc] initWithIdentifier:[ident displayableIdentifier]] autorelease] display:flag];
 #endif
 }
-- (id)openDocumentWithContentsOfURL:(NSURL *)URL display:(BOOL)flag
+- (nullable id)openDocumentWithContentsOfURL:(NSURL *)URL display:(BOOL)flag
 {
 	return [self openDocumentWithContentsOfIdentifier:[URL PG_resourceIdentifier] display:flag];
 }
-- (id)openDocumentWithBookmark:(PGBookmark *)aBookmark display:(BOOL)flag
+- (nullable id)openDocumentWithBookmark:(PGBookmark *)aBookmark display:(BOOL)flag
 {
 	PGDocument *const doc = [self documentForIdentifier:aBookmark.documentIdentifier];
 	[doc openBookmark:aBookmark];
@@ -1029,22 +1030,22 @@ HandlePostEnterFullScreen(PGFloatingPanelController *panel, BeforeState state) {
 
 //	MARK: - <NSApplicationDelegate>
 
-- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
-{
-	return !![self openDocumentWithContentsOfURL:[filename PG_fileURL] display:YES];
-}
-- (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
-{
-	for(NSString *const filename in filenames) [self openDocumentWithContentsOfURL:[filename PG_fileURL] display:YES];
-	[sender replyToOpenOrPrint:NSApplicationDelegateReplySuccess];
-}
-- (void)application:(NSApplication *)sender openURLs:(NSArray<NSURL*>*)URLs
-{
-//[self application:NSApp openURLs:openPanel.URLs];
-	for(NSURL* const url in URLs)
-		[self openDocumentWithContentsOfURL:url display:YES];
-	[sender replyToOpenOrPrint:NSApplicationDelegateReplySuccess];
-}
+//- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
+//{
+//	return !![self openDocumentWithContentsOfURL:[filename PG_fileURL] display:YES];
+//}
+//- (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
+//{
+//	for(NSString *const filename in filenames) [self openDocumentWithContentsOfURL:[filename PG_fileURL] display:YES];
+//	[sender replyToOpenOrPrint:NSApplicationDelegateReplySuccess];
+//}
+//- (void)application:(NSApplication *)sender openURLs:(NSArray<NSURL*>*)URLs
+//{
+////[self application:NSApp openURLs:openPanel.URLs];
+//	for(NSURL* const url in URLs)
+//		[self openDocumentWithContentsOfURL:url display:YES];
+//	[sender replyToOpenOrPrint:NSApplicationDelegateReplySuccess];
+//}
 
 //	MARK: - <NSMenuDelegate>
 

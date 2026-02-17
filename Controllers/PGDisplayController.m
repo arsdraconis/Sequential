@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <unistd.h>
 #import <tgmath.h>
 #import <QuartzCore/QuartzCore.h>	//	2024/08/14 added for -invertColors:
+#import <CoreImage/CoreImage.h>
 
 // Models
 #import "PGDocument.h"
