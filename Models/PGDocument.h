@@ -24,85 +24,52 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGPrefObject.h"
 
-// Models
+#import "PGActivity.h"
+#import "PGGeometryTypes.h"
 #import "PGNodeParenting.h"
+
 @class PGNode;
 @class PGResourceIdentifier;
 @class PGDisplayableIdentifier;
 @class PGSubscription;
-#import "PGActivity.h"
 @class PGBookmark;
-
-// Views
 @class PGImageView;
-
-// Controllers
 @class PGDisplayController;
-
-// Other Sources
-#import "PGGeometryTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PGDocumentWillRemoveNodesNotification;
-extern NSString *const PGDocumentSortedNodesDidChangeNotification;
-extern NSString *const PGDocumentNodeIsViewableDidChangeNotification;
-extern NSString *const PGDocumentNodeThumbnailDidChangeNotification;
-extern NSString *const PGDocumentNodeDisplayNameDidChangeNotification;
+extern NSString * const PGDocumentWillRemoveNodesNotification;
+extern NSString * const PGDocumentSortedNodesDidChangeNotification;
+extern NSString * const PGDocumentNodeIsViewableDidChangeNotification;
+extern NSString * const PGDocumentNodeThumbnailDidChangeNotification;
+extern NSString * const PGDocumentNodeDisplayNameDidChangeNotification;
 
-extern NSString *const PGDocumentNodeKey;
-extern NSString *const PGDocumentRemovedChildrenKey;
-extern NSString *const PGDocumentUpdateRecursivelyKey;
+extern NSString * const PGDocumentNodeKey;
+extern NSString * const PGDocumentRemovedChildrenKey;
+extern NSString * const PGDocumentUpdateRecursivelyKey;
 
 @interface PGDocument : PGPrefObject <PGActivityOwner, PGNodeParenting>
-#if !__has_feature(objc_arc)
-{
-	@private
-	PGDisplayableIdentifier *_rootIdentifier;
-	PGNode *_node;
-	PGSubscription *_subscription;
-	NSMutableArray *_cachedNodes;
-	NSOperationQueue *_operationQueue;
 
-	PGNode *_storedNode;
-	PGImageView *_storedImageView;
-	NSSize _storedOffset;
-	NSString *_storedQuery;
-	NSRect _storedFrame;
-
-	PGDisplayableIdentifier *_initialIdentifier;
-	BOOL _openedBookmark;
-	PGDisplayController *_displayController;
-	NSMenu *_pageMenu;
-	PGActivity *_activity;
-
-	NSUInteger _processingNodeCount;
-	BOOL _sortedChildrenChanged;
-}
-#endif
+@property (readonly) PGDisplayableIdentifier *rootIdentifier;
+@property (readonly) PGNode *node;
+@property (nonatomic, strong, nullable) PGDisplayController *displayController;
+@property (readonly, getter=isOnline) BOOL online;
+@property (readonly) NSMenu *pageMenu;
+/// Indicates whether to batch changes for performance.
+@property (nonatomic, getter=isProcessingNodes) BOOL processingNodes;
 
 - (instancetype)initWithIdentifier:(PGDisplayableIdentifier *)ident;
 - (instancetype)initWithURL:(NSURL *)aURL;
 - (instancetype)initWithBookmark:(PGBookmark *)aBookmark;
 
-#if __has_feature(objc_arc)
-@property (readonly) PGDisplayableIdentifier *rootIdentifier;
-@property (readonly) PGNode *node;
-@property (nonatomic, strong, nullable) PGDisplayController *displayController;
-@property (readonly, getter = isOnline) BOOL online;
-@property (readonly) NSMenu *pageMenu;
-@property (nonatomic, getter = isProcessingNodes) BOOL processingNodes; // Batch changes for performance.
-#else
-@property(readonly) PGDisplayableIdentifier *rootIdentifier;
-@property(readonly) PGNode *node;
-@property(retain) PGDisplayController *displayController;
-@property(readonly, getter = isOnline) BOOL online;
-@property(readonly) NSMenu *pageMenu;
-@property(getter = isProcessingNodes) BOOL processingNodes; // Batch changes for performance.
-#endif
-
-- (void)getStoredNode:(out PGNode *_Nullable*_Nullable)outNode imageView:(out PGImageView *_Nullable*_Nullable)outImageView offset:(out NSSize *)outOffset query:(out NSString *_Nullable*_Nullable)outQuery; // No arguments may be NULL.
-- (void)storeNode:(PGNode *)node imageView:(PGImageView *)imageView offset:(NSSize)offset query:(NSString *)query;
+- (void)getStoredNode:(out PGNode * _Nullable * _Nullable)outNode
+            imageView:(out PGImageView * _Nullable * _Nullable)outImageView
+               offset:(out NSSize *)outOffset
+                query:(out NSString * _Nullable * _Nullable)outQuery;    // No arguments may be NULL.
+- (void)storeNode:(PGNode *)node
+        imageView:(PGImageView *)imageView
+           offset:(NSSize)offset
+            query:(NSString *)query;
 - (BOOL)getStoredWindowFrame:(out NSRect *)outFrame;
 - (void)storeWindowFrame:(NSRect)frame;
 

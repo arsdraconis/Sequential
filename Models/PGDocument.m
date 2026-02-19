@@ -25,19 +25,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDocument.h"
 
 // Models
-#import "PGNode.h"
+#import "PGBookmark.h"
 #import "PGGenericImageAdapter.h"
+#import "PGNode.h"
 #import "PGResourceIdentifier.h"
 #import "PGSubscription.h"
-#import "PGBookmark.h"
 
 // Views
 #import "PGImageView.h"
 
 // Controllers
-#import "PGDocumentController.h"
 #import "PGBookmarkController.h"
 #import "PGDisplayController.h"
+#import "PGDocumentController.h"
 
 // Other Sources
 #import "PGFoundationAdditions.h"
@@ -45,20 +45,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-NSString *const PGDocumentWillRemoveNodesNotification          = @"PGDocumentWillRemoveNodes";
-NSString *const PGDocumentSortedNodesDidChangeNotification     = @"PGDocumentSortedNodesDidChange";
-NSString *const PGDocumentNodeIsViewableDidChangeNotification  = @"PGDocumentNodeIsViewableDidChange";
-NSString *const PGDocumentNodeThumbnailDidChangeNotification   = @"PGDocumentNodeThumbnailDidChange";
-NSString *const PGDocumentNodeDisplayNameDidChangeNotification = @"PGDocumentNodeDisplayNameDidChange";
+NSString * const PGDocumentWillRemoveNodesNotification      = @"PGDocumentWillRemoveNodes";
+NSString * const PGDocumentSortedNodesDidChangeNotification = @"PGDocumentSortedNodesDidChange";
+NSString * const PGDocumentNodeIsViewableDidChangeNotification = @"PGDocumentNodeIsViewableDidChange";
+NSString * const PGDocumentNodeThumbnailDidChangeNotification = @"PGDocumentNodeThumbnailDidChange";
+NSString * const PGDocumentNodeDisplayNameDidChangeNotification =
+    @"PGDocumentNodeDisplayNameDidChange";
 
-NSString *const PGDocumentNodeKey = @"PGDocumentNode";
-NSString *const PGDocumentRemovedChildrenKey = @"PGDocumentRemovedChildren";
-NSString *const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively";
+NSString * const PGDocumentNodeKey              = @"PGDocumentNode";
+NSString * const PGDocumentRemovedChildrenKey   = @"PGDocumentRemovedChildren";
+NSString * const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively";
 
-//#define PGDocumentMaxCachedNodes 3	//	too small (machines now have 8GB+ of RAM)
-#define PGDocumentMaxCachedNodes 128	//	2023/10/21 this should not be a hardcoded number; it should use a heuristic based on the app's resource useage
+///	Originally set to 3 but that was too small (machines now have 8GB+ of RAM).
+///
+/// As of 2023/10/21, this should not be a hardcoded number; it should use a
+/// heuristic based on the app's resource useage.
+#define PGDocumentMaxCachedNodes 128
 
-#if __has_feature(objc_arc)
+// MARK: -
 
 @interface PGDocument ()
 
@@ -87,436 +91,473 @@ NSString *const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively";
 
 @end
 
-#else
-
-@interface PGDocument(Private)
-
-- (PGNode *)_initialNode;
-- (void)_setInitialIdentifier:(PGResourceIdentifier *)ident;
-- (void)_closeWithFileSystemObjectDeleted:(BOOL)deleted;
-
-@end
-
-#endif
-
 //	MARK: -
 @implementation PGDocument
 
 - (instancetype)initWithIdentifier:(PGDisplayableIdentifier *)ident
 {
-	if((self = [self init])) {
-#if __has_feature(objc_arc)
-		_rootIdentifier = ident;
-#else
-		_rootIdentifier = [ident retain];
-#endif
-		_node = [[PGNode alloc] initWithParent:self identifier:ident];
-		_node.dataProvider = [PGDataProvider providerWithResourceIdentifier:ident];
-		[_rootIdentifier PG_addObserver:self selector:@selector(identifierIconDidChange:) name:PGDisplayableIdentifierIconDidChangeNotification];
-#if __has_feature(objc_arc)
-		_subscription = [_rootIdentifier subscriptionWithDescendents:YES];
-#else
-		_subscription = [[_rootIdentifier subscriptionWithDescendents:YES] retain];
-#endif
-		[_subscription PG_addObserver:self selector:@selector(subscriptionEventDidOccur:) name:PGSubscriptionEventDidOccurNotification];
-		[self noteSortedChildrenDidChange];
-	}
-	return self;
+    if ((self = [self init]))
+    {
+        _rootIdentifier    = ident;
+        _node              = [[PGNode alloc] initWithParent:self identifier:ident];
+        _node.dataProvider = [PGDataProvider providerWithResourceIdentifier:ident];
+        [_rootIdentifier PG_addObserver:self
+                               selector:@selector(identifierIconDidChange:)
+                                   name:PGDisplayableIdentifierIconDidChangeNotification];
+        _subscription = [_rootIdentifier subscriptionWithDescendents:YES];
+        [_subscription PG_addObserver:self
+                             selector:@selector(subscriptionEventDidOccur:)
+                                 name:PGSubscriptionEventDidOccurNotification];
+        [self noteSortedChildrenDidChange];
+    }
+    return self;
 }
+
 - (instancetype)initWithURL:(NSURL *)aURL
 {
-	return [self initWithIdentifier:aURL.PG_displayableIdentifier];
+    return [self initWithIdentifier:aURL.PG_displayableIdentifier];
 }
+
 - (instancetype)initWithBookmark:(PGBookmark *)aBookmark
 {
-	if((self = [self initWithIdentifier:aBookmark.documentIdentifier])) {
-		[self openBookmark:aBookmark];
-	}
-	return self;
+    if ((self = [self initWithIdentifier:aBookmark.documentIdentifier]))
+    {
+        [self openBookmark:aBookmark];
+    }
+    return self;
 }
 
 //	MARK: -
 
-#if !__has_feature(objc_arc)
-- (PGDisplayController *)displayController
-{
-	return [[_displayController retain] autorelease];
-}
-#endif
 - (void)setDisplayController:(nullable PGDisplayController *)controller
 {
-	if(controller == _displayController) return;
-	if(_displayController.activeDocument == self)
-		[_displayController setActiveDocument:nil closeIfAppropriate:YES];
-#if __has_feature(objc_arc)
-	_displayController = controller;
-#else
-	[_displayController release];
-	_displayController = [controller retain];
-#endif
-	[_displayController setActiveDocument:self closeIfAppropriate:NO];
-	[_displayController synchronizeWindowTitleWithDocumentName];
+    if (controller == _displayController) return;
+    if (_displayController.activeDocument == self)
+    {
+        [_displayController setActiveDocument:nil closeIfAppropriate:YES];
+    }
+    _displayController = controller;
+    [_displayController setActiveDocument:self closeIfAppropriate:NO];
+    [_displayController synchronizeWindowTitleWithDocumentName];
 }
+
 - (BOOL)isOnline
 {
-	return !self.rootIdentifier.isFileIdentifier;
+    return !self.rootIdentifier.isFileIdentifier;
 }
+
 - (NSMenu *)pageMenu
 {
-	return _pageMenu;
+    return _pageMenu;
 }
+
 - (BOOL)isProcessingNodes
 {
-	return _processingNodeCount > 0;
+    return _processingNodeCount > 0;
 }
+
 - (void)setProcessingNodes:(BOOL)flag
 {
-	NSParameterAssert(flag || _processingNodeCount);
-	_processingNodeCount += flag ? 1 : -1;
-	if(!_processingNodeCount && _sortedChildrenChanged) [self noteSortedChildrenDidChange];
+    NSParameterAssert(flag || _processingNodeCount);
+    _processingNodeCount += flag ? 1 : -1;
+    if (!_processingNodeCount && _sortedChildrenChanged) [self noteSortedChildrenDidChange];
 }
 
 //	MARK: -
 
-- (void)getStoredNode:(out PGNode **)outNode imageView:(out PGImageView **)outImageView offset:(out NSSize *)outOffset query:(out NSString **)outQuery
+- (void)getStoredNode:(out PGNode **)outNode
+            imageView:(out PGImageView **)outImageView
+               offset:(out NSSize *)outOffset
+                query:(out NSString **)outQuery
 {
-	if(_storedNode) {
-#if __has_feature(objc_arc)
-		*outNode = _storedNode;
-#else
-		*outNode = [_storedNode autorelease];
-#endif
-		_storedNode = nil;
+    if (_storedNode)
+    {
+        *outNode    = _storedNode;
+        _storedNode = nil;
 
-#if __has_feature(objc_arc)
-		*outImageView = _storedImageView;
-#else
-		*outImageView = [_storedImageView autorelease];
-#endif
-		_storedImageView = nil;
+        *outImageView    = _storedImageView;
+        _storedImageView = nil;
 
-		*outOffset = _storedOffset;
-#if __has_feature(objc_arc)
-		*outQuery = _storedQuery;
-#else
-		*outQuery = [_storedQuery autorelease];
-#endif
-		_storedQuery = nil;
-	} else {
-		*outNode = self._initialNode;
-#if __has_feature(objc_arc)
-		*outImageView = [PGImageView new];
-#else
-		*outImageView = [[[PGImageView alloc] init] autorelease];
-#endif
-		*outQuery = @"";
-	}
+        *outOffset   = _storedOffset;
+        *outQuery    = _storedQuery;
+        _storedQuery = nil;
+    }
+    else
+    {
+        *outNode      = self._initialNode;
+        *outImageView = [PGImageView new];
+        *outQuery     = @"";
+    }
 }
-- (void)storeNode:(PGNode *)node imageView:(PGImageView *)imageView offset:(NSSize)offset query:(NSString *)query
+
+- (void)storeNode:(PGNode *)node
+        imageView:(PGImageView *)imageView
+           offset:(NSSize)offset
+            query:(NSString *)query
 {
-#if __has_feature(objc_arc)
-	_storedNode = node;
-	_storedImageView = imageView;
-#else
-	[_storedNode autorelease];
-	_storedNode = [node retain];
-	[_storedImageView autorelease];
-	_storedImageView = [imageView retain];
-#endif
-	_storedOffset = offset;
-#if !__has_feature(objc_arc)
-	[_storedQuery autorelease];
-#endif
-	_storedQuery = [query copy];
+    _storedNode      = node;
+    _storedImageView = imageView;
+    _storedOffset    = offset;
+    _storedQuery     = [query copy];
 }
 
 - (BOOL)getStoredWindowFrame:(out NSRect *)outFrame
 {
-	if(NSEqualRects(_storedFrame, NSZeroRect)) return NO;
-	if(outFrame) *outFrame = _storedFrame;
-	_storedFrame = NSZeroRect;
-	return YES;
+    if (NSEqualRects(_storedFrame, NSZeroRect)) return NO;
+    if (outFrame) *outFrame = _storedFrame;
+    _storedFrame = NSZeroRect;
+    return YES;
 }
+
 - (void)storeWindowFrame:(NSRect)frame
 {
-	NSParameterAssert(!NSEqualRects(frame, NSZeroRect));
-	_storedFrame = frame;
+    NSParameterAssert(!NSEqualRects(frame, NSZeroRect));
+    _storedFrame = frame;
 }
 
 //	MARK: -
 
 - (void)createUI
 {
-	BOOL const new = !self.displayController;
-	if(new) self.displayController = [PGDocumentController sharedDocumentController].displayControllerForNewDocument;
-	else [self.displayController setActiveDocument:self closeIfAppropriate:NO];
-	[[PGDocumentController sharedDocumentController] noteNewRecentDocument:self];
-	[self.displayController showWindow:self];
-	if(new && !_openedBookmark) {
-		PGBookmark *const bookmark = [[PGBookmarkController sharedBookmarkController] bookmarkForIdentifier:self.rootIdentifier];
-		if(bookmark && [self.node.resourceAdapter nodeForIdentifier:bookmark.fileIdentifier]) [self.displayController offerToOpenBookmark:bookmark];
-	}
+    BOOL const new = !self.displayController;
+    if (new)
+    {
+        self.displayController = [PGDocumentController sharedDocumentController]
+            .displayControllerForNewDocument;
+    }
+    else
+    {
+        [self.displayController setActiveDocument:self closeIfAppropriate:NO];
+    }
+    [[PGDocumentController sharedDocumentController] noteNewRecentDocument:self];
+    [self.displayController showWindow:self];
+    if (new && !_openedBookmark)
+    {
+        PGBookmark * const bookmark = [[PGBookmarkController sharedBookmarkController]
+            bookmarkForIdentifier:self.rootIdentifier];
+        if (bookmark && [self.node.resourceAdapter nodeForIdentifier:bookmark.fileIdentifier])
+        {
+            [self.displayController offerToOpenBookmark:bookmark];
+        }
+    }
 }
+
 - (void)close
 {
-	[self _closeWithFileSystemObjectDeleted:NO];
+    [self _closeWithFileSystemObjectDeleted:NO];
 }
+
 - (void)openBookmark:(PGBookmark *)aBookmark
 {
-	[self _setInitialIdentifier:aBookmark.fileIdentifier];
-	PGNode *const initialNode = self._initialNode;
-	if(PGEqualObjects(initialNode.identifier, aBookmark.fileIdentifier)) {
-		_openedBookmark = YES;
-		[self.displayController activateNode:initialNode];
-		[[PGBookmarkController sharedBookmarkController] removeBookmark:aBookmark];
-	} else NSBeep();
+    [self _setInitialIdentifier:aBookmark.fileIdentifier];
+    PGNode * const initialNode = self._initialNode;
+    if (PGEqualObjects(initialNode.identifier, aBookmark.fileIdentifier))
+    {
+        _openedBookmark = YES;
+        [self.displayController activateNode:initialNode];
+        [[PGBookmarkController sharedBookmarkController] removeBookmark:aBookmark];
+    }
+    else
+    {
+        NSBeep();
+    }
 }
 
 //	MARK: -
 
 - (void)noteNode:(PGNode *)node willRemoveNodes:(NSArray *)anArray
 {
-	PGNode *newStoredNode = [_storedNode.resourceAdapter sortedViewableNodeNext:YES afterRemovalOfChildren:anArray fromNode:node];
-	if(!newStoredNode) newStoredNode = [_storedNode.resourceAdapter sortedViewableNodeNext:NO afterRemovalOfChildren:anArray fromNode:node];
-	if(_storedNode != newStoredNode) {
-#if __has_feature(objc_arc)
-		_storedNode = newStoredNode;
-#else
-		[_storedNode release];
-		_storedNode = [newStoredNode retain];
-#endif
-		_storedOffset = PGRectEdgeMaskToSizeWithMagnitude(PGReadingDirectionAndLocationToRectEdgeMask(PGHomeLocation,self.readingDirection), CGFLOAT_MAX);
-	}
-	[self PG_postNotificationName:PGDocumentWillRemoveNodesNotification userInfo:@{PGDocumentNodeKey: node, PGDocumentRemovedChildrenKey: anArray}];
+    PGNode *newStoredNode = [_storedNode.resourceAdapter sortedViewableNodeNext:YES
+                                                         afterRemovalOfChildren:anArray
+                                                                       fromNode:node];
+    if (!newStoredNode)
+    {
+        newStoredNode = [_storedNode.resourceAdapter sortedViewableNodeNext:NO
+                                                     afterRemovalOfChildren:anArray
+                                                                   fromNode:node];
+    }
+    
+    if (_storedNode != newStoredNode)
+    {
+        _storedNode = newStoredNode;
+        _storedOffset =
+            PGRectEdgeMaskToSizeWithMagnitude(PGReadingDirectionAndLocationToRectEdgeMask(PGHomeLocation,
+                                                                                          self.readingDirection),
+                                              CGFLOAT_MAX);
+    }
+    
+    [self PG_postNotificationName:PGDocumentWillRemoveNodesNotification
+                         userInfo:@{PGDocumentNodeKey: node,
+                                    PGDocumentRemovedChildrenKey: anArray}];
 }
+
 - (void)noteSortedChildrenDidChange
 {
-	if(self.processingNodes) {
-		_sortedChildrenChanged = YES;
-		return;
-	}
-	NSInteger const numberOfOtherItems = [PGDocumentController sharedDocumentController].defaultPageMenu.numberOfItems;
-	while(_pageMenu.numberOfItems > numberOfOtherItems) [_pageMenu removeItemAtIndex:numberOfOtherItems];
-	[self.node addToMenu:_pageMenu flatten:YES];
-	if(_pageMenu.numberOfItems > numberOfOtherItems) [_pageMenu insertItem:[NSMenuItem separatorItem] atIndex:numberOfOtherItems];
-	[self PG_postNotificationName:PGDocumentSortedNodesDidChangeNotification];
+    if (self.processingNodes)
+    {
+        _sortedChildrenChanged = YES;
+        return;
+    }
+    
+    NSInteger const numberOfOtherItems = [PGDocumentController sharedDocumentController]
+        .defaultPageMenu
+        .numberOfItems;
+    while (_pageMenu.numberOfItems > numberOfOtherItems)
+    {
+        [_pageMenu removeItemAtIndex:numberOfOtherItems];
+    }
+    
+    [self.node addToMenu:_pageMenu flatten:YES];
+    if (_pageMenu.numberOfItems > numberOfOtherItems)
+    {
+        [_pageMenu insertItem:[NSMenuItem separatorItem] atIndex:numberOfOtherItems];
+    }
+    [self PG_postNotificationName:PGDocumentSortedNodesDidChangeNotification];
 }
+
 - (void)noteNodeIsViewableDidChange:(PGNode *)node
 {
-	if(_node) [self PG_postNotificationName:PGDocumentNodeIsViewableDidChangeNotification userInfo:@{PGDocumentNodeKey: node}];
+    if (_node)
+    {
+        [self PG_postNotificationName:PGDocumentNodeIsViewableDidChangeNotification
+                             userInfo:@{PGDocumentNodeKey: node}];
+    }
 }
+
 - (void)noteNodeThumbnailDidChange:(PGNode *)node recursively:(BOOL)flag
 {
-	if(node) [self PG_postNotificationName:PGDocumentNodeThumbnailDidChangeNotification userInfo:@{PGDocumentNodeKey: node, PGDocumentUpdateRecursivelyKey: @(flag)}];
+    // TODO: Possible bug: should this be _node instead of node?
+    if (node)
+    {
+        [self PG_postNotificationName:PGDocumentNodeThumbnailDidChangeNotification userInfo:@{
+            PGDocumentNodeKey: node,
+            PGDocumentUpdateRecursivelyKey: @(flag)
+        }];
+    }
 }
+
 - (void)noteNodeDisplayNameDidChange:(PGNode *)node
 {
-	if(!_node) return;
-	if(self.node == node) [self.displayController synchronizeWindowTitleWithDocumentName];
-	[self PG_postNotificationName:PGDocumentNodeDisplayNameDidChangeNotification userInfo:@{PGDocumentNodeKey: node}];
+    if (!_node) return;
+    if (self.node == node)
+    {
+        [self.displayController synchronizeWindowTitleWithDocumentName];
+    }
+    
+    [self PG_postNotificationName:PGDocumentNodeDisplayNameDidChangeNotification
+                         userInfo:@{PGDocumentNodeKey: node}];
 }
+
 - (void)noteNodeDidCache:(PGNode *)node
 {
-	if(!_node) return;
-	[_cachedNodes removeObjectIdenticalTo:node];
-	[_cachedNodes insertObject:node atIndex:0];
-	while(_cachedNodes.count > PGDocumentMaxCachedNodes) {
-		[_cachedNodes.lastObject.resourceAdapter clearCache];
-		[_cachedNodes removeLastObject];
-	}
+    if (!_node) return;
+    [_cachedNodes removeObjectIdenticalTo:node];
+    [_cachedNodes insertObject:node atIndex:0];
+    while (_cachedNodes.count > PGDocumentMaxCachedNodes)
+    {
+        [_cachedNodes.lastObject.resourceAdapter clearCache];
+        [_cachedNodes removeLastObject];
+    }
 }
+
 - (void)addOperation:(NSOperation *)operation
 {
-	[_operationQueue addOperation:operation];
+    [_operationQueue addOperation:operation];
 }
 
 //	MARK: -
 
 - (void)identifierIconDidChange:(NSNotification *)aNotif
 {
-	[self.displayController synchronizeWindowTitleWithDocumentName];
+    [self.displayController synchronizeWindowTitleWithDocumentName];
 }
+
 - (void)subscriptionEventDidOccur:(NSNotification *)aNotif
 {
-	NSParameterAssert(aNotif);
-	NSDictionary *const userInfo = aNotif.userInfo;
-	NSString *const path = userInfo[PGSubscriptionPathKey];
-	NSUInteger const flags = [userInfo[PGSubscriptionRootFlagsKey] unsignedIntegerValue];
-	BOOL const isDeleteOrRevoke = !!(flags & (NOTE_DELETE | NOTE_REVOKE));
-	PGResourceIdentifier *const ident = isDeleteOrRevoke ? nil : [path PG_fileURL].PG_resourceIdentifier;
-	//	NB: if the identifier is a PGAliasIdentifier instance, the call to
-	//	-isEqual: will update the internal bookmark and trigger the posting
-	//	of a PGDisplayableIdentifierDisplayNameDidChangeNotification to
-	//	-[PGDocumentController recentDocumentIdentifierDidChange:]
-	BOOL const isEventForRootNode = ident ? [_rootIdentifier isEqual:ident] :
-		[[NSURL fileURLWithPath:path] isEqual:[_rootIdentifier URLByFollowingAliases:NO]];
+    NSParameterAssert(aNotif);
+    NSDictionary * const userInfo = aNotif.userInfo;
+    NSString * const path         = userInfo[PGSubscriptionPathKey];
+    NSUInteger const flags        = [userInfo[PGSubscriptionRootFlagsKey] unsignedIntegerValue];
+    BOOL const isDeleteOrRevoke   = !!(flags & (NOTE_DELETE | NOTE_REVOKE));
+    PGResourceIdentifier * const ident = isDeleteOrRevoke
+        ? nil
+        : [path PG_fileURL].PG_resourceIdentifier;
+    //	NB: if the identifier is a PGAliasIdentifier instance, the call to
+    //	-isEqual: will update the internal bookmark and trigger the posting
+    //	of a PGDisplayableIdentifierDisplayNameDidChangeNotification to
+    //	-[PGDocumentController recentDocumentIdentifierDidChange:]
+    BOOL const isEventForRootNode = ident
+        ? [_rootIdentifier isEqual:ident]
+        : [[NSURL fileURLWithPath:path] isEqual:[_rootIdentifier URLByFollowingAliases:NO]];
 
-	if(isDeleteOrRevoke) {
-		//	if the root node represents the deleted object then this
-		//	document must be removed from the Open Recent sub-menu;
-		//	do this by passing YES to -_closeWithFileSystemObjectDeleted:
-		return [self _closeWithFileSystemObjectDeleted:isEventForRootNode];
-	}
+    if (isDeleteOrRevoke)
+    {
+        //	if the root node represents the deleted object then this
+        //	document must be removed from the Open Recent sub-menu;
+        //	do this by passing YES to -_closeWithFileSystemObjectDeleted:
+        return [self _closeWithFileSystemObjectDeleted:isEventForRootNode];
+    }
 
-	//	if the root node represents the moved/renamed file/folder then
-	//	update the represented document in NSDocument; this will then
-	//	update the title bar's document icon and command-clicking
-	//	the title bar will display the file/folder's new location/name
-	if(isEventForRootNode) {
-		[_displayController synchronizeWindowTitleWithDocumentName];
-		return;	//	no children need updating so exit now
-	}
+    //	if the root node represents the moved/renamed file/folder then
+    //	update the represented document in NSDocument; this will then
+    //	update the title bar's document icon and command-clicking
+    //	the title bar will display the file/folder's new location/name
+    if (isEventForRootNode)
+    {
+        [_displayController synchronizeWindowTitleWithDocumentName];
+        // no children need updating so exit now
+        return;
+    }
 
-	PGNode *const node = [self.node.resourceAdapter nodeForIdentifier:ident];
-	if(node)
-		[node noteFileEventDidOccurDirect:YES];
+    PGNode * const node = [self.node.resourceAdapter nodeForIdentifier:ident];
+    if (node)
+    {
+        [node noteFileEventDidOccurDirect:YES];
+    }
 }
 
 //	MARK: - PGDocument(Private)
 
 - (PGNode *)_initialNode
 {
-	PGNode *const node = [self.node.resourceAdapter nodeForIdentifier:_initialIdentifier];
-	return node ? node : [self.node.resourceAdapter sortedViewableNodeFirst:YES];
+    PGNode * const node = [self.node.resourceAdapter nodeForIdentifier:_initialIdentifier];
+    return node ? node : [self.node.resourceAdapter sortedViewableNodeFirst:YES];
 }
+
 - (void)_setInitialIdentifier:(PGResourceIdentifier *)ident
 {
-	if(ident == _initialIdentifier) return;
-	NSAssert([ident isKindOfClass:PGDisplayableIdentifier.class], @"");
-#if __has_feature(objc_arc)
-	_initialIdentifier = (PGDisplayableIdentifier *)ident;
-#else
-	[_initialIdentifier release];
-	_initialIdentifier = (PGDisplayableIdentifier *)[ident retain];
-#endif
+    if (ident == _initialIdentifier) return;
+    NSAssert([ident isKindOfClass:PGDisplayableIdentifier.class], @"");
+    _initialIdentifier = (PGDisplayableIdentifier *)ident;
 }
+
 - (void)_closeWithFileSystemObjectDeleted:(BOOL)deleted
-{	//	2023/10/31
-	PGDocumentController *dc = [PGDocumentController sharedDocumentController];
-	if(deleted)
-		[dc noteDeletedRecentDocument:self];
-	else
-		[dc noteNewRecentDocument:self];
-	[self setDisplayController:nil];
-	[dc removeDocument:self];
+{    //	2023/10/31
+    PGDocumentController *dc = [PGDocumentController sharedDocumentController];
+    if (deleted)
+    {
+        [dc noteDeletedRecentDocument:self];
+    }
+    else
+    {
+        [dc noteNewRecentDocument:self];
+    }
+    
+    [self setDisplayController:nil];
+    [dc removeDocument:self];
 }
 
 //	MARK: - PGPrefObject
 
 - (void)setShowsInfo:(BOOL)flag
 {
-	super.showsInfo = flag;
-	[[PGPrefObject globalPrefObject] setShowsInfo:flag];
+    super.showsInfo = flag;
+    [[PGPrefObject globalPrefObject] setShowsInfo:flag];
 }
+
 - (void)setShowsThumbnails:(BOOL)flag
 {
-	super.showsThumbnails = flag;
-	[[PGPrefObject globalPrefObject] setShowsThumbnails:flag];
+    super.showsThumbnails = flag;
+    [[PGPrefObject globalPrefObject] setShowsThumbnails:flag];
 }
+
 - (void)setReadingDirection:(PGReadingDirection)aDirection
 {
-	super.readingDirection = aDirection;
-	[[PGPrefObject globalPrefObject] setReadingDirection:aDirection];
+    super.readingDirection = aDirection;
+    [[PGPrefObject globalPrefObject] setReadingDirection:aDirection];
 }
+
 - (void)setImageScaleMode:(PGImageScaleMode)aMode
 {
-	super.imageScaleMode = aMode;
-	[[PGPrefObject globalPrefObject] setImageScaleMode:aMode];
+    super.imageScaleMode = aMode;
+    [[PGPrefObject globalPrefObject] setImageScaleMode:aMode];
 }
+
 - (void)setImageScaleFactor:(CGFloat)factor animate:(BOOL)flag
 {
-	[super setImageScaleFactor:factor animate:flag];
-	[[PGPrefObject globalPrefObject] setImageScaleFactor:factor animate:flag];
+    [super setImageScaleFactor:factor animate:flag];
+    [[PGPrefObject globalPrefObject] setImageScaleFactor:factor animate:flag];
 }
+
 - (void)setAnimatesImages:(BOOL)flag
 {
-	super.animatesImages = flag;
-	[[PGPrefObject globalPrefObject] setAnimatesImages:flag];
+    super.animatesImages = flag;
+    [[PGPrefObject globalPrefObject] setAnimatesImages:flag];
 }
+
 - (void)setSortOrder:(PGSortOrder)anOrder
 {
-	if(self.sortOrder != anOrder) {
-		super.sortOrder = anOrder;
-		[self.node noteSortOrderDidChange];
-		[self noteSortedChildrenDidChange];
-	}
-	[[PGPrefObject globalPrefObject] setSortOrder:anOrder];
+    if (self.sortOrder != anOrder)
+    {
+        super.sortOrder = anOrder;
+        [self.node noteSortOrderDidChange];
+        [self noteSortedChildrenDidChange];
+    }
+    [[PGPrefObject globalPrefObject] setSortOrder:anOrder];
 }
+
 - (void)setTimerInterval:(NSTimeInterval)interval
 {
-	super.timerInterval = interval;
-	[[PGPrefObject globalPrefObject] setTimerInterval:interval];
+    super.timerInterval = interval;
+    [[PGPrefObject globalPrefObject] setTimerInterval:interval];
 }
+
 - (void)setBaseOrientation:(PGOrientation)anOrientation
 {
-	super.baseOrientation = anOrientation;
-	[[PGPrefObject globalPrefObject] setBaseOrientation:anOrientation];
+    super.baseOrientation = anOrientation;
+    [[PGPrefObject globalPrefObject] setBaseOrientation:anOrientation];
 }
 
 //	MARK: - NSObject
 
 - (instancetype)init
 {
-	if((self = [super init])) {
-		_pageMenu = [[PGDocumentController sharedDocumentController].defaultPageMenu copy];
-		[_pageMenu addItem:[NSMenuItem separatorItem]];
-		_cachedNodes = [NSMutableArray new];
-		_operationQueue = [[NSOperationQueue alloc] init];
-		_operationQueue.maxConcurrentOperationCount = 2; // Our operations (thumbnail generation) are usually IO-bound, so too much concurrency is detrimental to performance.
-		_activity = [[PGActivity alloc] initWithOwner:self];
-		_activity.parentActivity = [PGActivity applicationActivity];
-	}
-	return self;
+    if ((self = [super init]))
+    {
+        _pageMenu = [[PGDocumentController sharedDocumentController].defaultPageMenu copy];
+        [_pageMenu addItem:[NSMenuItem separatorItem]];
+        _cachedNodes    = [NSMutableArray new];
+        _operationQueue = [[NSOperationQueue alloc] init];
+        // Our operations (thumbnail generation) are usually IO-bound, so too much
+        // concurrency is detrimental to performance.
+        _operationQueue.maxConcurrentOperationCount = 2;
+        _activity                = [[PGActivity alloc] initWithOwner:self];
+        _activity.parentActivity = [PGActivity applicationActivity];
+    }
+    return self;
 }
+
 - (void)dealloc
 {
-	[self PG_removeObserver];
-	[_node.resourceAdapter.activity cancel:self];
-	[_node detachFromTree];
-	[_operationQueue cancelAllOperations];
-	[_activity invalidate];
-
-#if !__has_feature(objc_arc)
-	[_rootIdentifier release];
-	[_node release];
-	[_subscription release];
-	[_cachedNodes release];
-	[_operationQueue release];
-	[_storedNode release];
-	[_storedImageView release];
-	[_storedQuery release];
-	[_initialIdentifier release];
-	[_displayController release];
-	[_pageMenu release];
-	[_activity release];
-	[super dealloc];
-#endif
+    [self PG_removeObserver];
+    [_node.resourceAdapter.activity cancel:self];
+    [_node detachFromTree];
+    [_operationQueue cancelAllOperations];
+    [_activity invalidate];
 }
 
 //	MARK: - <PGActivityOwner>
 
 - (PGActivity *)activity
 {
-#if __has_feature(objc_arc)
-	return _activity;
-#else
-	return [[_activity retain] autorelease];
-#endif
+    return _activity;
 }
+
 - (NSString *)descriptionForActivity:(PGActivity *)activity
 {
-	return self.node.identifier.displayName;
+    return self.node.identifier.displayName;
 }
 
 //	MARK: - <PGNodeParent>
 
 - (PGDocument *)document
 {
-	return self;
+    return self;
 }
+
 - (nullable PGContainerAdapter *)containerAdapter
 {
-	return nil;
+    return nil;
 }
 
 @end
