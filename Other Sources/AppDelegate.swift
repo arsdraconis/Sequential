@@ -7,7 +7,6 @@
 
 import Cocoa
 
-
 @objc
 class AppDelegate: NSObject, NSApplicationDelegate
 {
@@ -47,4 +46,17 @@ class AppDelegate: NSObject, NSApplicationDelegate
         // Explicitly opt into secure coding to silence warning message on launch.
         return true
     }
+    
+    func applicationWillFinishLaunching(_ notification: Notification)
+    {
+        // FIXME: Is this really necessary?
+        // This was moved here from +[PGApplication initialize]. The only
+        // comment on the original was, "We use a lot of file descriptors."
+        //
+        // The RLIM_INFINITY macro does not appear to be picked up by Swift. It's
+        // defined as (((__uint64_t)1 << 63) - 1)
+        var rlim = rlimit(rlim_cur: rlim_t.max, rlim_max: rlim_t.max)
+        setrlimit(RLIMIT_NOFILE, &rlim)
+    }
+
 }

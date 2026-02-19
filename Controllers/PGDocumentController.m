@@ -1085,28 +1085,17 @@ HandlePostEnterFullScreen(PGFloatingPanelController *panel, BeforeState state) {
 @end
 
 //	MARK: -
-@interface PGApplication : NSApplication {
-@private
-	//	<https://lapcatsoftware.com/articles/Preferences2.html>
-//	IBOutlet NSMenuItem *_preferencesMenuItem;
-//	NSString *_originalPreferencesTitle;
-}
+@interface PGApplication : NSApplication
 @end
 @interface PGWindow : NSWindow
 @end
 @interface PGView : NSView
 @end
-@interface PGMenu : NSMenu
-@end
 @interface PGMenuItem : NSMenuItem
 @end
-//@interface PGButton : NSButton
-//@end
 
 static BOOL (*PGNSWindowValidateMenuItem)(id, SEL, NSMenuItem *);
-static BOOL (*PGNSMenuPerformKeyEquivalent)(id, SEL, NSEvent *);
 static void (*PGNSMenuItemSetEnabled)(id, SEL, BOOL);
-//static BOOL (*PGNSButtonPerformKeyEquivalent)(id, SEL, NSEvent *);
 
 @implementation PGApplication
 
@@ -1117,36 +1106,11 @@ static void (*PGNSMenuItemSetEnabled)(id, SEL, BOOL);
 	//	swizzle -[NSWindow validateMenuItem:], -[NSMenu performKeyEquivalent:], and
 	//	-[NSMenuItem setEnabled:]
 	PGNSWindowValidateMenuItem = [NSWindow PG_useInstance:YES implementationFromClass:[PGWindow class] forSelector:@selector(validateMenuItem:)];
-	PGNSMenuPerformKeyEquivalent = [NSMenu PG_useInstance:YES implementationFromClass:[PGMenu class] forSelector:@selector(performKeyEquivalent:)];
 	PGNSMenuItemSetEnabled = [NSMenuItem PG_useInstance:YES implementationFromClass:[PGMenuItem class] forSelector:@selector(setEnabled:)];
-//	PGNSButtonPerformKeyEquivalent = [NSButton PG_useInstance:YES
-//									  implementationFromClass:[PGButton class]
-//												  forSelector:@selector(performKeyEquivalent:)];
-
-	struct rlimit const lim = {RLIM_INFINITY, RLIM_INFINITY};
-	(void)setrlimit(RLIMIT_NOFILE, &lim); // We use a lot of file descriptors.
-
-//	[NSBundle PG_prepareToAutoLocalize];
 }
 - (void)sendEvent:(NSEvent *)anEvent
 {
 	if(anEvent.window || anEvent.type != NSEventTypeKeyDown || !([self.mainMenu performKeyEquivalent:anEvent] || [[PGDocumentController sharedDocumentController] performKeyEquivalent:anEvent])) [super sendEvent:anEvent];
-}
-- (void)applicationWillFinishLaunching:(NSNotification *)notification
-{
-	//	<https://lapcatsoftware.com/articles/Preferences2.html>
-//	if(!_preferencesMenuItem || _originalPreferencesTitle)
-//		return;
-//	_originalPreferencesTitle = [[_preferencesMenuItem title] retain];
-}
-- (void)applicationDidFinishLaunching:(NSNotification *)notification
-{
-	//	<https://lapcatsoftware.com/articles/Preferences2.html>
-//	if(!_originalPreferencesTitle || !_preferencesMenuItem)
-//		return;
-//	[_preferencesMenuItem setTitle:_originalPreferencesTitle];
-//	[_originalPreferencesTitle release];
-//	_originalPreferencesTitle = nil;
 }
 
 @end
@@ -1157,29 +1121,6 @@ static void (*PGNSMenuItemSetEnabled)(id, SEL, BOOL);
 {
 	if(@selector(PG_grow:) == anItem.action) return self.styleMask & NSWindowStyleMaskResizable && [self standardWindowButton:NSWindowZoomButton].enabled;
 	return PGNSWindowValidateMenuItem(self, _cmd, anItem);
-}
-
-@end
-
-@implementation PGMenu
-
-- (BOOL)performKeyEquivalent:(NSEvent *)anEvent
-{
-	if(anEvent.type != NSEventTypeKeyDown) return NO;
-	NSInteger i;
-	NSInteger const count = self.numberOfItems;
-	for(i = 0; i < count; i++) {
-		NSMenuItem *const item = [self itemAtIndex:i];
-		NSString *const equiv = item.keyEquivalent;
-		if(equiv.length != 1) continue;
-		unsigned short const keyCode = PGKeyCodeFromUnichar([equiv characterAtIndex:0]);
-		if(PGKeyUnknown == keyCode || anEvent.keyCode != keyCode) continue; // Some non-English keyboard layouts switch to English when the Command key is held, but that doesn't help our shortcuts that don't use Command, so we have to check by key code.
-		NSUInteger const modifiersMask = NSEventModifierFlagCommand | NSEventModifierFlagShift | NSEventModifierFlagOption;
-		if((anEvent.modifierFlags & modifiersMask) != (item.keyEquivalentModifierMask & modifiersMask)) continue;
-		return [item PG_performAction];
-	}
-	for(i = 0; i < count; i++) if([[self itemAtIndex:i].submenu performKeyEquivalent:anEvent]) return YES;
-	return NSApp.mainMenu == self ? PGNSMenuPerformKeyEquivalent(self, _cmd, anEvent) : NO;
 }
 
 @end
@@ -1206,24 +1147,5 @@ EnableViews(NSView *view, BOOL enabled, BOOL recursive) {
 }
 
 @end
-
-/* @implementation PGButton
-
-//	MARK: - NSView
-
-- (BOOL)performKeyEquivalent:(NSEvent *)anEvent
-{
-	if(PGNSButtonPerformKeyEquivalent(self, _cmd, anEvent)) return YES;
-	if(![[NSArray arrayWithObjects:@"\r", @"\n", nil] containsObject:[self keyEquivalent]]) return NO;
-	if(![[anEvent charactersIgnoringModifiers] isEqual:[self keyEquivalent]]) return NO;
-	NSUInteger const sharedModifiers = [anEvent modifierFlags] & [self keyEquivalentModifierMask];
-	if([self keyEquivalentModifierMask] == sharedModifiers) {
-		[[self cell] performClick:self];
-		return YES;
-	}
-	return NO;
-}
-
-@end */
 
 NS_ASSUME_NONNULL_END
