@@ -327,7 +327,7 @@ NSString * const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively"
 - (void)noteNodeThumbnailDidChange:(PGNode *)node recursively:(BOOL)flag
 {
     // TODO: Possible bug: should this be _node instead of node?
-    if (node)
+    if (_node)
     {
         [self PG_postNotificationName:PGDocumentNodeThumbnailDidChangeNotification userInfo:@{
             PGDocumentNodeKey: node,

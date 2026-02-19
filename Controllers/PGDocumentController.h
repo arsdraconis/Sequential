@@ -34,10 +34,10 @@ NS_ASSUME_NONNULL_BEGIN
 @class PGDisplayableIdentifier;    // 2023/10/29 to specify static type
 
 //	general prefs pane
-extern NSString * const PGBackgroundColorSourceKey;	//	2023/08/17
+extern NSString * const PGBackgroundColorSourceKey;    //	2023/08/17
 extern NSString * const PGBackgroundColorKey;
 extern NSString * const PGBackgroundPatternKey;
-extern NSString * const PGBackgroundColorUsedInFullScreenKey;	//	2023/08/14
+extern NSString * const PGBackgroundColorUsedInFullScreenKey;    //	2023/08/14
 
 extern NSString * const PGAntialiasWhenUpscalingKey;
 extern NSString * const PGImageScaleConstraintKey;
@@ -46,16 +46,17 @@ extern NSString * const PGEscapeKeyMappingKey;
 extern NSString * const PGDimOtherScreensKey;
 
 //	thumbnail prefs pane
-extern NSString * const PGShowThumbnailImageNameKey;	//	2023/10/01 added
-extern NSString * const PGShowThumbnailImageSizeKey;	//	2023/10/01 added
-extern NSString * const PGShowThumbnailContainerNameKey;	//	2023/10/01 added
-extern NSString * const PGShowThumbnailContainerChildCountKey;	//	2023/10/01 added
-extern NSString * const PGShowThumbnailContainerChildSizeTotalKey;	//	2023/10/01 added
-extern NSString * const PGThumbnailSizeFormatKey;	//	2023/10/01 added
+extern NSString * const PGShowThumbnailImageNameKey;                  //	2023/10/01 added
+extern NSString * const PGShowThumbnailImageSizeKey;                  //	2023/10/01 added
+extern NSString * const PGShowThumbnailContainerNameKey;              //	2023/10/01 added
+extern NSString * const PGShowThumbnailContainerChildCountKey;        //	2023/10/01 added
+extern NSString * const PGShowThumbnailContainerChildSizeTotalKey;    //	2023/10/01 added
+extern NSString * const PGThumbnailSizeFormatKey;                     //	2023/10/01 added
 
-//extern NSString *const PGShowFileNameOnImageThumbnailKey;	//	2022/10/15 added; 2023/10/01 removed
-//extern NSString *const PGShowCountsAndSizesOnContainerThumbnailKey;	//	2022/10/15 added; 2023/09/11 removed
-//extern NSString *const PGThumbnailContainerLabelTypeKey;	//	2023/09/11
+// extern NSString *const PGShowFileNameOnImageThumbnailKey;	//	2022/10/15 added; 2023/10/01
+// removed extern NSString *const PGShowCountsAndSizesOnContainerThumbnailKey;	//	2022/10/15
+// added; 2023/09/11 removed extern NSString *const PGThumbnailContainerLabelTypeKey;	//
+// 2023/09/11
 
 //	navigation prefs pane
 extern NSString * const PGMouseClickActionKey;
@@ -63,20 +64,20 @@ extern NSString * const PGBackwardsInitialLocationKey;
 extern NSString * const PGBackwardsInitialLocationKey;
 
 typedef NS_ENUM(NSUInteger, PGAction) {
-	PGNextPreviousAction = 0,
-	PGLeftRightAction    = 1,
-	PGRightLeftAction    = 2
+    PGActionNextPrevious = 0,
+    PGActionLeftRight    = 1,
+    PGActionRightLeft    = 2
 };
 
 typedef NS_ENUM(NSUInteger, PGEscapeMapping) {
-	PGFullscreenMapping = 0,
-	PGQuitMapping       = 1
+    PGEscapeMappingFullscreen = 0,
+    PGEscapeMappingQuit       = 1
 };
 
 typedef NS_ENUM(NSUInteger, PGImageScaleConstraint) {
-	PGScaleFreely = 0,
-	PGDownscaleOnly = 1,
-	PGUpscaleOnly = 2,
+    PGImageScaleConstraintNone          = 0,
+    PGImageScaleConstraintDownscaleOnly = 1,
+    PGImageScaleConstraintUpscaleOnly   = 2,
 };
 
 typedef NSUInteger BeforeState;
@@ -84,17 +85,18 @@ typedef NSUInteger BeforeState;
 #define PGScaleMax 16.0f
 #define PGScaleMin (1.0f / 16.0f)
 
-@interface PGDocumentController :
-	NSResponder <NSMenuDelegate, NSMenuItemValidation>
+@interface PGDocumentController : NSResponder <NSMenuDelegate, NSMenuItemValidation>
 
-@property (nonatomic, copy, nonnull) NSArray<PGDisplayableIdentifier*> *recentDocumentIdentifiers;    //    2023/10/29 specified static type
+@property (nonatomic, copy, nonnull)
+    NSArray<PGDisplayableIdentifier *> *recentDocumentIdentifiers;    // 2023/10/29 specified static type
 @property (readonly) NSUInteger maximumRecentDocumentCount;
 @property (readonly, nonnull) PGDisplayController *displayControllerForNewDocument;
-@property (nonatomic, assign, getter = isFullscreen) BOOL fullscreen;
+@property (nonatomic, assign, getter=isFullscreen) BOOL fullscreen;
 @property (readonly) BOOL canToggleFullscreen;
-@property (nonatomic, assign) BOOL usesEntireScreenWhenInFullScreen;    //    2023/08/14 added
-@property (readonly) BOOL canToggleUsesEntireScreenWhenInFullScreen;    //    2023/08/14 added
-@property (readonly, nonnull) NSArray *documents;    //    removed copy attribute to silence static analyzer warning
+@property (nonatomic, assign) BOOL usesEntireScreenWhenInFullScreen;    // 2023/08/14 added
+@property (readonly) BOOL canToggleUsesEntireScreenWhenInFullScreen;    // 2023/08/14 added
+@property (readonly, nonnull)
+    NSArray *documents;    // removed copy attribute to silence static analyzer warning
 @property (readonly, nonnull) NSMenu *scaleMenu;
 @property (nonatomic, weak) IBOutlet NSSlider *scaleSlider;
 @property (readonly, strong, nonnull) IBOutlet NSMenu *defaultPageMenu;
@@ -134,18 +136,20 @@ typedef NSUInteger BeforeState;
 - (nullable PGDocument *)next:(BOOL)flag documentBeyond:(PGDocument *)document;
 - (nullable NSMenuItem *)windowsMenuItemForDocument:(PGDocument *)document;
 
-- (nullable id)openDocumentWithContentsOfIdentifier:(PGResourceIdentifier *)ident display:(BOOL)flag;
+- (nullable id)openDocumentWithContentsOfIdentifier:(PGResourceIdentifier *)ident
+                                            display:(BOOL)flag;
 - (nullable id)openDocumentWithContentsOfURL:(NSURL *)URL display:(BOOL)flag;
 - (nullable id)openDocumentWithBookmark:(PGBookmark *)aBookmark display:(BOOL)flag;
 - (void)noteNewRecentDocument:(PGDocument *)document;
 - (void)noteDeletedRecentDocument:(PGDocument *)document;
 
-- (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
+- (void)handleAppleEvent:(NSAppleEventDescriptor *)event
+          withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
 
 - (void)recentDocumentIdentifierDidChange:(nullable NSNotification *)aNotif;
 
 - (BeforeState)togglePanelsForExitingFullScreen:(BOOL)exitingFullScreen
-								withBeforeState:(BeforeState)state;
+                                withBeforeState:(BeforeState)state;
 
 @end
 

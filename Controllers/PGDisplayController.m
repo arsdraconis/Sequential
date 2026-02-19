@@ -1481,8 +1481,8 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	} else {
 		PGImageScaleConstraint const constraint = [[[NSUserDefaults standardUserDefaults] objectForKey:PGImageScaleConstraintKey] unsignedIntegerValue];
 		BOOL const resIndependent = self.activeNode.resourceAdapter.resolutionIndependent;
-		NSSize const minSize = constraint != PGUpscaleOnly || resIndependent ? NSZeroSize : newSize;
-		NSSize const maxSize = constraint != PGDownscaleOnly || resIndependent ? NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX) : newSize;
+		NSSize const minSize = constraint != PGImageScaleConstraintUpscaleOnly || resIndependent ? NSZeroSize : newSize;
+		NSSize const maxSize = constraint != PGImageScaleConstraintDownscaleOnly || resIndependent ? NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX) : newSize;
 #if __has_feature(objc_arc)
 		NSRect const bounds = _clipView.insetBounds;
 #else
@@ -2366,8 +2366,8 @@ proposedFrame.size.width, proposedFrame.size.height); */
 	BOOL const rtl = self.activeDocument.readingDirection == PGReadingDirectionRightToLeft;
 	BOOL forward;
 	switch([[[NSUserDefaults standardUserDefaults] objectForKey:PGMouseClickActionKey] integerValue]) {
-		case PGLeftRightAction: forward = primary == rtl; break;
-		case PGRightLeftAction: forward = primary != rtl; break;
+		case PGActionLeftRight: forward = primary == rtl; break;
+		case PGActionRightLeft: forward = primary != rtl; break;
 		default: forward = primary; break;
 	}
 	if(anEvent.modifierFlags & NSEventModifierFlagShift) forward = !forward;

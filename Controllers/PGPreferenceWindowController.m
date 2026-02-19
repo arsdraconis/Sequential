@@ -240,9 +240,9 @@ PreferenceIsCustomColor(void) {
 {
 	NSString *label = @"";
 	switch([[[NSUserDefaults standardUserDefaults] objectForKey:PGMouseClickActionKey] integerValue]) {
-		case PGNextPreviousAction: label = @"Secondary click goes to the previous page."; break;
-		case PGLeftRightAction: label = @"Secondary click goes right."; break;
-		case PGRightLeftAction: label = @"Secondary click goes left."; break;
+		case PGActionNextPrevious: label = @"Secondary click goes to the previous page."; break;
+		case PGActionLeftRight: label = @"Secondary click goes right."; break;
+		case PGActionRightLeft: label = @"Secondary click goes left."; break;
 	}
 #if __has_feature(objc_arc)
 	[_secondaryMouseActionLabel setStringValue:NSLocalizedString(label, @"Informative string for secondary mouse button action.")];

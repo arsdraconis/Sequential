@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern	const NSString* const	PGUseEntireScreenWhenInFullScreenKey;
+extern const NSString* const PGUseEntireScreenWhenInFullScreenKey;
 
 static
 BOOL
