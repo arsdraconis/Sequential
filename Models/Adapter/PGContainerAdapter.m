@@ -180,8 +180,8 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 	if(!_sortedChildren) {
 		PGSortOrder const order = self.document.sortOrder;
 		PGSortOrder const maskedUnsortedOrder = PGSortOrderMask & _unsortedOrder;
-		if((PGSortOrderMask & order) == maskedUnsortedOrder || PGSortInnateOrder == maskedUnsortedOrder) {
-			if((PGSortDescendingMask & order) == (PGSortDescendingMask & _unsortedOrder))
+		if((PGSortOrderMask & order) == maskedUnsortedOrder || PGSortOrderInnateOrder == maskedUnsortedOrder) {
+			if((PGSortOrderDescendingMask & order) == (PGSortOrderDescendingMask & _unsortedOrder))
 				_sortedChildren = _unsortedChildren;
 			else _sortedChildren = [_unsortedChildren reverseObjectEnumerator].allObjects;
 		} else _sortedChildren = [_unsortedChildren sortedArrayUsingSelector:@selector(compare:)];

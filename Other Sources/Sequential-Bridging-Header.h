@@ -5,3 +5,4 @@
 #import "PGAppKitAdditions.h"
 #import "PGDocumentController.h"
 #import "PGPreferenceWindowController.h"
+#import "PGPrefObject.h"

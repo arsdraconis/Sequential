@@ -177,7 +177,7 @@ static PGDocumentController *PGSharedDocumentController = nil;
 									requiringSecureCoding:YES error:&error];
 	[d registerDefaults:@{PGAntialiasWhenUpscalingKey: @YES,
 		PGBackgroundColorKey: archivedBlackColor,
-		PGBackgroundPatternKey: @(PGNoPattern),	//	misnomer; should be PGBackgroundPatternTypeKey
+		PGBackgroundPatternKey: @(PGPatternTypeNoPattern),	//	misnomer; should be PGBackgroundPatternTypeKey
 		PGMouseClickActionKey: @(PGNextPreviousAction),
 		PGMaxDepthKey: @1U,
 		PGFullscreenKey: @NO,

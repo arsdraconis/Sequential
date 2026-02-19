@@ -441,15 +441,15 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 }
 - (IBAction)changeSortOrder:(nullable id)sender
 {
-	self.activeDocument.sortOrder = ([sender tag] & PGSortOrderMask) | (self.activeDocument.sortOrder & PGSortOptionsMask);
+	self.activeDocument.sortOrder = ([sender tag] & PGSortOrderMask) | (self.activeDocument.sortOrder & PGSortOrderOptionsMask);
 }
 - (IBAction)changeSortDirection:(nullable id)sender
 {
-	self.activeDocument.sortOrder = (self.activeDocument.sortOrder & ~PGSortDescendingMask) | [sender tag];
+	self.activeDocument.sortOrder = (self.activeDocument.sortOrder & ~PGSortOrderDescendingMask) | [sender tag];
 }
 - (IBAction)changeSortRepeat:(nullable id)sender
 {
-	self.activeDocument.sortOrder = (self.activeDocument.sortOrder & ~PGSortRepeatMask) | [sender tag];
+	self.activeDocument.sortOrder = (self.activeDocument.sortOrder & ~PGSortOrderRepeatMask) | [sender tag];
 }
 - (IBAction)revertOrientation:(nullable id)sender
 {
@@ -1008,7 +1008,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 - (void)prepareToLoop
 {
 	PGSortOrder const o = self.activeDocument.sortOrder;
-	if(!(PGSortRepeatMask & o) || (PGSortOrderMask & o) != PGSortShuffle) return;
+	if(!(PGSortOrderRepeatMask & o) || (PGSortOrderMask & o) != PGSortOrderShuffle) return;
 	PGDocument *const doc = self.activeDocument;
 	[doc.node noteSortOrderDidChange]; // Reshuffle.
 	[doc noteSortedChildrenDidChange];
@@ -1018,7 +1018,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	PGDocument *const doc = self.activeDocument;
 	BOOL const left = (doc.readingDirection == PGReadingDirectionLeftToRight) == !loopForward;
 	PGSortOrder const o = self.activeDocument.sortOrder;
-	if(PGSortRepeatMask & o && [self tryToSetActiveNode:node forward:pageForward]) {
+	if(PGSortOrderRepeatMask & o && [self tryToSetActiveNode:node forward:pageForward]) {
 		if(flag) [_graphicPanel.contentView pushGraphic:left ? [PGAlertGraphic loopedLeftGraphic] : [PGAlertGraphic loopedRightGraphic] window:self.window];
 		return YES;
 	}
@@ -1475,7 +1475,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 		originalSize.height = w;
 	}
 	NSSize newSize = originalSize;
-	if(PGConstantFactorScale == scaleMode) {
+	if(    PGImageScaleModeConstantFactor == scaleMode) {
 		newSize.width *= factor;
 		newSize.height *= factor;
 	} else {
@@ -1490,7 +1490,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 #endif
 		CGFloat scaleX = NSWidth(bounds) / round(newSize.width);
 		CGFloat scaleY = NSHeight(bounds) / round(newSize.height);
-		if(PGAutomaticScale == scaleMode) {
+		if(    PGImageScaleModeAutomatic == scaleMode) {
 #if __has_feature(objc_arc)
 			NSSize const scrollMax = [_clipView maximumDistanceForScrollType:PGScrollByPage];
 #else
@@ -1498,7 +1498,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 #endif
 			if(scaleX > scaleY) scaleX = scaleY = MAX(scaleY, MIN(scaleX, (floor(newSize.height * scaleX / scrollMax.height + 0.3f) * scrollMax.height) / newSize.height));
 			else if(scaleX < scaleY) scaleX = scaleY = MAX(scaleX, MIN(scaleY, (floor(newSize.width * scaleY / scrollMax.width + 0.3f) * scrollMax.width) / newSize.width));
-		} else if(PGViewFitScale == scaleMode) scaleX = scaleY = MIN(scaleX, scaleY);
+		} else if(PGImageScaleModeFitToView == scaleMode) scaleX = scaleY = MIN(scaleX, scaleY);
 		newSize = PGConstrainSize(minSize, PGScaleSizeByXY(newSize, scaleX, scaleY), maxSize);
 	}
 	return PGIntegralSize(newSize);
@@ -1886,11 +1886,11 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 
 	// Scale:
 	if(@selector(changeImageScaleMode:) == action) {
-		if(PGViewFitScale == tag) {
+		if(PGImageScaleModeFitToView == tag) {
 			if([PGDocumentController sharedDocumentController].fullscreen) [anItem setTitle:NSLocalizedString(@"Fit to Screen", @"Scale image down so the entire thing fits menu item. Two labels, depending on mode.")];
 			else [anItem setTitle:NSLocalizedString(@"Fit to Window", @"Scale image down so the entire thing fits menu item. Two labels, depending on mode.")];
 		}
-		if(PGConstantFactorScale == tag) anItem.state = self.activeDocument.imageScaleMode == tag ? PGFuzzyEqualityToCellState(0.0f, log2([[self activeDocument] imageScaleFactor])) : NSControlStateValueOff;
+		if(    PGImageScaleModeConstantFactor == tag) anItem.state = self.activeDocument.imageScaleMode == tag ? PGFuzzyEqualityToCellState(0.0f, log2([[self activeDocument] imageScaleFactor])) : NSControlStateValueOff;
 		else anItem.state = self.activeDocument.imageScaleMode == tag;
 	}
 	if(@selector(changeImageScaleFactor:) == action) [[PGDocumentController sharedDocumentController].scaleSlider setDoubleValue:log2([[self activeDocument] imageScaleFactor])];
@@ -1898,10 +1898,10 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	// Sort:
 	if(@selector(changeSortOrder:) == action) anItem.state = (PGSortOrderMask & self.activeDocument.sortOrder) == tag;
 	if(@selector(changeSortDirection:) == action) {
-		anItem.state = tag == (PGSortDescendingMask & self.activeDocument.sortOrder);
-		if((self.activeDocument.sortOrder & PGSortOrderMask) == PGSortShuffle) return NO;
+		anItem.state = tag == (PGSortOrderDescendingMask & self.activeDocument.sortOrder);
+		if((self.activeDocument.sortOrder & PGSortOrderMask) == PGSortOrderShuffle) return NO;
 	}
-	if(@selector(changeSortRepeat:) == action) anItem.state = (PGSortRepeatMask & self.activeDocument.sortOrder) == tag;
+	if(@selector(changeSortRepeat:) == action) anItem.state = (PGSortOrderRepeatMask & self.activeDocument.sortOrder) == tag;
 
 	// Page:
 	if(@selector(nextPage:) == action || @selector(lastPage:) == action) anItem.keyEquivalent = self.activeDocument.readingDirection == PGReadingDirectionLeftToRight ? @"]" : @"[";
@@ -1954,7 +1954,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 		if(@selector(toggleAnimation:) == action) return NO;
 	}
 	PGDocument *const doc = self.activeDocument;
-	if(doc.imageScaleMode == PGConstantFactorScale) {
+	if(doc.imageScaleMode ==     PGImageScaleModeConstantFactor) {
 		if(@selector(zoomIn:) == action && fabs([_imageView averageScaleFactor] - PGScaleMax) < 0.01f) return NO;
 		if(@selector(zoomOut:) == action && fabs([_imageView averageScaleFactor] - PGScaleMin) < 0.01f) return NO;
 	}

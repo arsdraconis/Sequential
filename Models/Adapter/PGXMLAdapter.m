@@ -126,7 +126,7 @@ NS_ASSUME_NONNULL_BEGIN
 		node.dataProvider = [PGDataProvider providerWithResourceIdentifier:ident];
 		[items addObject:node];
 	}
-	[self setUnsortedChildren:items presortedOrder:PGSortInnateOrder];
+	[self setUnsortedChildren:items presortedOrder:PGSortOrderInnateOrder];
 
 	return YES;
 }

@@ -158,6 +158,8 @@
 		AB07427B2F44084800628E02 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB07427A2F44084800628E02 /* AppDelegate.swift */; };
 		AB29A11C2F44194F009EBE8A /* NSBezierPath+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */; };
 		AB29A11E2F4420B1009EBE8A /* NSScreen+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */; };
+		AB29A1202F44335A009EBE8A /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */; };
+		ABDD8A382F46D426003DBC39 /* SortOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDD8A372F46D426003DBC39 /* SortOrder.swift */; };
 		B581795C121490A60041F0F4 /* PGXMLAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = B581795B121490A60041F0F4 /* PGXMLAdapter.m */; };
 		B5FE96BD11F5C9C10010BBCA /* Sequential.help in Resources */ = {isa = PBXBuildFile; fileRef = B5FE965911F5C9C10010BBCA /* Sequential.help */; };
 		F1CA6DD726BA57BB00ECE823 /* libXADMaster.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1E534FE26AD801F0057A129 /* libXADMaster.a */; };
@@ -604,6 +606,8 @@
 		AB07427A2F44084800628E02 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSBezierPath+Extensions.swift"; sourceTree = "<group>"; };
 		AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSScreen+Extensions.swift"; sourceTree = "<group>"; };
+		AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extensions.swift"; sourceTree = "<group>"; };
+		ABDD8A372F46D426003DBC39 /* SortOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortOrder.swift; sourceTree = "<group>"; };
 		B573CFF3122AC22200F4B7CA /* PGNodeParenting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGNodeParenting.h; sourceTree = "<group>"; };
 		B581795A121490A60041F0F4 /* PGXMLAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGXMLAdapter.h; sourceTree = "<group>"; };
 		B581795B121490A60041F0F4 /* PGXMLAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGXMLAdapter.m; sourceTree = "<group>"; };
@@ -805,6 +809,7 @@
 				0ED4A8DB0DD00E18007C5A77 /* PGURLLoad.m */,
 				0EE645930DC63C4700A90F86 /* PGBookmark.h */,
 				0EE645940DC63C4700A90F86 /* PGBookmark.m */,
+				ABDD8A372F46D426003DBC39 /* SortOrder.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1026,6 +1031,7 @@
 		AB0742762F44033800628E02 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */,
 				AB0742782F44035700628E02 /* NSColor+Extensions.swift */,
 				AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */,
 				AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */,
@@ -1391,6 +1397,7 @@
 				0EF5431E0DC128B600905391 /* PGNode.m in Sources */,
 				0E1D39F40A7F24E700C542A6 /* PGFullscreenWindow.m in Sources */,
 				AB0742792F44035700628E02 /* NSColor+Extensions.swift in Sources */,
+				ABDD8A382F46D426003DBC39 /* SortOrder.swift in Sources */,
 				0E1D3A4C0A7FA7B500C542A6 /* PGClipView.m in Sources */,
 				0ECD9FFE0CB3961B0059C754 /* PGFindView.m in Sources */,
 				0E90195C0DF55F50004B6F69 /* PGDocumentWindow.m in Sources */,
@@ -1401,6 +1408,7 @@
 				0EF9B2550FA348F700B7E16A /* PGIconTextFieldCell.m in Sources */,
 				0E20FDBA10967449007EE24A /* PGOrientationMenuItemCell.m in Sources */,
 				0E255BA70E3A9D2E00EDF04C /* PGTimerButton.m in Sources */,
+				AB29A1202F44335A009EBE8A /* UserDefaults+Extensions.swift in Sources */,
 				0EC33E3F0E29B0A700450CF8 /* PGProgressIndicatorCell.m in Sources */,
 				AB07427B2F44084800628E02 /* AppDelegate.swift in Sources */,
 				0E9016AB0DF44A7E004B6F69 /* PGColorWell.m in Sources */,

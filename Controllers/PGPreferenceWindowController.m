@@ -158,9 +158,9 @@ PreferenceIsCustomColor(void) {
 
 	NSInteger backgroundPatternType =
 		[NSUserDefaults.standardUserDefaults integerForKey:PGBackgroundPatternKey];
-	if(PGCheckerboardPattern == backgroundPatternType)
+	if(PGPatternTypeCheckerboard == backgroundPatternType)
 		return [color PG_checkerboardPatternColor];
-	NSAssert(PGNoPattern == backgroundPatternType, @"backgroundPatternType");
+	NSAssert(PGPatternTypeNoPattern == backgroundPatternType, @"backgroundPatternType");
 	return color;
 #else
 //	NSColor *const color = [[NSUserDefaults standardUserDefaults] PG_decodedObjectForKey:@"PGBackgroundColor"];

@@ -251,28 +251,28 @@ enum
     NSParameterAssert(node);
     NSParameterAssert([self document]);
     PGSortOrder const o        = self.document.sortOrder;
-    NSInteger const d          = PGSortDescendingMask & o ? -1 : 1;
+    NSInteger const d          = PGSortOrderDescendingMask & o ? -1 : 1;
     PGDataProvider * const dp1 = self.resourceAdapter.dataProvider;
     PGDataProvider * const dp2 = node.resourceAdapter.dataProvider;
     NSComparisonResult r       = NSOrderedSame;
     switch (PGSortOrderMask & o)
     {
-        case PGUnsorted:
+        case PGSortOrderUnsorted:
             return NSOrderedSame;
-        case PGSortByDateModified:
+        case PGSortOrderByDateModified:
             r = [dp1.dateModified compare:dp2.dateModified];
             break;
-        case PGSortByDateCreated:
+        case PGSortOrderByDateCreated:
             r = [dp1.dateCreated compare:dp2.dateCreated];
             break;
-        case PGSortBySize:
+        case PGSortOrderBySize:
             r = CompareByteSize(GetByteSizeForSortingOrDisplay(self.resourceAdapter),
                                 GetByteSizeForSortingOrDisplay(node.resourceAdapter));
             break;
-        case PGSortByKind:
+        case PGSortOrderByKind:
             r = [dp1.kindString compare:dp2.kindString];
             break;
-        case PGSortShuffle:
+        case PGSortOrderShuffle:
             return random() & 1 ? NSOrderedAscending : NSOrderedDescending;
     }
     return (NSOrderedSame == r
@@ -404,7 +404,7 @@ enum
 - (void)identifierDisplayNameDidChange:(NSNotification *)aNotif
 {
     [self _updateMenuItem];
-    if ([self.document isCurrentSortOrder:PGSortByName])
+    if ([self.document isCurrentSortOrder:PGSortOrderByName])
         [self.parentAdapter noteChildValueForCurrentSortOrderDidChange:self];
     [self.document noteNodeDisplayNameDidChange:self];
 }
@@ -454,17 +454,17 @@ enum
     PGDataProvider * const dp = self.resourceAdapter.dataProvider;
     switch (PGSortOrderMask & self.document.sortOrder)
     {
-        case PGSortByDateModified:
+        case PGSortOrderByDateModified:
             date = dp.dateModified;
             break;
-        case PGSortByDateCreated:
+        case PGSortOrderByDateCreated:
             date = dp.dateCreated;
             break;
-        case PGSortBySize:
+        case PGSortOrderBySize:
             info =
                 [@(GetByteSizeForSortingOrDisplay(self.resourceAdapter)) PG_bytesAsLocalizedString];
             break;
-        case PGSortByKind:
+        case PGSortOrderByKind:
             info = dp.kindString;
             break;
     }

@@ -164,7 +164,7 @@ IsVisibleInFinder(NSURL* pageURL) {
 		}
 		if(node) [newPages addObject:node];
 	}
-	[self setUnsortedChildren:newPages presortedOrder:PGUnsorted];
+	[self setUnsortedChildren:newPages presortedOrder:PGSortOrderUnsorted];
 	self.document.processingNodes = NO;
 }
 

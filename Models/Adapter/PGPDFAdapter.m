@@ -104,7 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
 #endif
 		[nodes addObject:node];
 	}
-	[self setUnsortedChildren:nodes presortedOrder:PGSortInnateOrder];
+	[self setUnsortedChildren:nodes presortedOrder:PGSortOrderInnateOrder];
 	[self.node loadFinishedForAdapter:self];
 }
 - (BOOL)canSaveData
