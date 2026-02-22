@@ -290,7 +290,7 @@ StringAtDepth(NSInteger depth) {
 
 - (PGRecursionPolicy)descendantRecursionPolicy
 {
-	return PGRecurseToAnyDepth;
+	return PGRecursePolicyToAnyDepth;
 }
 
 //	MARK: - PGResourceAdapter

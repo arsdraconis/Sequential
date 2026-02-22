@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (PGRecursionPolicy)descendantRecursionPolicy
 {
-	return PGRecurseNoFurther;
+	return PGRecursePolicyNoFurther;
 }
 
 //	MARK: - NSObject

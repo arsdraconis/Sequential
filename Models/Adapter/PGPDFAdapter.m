@@ -34,103 +34,90 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PGPDFPageAdapter : PGResourceAdapter<PGResourceAdapterImageGeneration>
-
+@interface PGPDFPageAdapter : PGResourceAdapter <PGResourceAdapterImageGeneration>
 @end
 
+// MARK: -
 @interface PGPDFPageDataProvider : PGDataProvider
-#if !__has_feature(objc_arc)
-{
-	@private
-	NSPDFImageRep *_mainRep;
-	NSPDFImageRep *_threadRep;
-	NSInteger _pageIndex;
-}
-#endif
+
+@property (readonly) NSPDFImageRep *mainRep;
+@property (readonly) NSPDFImageRep *threadRep;
+@property (readonly) NSInteger pageIndex;
 
 - (instancetype)initWithMainRep:(NSPDFImageRep *)mainRep
-					  threadRep:(NSPDFImageRep *)threadRep
-					  pageIndex:(NSInteger)page NS_DESIGNATED_INITIALIZER;
-@property(readonly) NSPDFImageRep *mainRep;
-@property(readonly) NSPDFImageRep *threadRep;
-@property(readonly) NSInteger pageIndex;
+                      threadRep:(NSPDFImageRep *)threadRep
+                      pageIndex:(NSInteger)page NS_DESIGNATED_INITIALIZER;
 
 @end
 
 //	MARK: -
 @implementation PGPDFAdapter
 
-//	MARK: - PGContainerAdapter
+//	MARK: PGContainerAdapter
 
 - (PGRecursionPolicy)descendantRecursionPolicy
 {
-	return PGRecurseToAnyDepth;
+    return PGRecursePolicyToAnyDepth;
 }
 
-//	MARK: - PGResourceAdapter
+//	MARK: PGResourceAdapter
 
 - (void)load
 {
-	NSData *const data = self.data;
-	if(!data || ![NSPDFImageRep canInitWithData:data]) return [self.node loadFinishedForAdapter:self];
-#if __has_feature(objc_arc)
-	NSPDFImageRep *const mainRep = [[NSPDFImageRep alloc] initWithData:data];
-#else
-	NSPDFImageRep *const mainRep = [[[NSPDFImageRep alloc] initWithData:data] autorelease];
-#endif
-	if(!mainRep) return [self.node fallbackFromFailedAdapter:self];
-#if __has_feature(objc_arc)
-	NSPDFImageRep *const threadRep = [mainRep copy];
-#else
-	NSPDFImageRep *const threadRep = [[mainRep copy] autorelease];
-#endif
+    NSData * const data = self.data;
+    if (!data || ![NSPDFImageRep canInitWithData:data])
+    {
+        return [self.node loadFinishedForAdapter:self];
+    }
+    NSPDFImageRep * const mainRep = [[NSPDFImageRep alloc] initWithData:data];
+    if (!mainRep) return [self.node fallbackFromFailedAdapter:self];
+    NSPDFImageRep * const threadRep = [mainRep copy];
 
-	NSDictionary *const localeDict = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-	NSUInteger const pageCount = mainRep.pageCount;
-	NSMutableArray *const nodes = [NSMutableArray arrayWithCapacity:pageCount];
-	for(NSUInteger i = 0; i < pageCount; i++) {
-		PGDisplayableIdentifier *const identifier = [self.node.identifier subidentifierWithIndex:i].displayableIdentifier;
-		identifier.naturalDisplayName = [@(i + 1) descriptionWithLocale:localeDict];
-#if __has_feature(objc_arc)
-		PGNode *const node = [[PGNode alloc] initWithParent:self identifier:identifier];
-#else
-		PGNode *const node = [[[PGNode alloc] initWithParent:self identifier:identifier] autorelease];
-#endif
-		if(!node) continue;
-#if __has_feature(objc_arc)
-		node.dataProvider = [[PGPDFPageDataProvider alloc] initWithMainRep:mainRep threadRep:threadRep pageIndex:i];
-#else
-		[node setDataProvider:[[[PGPDFPageDataProvider alloc] initWithMainRep:mainRep threadRep:threadRep pageIndex:i] autorelease]];
-#endif
-		[nodes addObject:node];
-	}
-	[self setUnsortedChildren:nodes presortedOrder:PGSortOrderInnateOrder];
-	[self.node loadFinishedForAdapter:self];
+    NSDictionary * const localeDict = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    NSUInteger const pageCount   = mainRep.pageCount;
+    NSMutableArray * const nodes = [NSMutableArray arrayWithCapacity:pageCount];
+    for (NSUInteger i = 0; i < pageCount; i++)
+    {
+        PGDisplayableIdentifier * const identifier = [self.node.identifier subidentifierWithIndex:i].displayableIdentifier;
+        identifier.naturalDisplayName = [@(i + 1) descriptionWithLocale:localeDict];
+        PGNode * const node = [[PGNode alloc] initWithParent:self identifier:identifier];
+        if (!node) continue;
+        node.dataProvider = [[PGPDFPageDataProvider alloc] initWithMainRep:mainRep
+                                                                 threadRep:threadRep
+                                                                 pageIndex:i];
+        [nodes addObject:node];
+    }
+    
+    [self setUnsortedChildren:nodes presortedOrder:PGSortOrderInnateOrder];
+    [self.node loadFinishedForAdapter:self];
 }
+
 - (BOOL)canSaveData
 {
-	return YES;
+    return YES;
 }
+
 - (BOOL)hasSavableChildren
 {
-	return NO;
+    return NO;
 }
 
-- (void)generateThumbnailForContainer {
-	//	2023/10/22 generate a thumbnail image using the adapter for page 0; when
-	//	the thumbnail has been generated, the code in
-	//	-_setThumbnailImageInOperation:imageRep:thumbnailSize:orientation:opaque:
-	//	will get the container's instance and invoke -setThumbnail: on it to set
-	//	the container's thumbnail to page 0's thumbnail
-	for(PGNode *const node in self.unsortedChildren) {
-		NSAssert([node.dataProvider isKindOfClass:PGPDFPageDataProvider.class], @"!PGPDFPageDataProvider");
-		NSInteger const pageIndex = ((PGPDFPageDataProvider *)node.dataProvider).pageIndex;
-		if(0 != pageIndex)
-			continue;
+- (void)generateThumbnailForContainer
+{
+    //	2023/10/22 generate a thumbnail image using the adapter for page 0; when
+    //	the thumbnail has been generated, the code in
+    //	-_setThumbnailImageInOperation:imageRep:thumbnailSize:orientation:opaque:
+    //	will get the container's instance and invoke -setThumbnail: on it to set
+    //	the container's thumbnail to page 0's thumbnail
+    for (PGNode * const node in self.unsortedChildren)
+    {
+        NSAssert([node.dataProvider isKindOfClass:PGPDFPageDataProvider.class], @"!PGPDFPageDataProvider");
+        NSInteger const pageIndex = ((PGPDFPageDataProvider *)node.dataProvider).pageIndex;
+        if (0 != pageIndex) continue;
 
-		(void) node.resourceAdapter.thumbnail;	//	triggers thumbnail generation
-		break;
-	}
+        (void)node.resourceAdapter.thumbnail;    //	triggers thumbnail generation
+        break;
+    }
 }
 
 @end
@@ -138,72 +125,77 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGPDFPageAdapter
 
-//	MARK: - PGResourceAdapter
+//	MARK: PGResourceAdapter
 
 - (BOOL)isResolutionIndependent
 {
-	return YES;
-}
-- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag matchSearchTerms:(NSArray *)terms stopAtNode:(PGNode *)descendent
-{
-	if(!self.node.isViewable || self.node == descendent) return nil;
-	NSInteger const index = ((PGPDFPageDataProvider *)self.dataProvider).pageIndex;
-	if(NSNotFound == index) return nil;
-	for(id const term in terms) if(![term isKindOfClass:[NSNumber class]] || [term integerValue] - 1 != index) return nil;
-	return self.node;
+    return YES;
 }
 
-//	MARK: -
+- (nullable PGNode *)sortedViewableNodeFirst:(BOOL)flag
+                            matchSearchTerms:(NSArray *)terms
+                                  stopAtNode:(PGNode *)descendent
+{
+    if (!self.node.isViewable || self.node == descendent) return nil;
+    NSInteger const index = ((PGPDFPageDataProvider *)self.dataProvider).pageIndex;
+    if (NSNotFound == index) return nil;
+    for (id const term in terms)
+    {
+        if (![term isKindOfClass:[NSNumber class]] || [term integerValue] - 1 != index)
+        {
+            return nil;
+        }
+    }
+    return self.node;
+}
 
 - (BOOL)adapterIsViewable
 {
-	return YES;
-}
-- (void)read
-{
-	NSPDFImageRep *const rep = ((PGPDFPageDataProvider *)self.dataProvider).mainRep;
-	rep.currentPage = ((PGPDFPageDataProvider *)self.dataProvider).pageIndex;
-	[self.node readFinishedWithImageRep:rep];
+    return YES;
 }
 
-//	MARK: -
+- (void)read
+{
+    NSPDFImageRep * const rep = ((PGPDFPageDataProvider *)self.dataProvider).mainRep;
+    rep.currentPage = ((PGPDFPageDataProvider *)self.dataProvider).pageIndex;
+    [self.node readFinishedWithImageRep:rep];
+}
 
 - (BOOL)canGenerateRealThumbnail
 {
-	return YES;
+    return YES;
 }
 
-//	MARK: - <PGResourceAdapterImageGeneration>
+//	MARK: <PGResourceAdapterImageGeneration>
 
-//	main image is created in -read so only need to create thumbnail image
-- (void)generateImagesInOperation:(NSOperation *)operation
-					thumbnailSize:(NSSize)size {	//	2023/10/21
-	NSPDFImageRep *const repForThumb = ((PGPDFPageDataProvider *)self.dataProvider).threadRep;
-	if(!repForThumb)
-		return;
+// main image is created in -read so only need to create thumbnail image
+// 2023/10/21
+- (void)generateImagesInOperation:(NSOperation *)operation thumbnailSize:(NSSize)size
+{
+    NSPDFImageRep * const repForThumb = ((PGPDFPageDataProvider *)self.dataProvider).threadRep;
+    if (!repForThumb) return;
 
-	//	repForThumb must be used within a @synchronized(repForThumb)
-	//	because it's a shared variable; not doing so causes the wrong
-	//	thumbnail image to be generated
-	@synchronized(repForThumb) {
-		NSInteger const pageIndex = ((PGPDFPageDataProvider *)self.dataProvider).pageIndex;
-		repForThumb.currentPage = pageIndex;
-		//	2023/10/22 if this is the first page in the PDF file, set the
-		//	thumbnail image of the PDF container to the same thumbnail
-		[self _setThumbnailImageInOperation:operation
-								   imageRep:repForThumb
-							  thumbnailSize:size
-								orientation:PGUpright
-									 opaque:YES
-				setParentContainerThumbnail:0 == pageIndex];
-	}
+    // repForThumb must be used within a @synchronized(repForThumb)
+    // because it's a shared variable; not doing so causes the wrong
+    // thumbnail image to be generated
+    @synchronized(repForThumb)
+    {
+        NSInteger const pageIndex = ((PGPDFPageDataProvider *)self.dataProvider).pageIndex;
+        repForThumb.currentPage   = pageIndex;
+        // 2023/10/22 if this is the first page in the PDF file, set the
+        // thumbnail image of the PDF container to the same thumbnail
+        [self _setThumbnailImageInOperation:operation
+                                   imageRep:repForThumb
+                              thumbnailSize:size
+                                orientation:PGUpright
+                                     opaque:YES
+                setParentContainerThumbnail:0 == pageIndex];
+    }
 }
 
 @end
 
 //	MARK: -
-
-#if __has_feature(objc_arc)
 
 @interface PGPDFPageDataProvider ()
 
@@ -215,49 +207,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#endif
 
 //	MARK: -
 @implementation PGPDFPageDataProvider
 
 - (instancetype)initWithMainRep:(NSPDFImageRep *)mainRep
-					  threadRep:(NSPDFImageRep *)threadRep
-					  pageIndex:(NSInteger)page
+                      threadRep:(NSPDFImageRep *)threadRep
+                      pageIndex:(NSInteger)page
 {
-	NSParameterAssert(mainRep);
-	NSParameterAssert(threadRep);
+    NSParameterAssert(mainRep);
+    NSParameterAssert(threadRep);
 
-	if((self = [super init])) {
-#if __has_feature(objc_arc)
-		_mainRep = mainRep;
-		_threadRep = threadRep;
-#else
-		_mainRep = [mainRep retain];
-		_threadRep = [threadRep retain];
-#endif
-		_pageIndex = page;
-	}
-	return self;
+    if ((self = [super init]))
+    {
+        _mainRep   = mainRep;
+        _threadRep = threadRep;
+    }
+    return self;
 }
 
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-	[_mainRep release];
-	[_threadRep release];
-	[super dealloc];
-}
-
-@synthesize mainRep = _mainRep;
-@synthesize threadRep = _threadRep;
-@synthesize pageIndex = _pageIndex;
-#endif
-
-//	MARK: - PGDataProvider(PGResourceAdapterLoading)
+//	MARK: PGDataProvider(PGResourceAdapterLoading)
 
 - (NSArray *)adapterClassesForNode:(PGNode *)node
 {
-	return @[[PGPDFPageAdapter class]];
+    return @[[PGPDFPageAdapter class]];
 }
 
 @end

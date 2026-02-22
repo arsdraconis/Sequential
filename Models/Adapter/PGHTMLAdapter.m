@@ -81,7 +81,7 @@ NSString *const PGDOMDocumentKey = @"PGDOMDocument";
 
 - (PGRecursionPolicy)descendantRecursionPolicy
 {
-	return PGRecurseNoFurther;
+	return PGRecursePolicyNoFurther;
 }
 
 //	MARK: - PGResourceAdapter

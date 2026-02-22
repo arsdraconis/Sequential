@@ -92,7 +92,7 @@ static NSString * const deprecated_PGShowCountsAndSizesOnContainerThumbnailKey =
 NSString * const PGMouseClickActionKey         = @"PGMouseClickAction";
 NSString * const PGBackwardsInitialLocationKey = @"PGBackwardsInitialLocation";
 
-//	TODO: work out if these can be removed
+// TODO: work out if these can be removed
 static NSString * const PGRecentItemsKey            = @"PGRecentItems2";
 static NSString * const PGRecentItemsDeprecated2Key = @"PGRecentItems";    // Deprecated after 1.3.2
 static NSString * const PGRecentItemsDeprecatedKey =
