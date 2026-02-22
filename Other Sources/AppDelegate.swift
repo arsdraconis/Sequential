@@ -49,6 +49,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     func applicationWillFinishLaunching(_ notification: Notification)
     {
+        UserDefaults.registerAppDefaults()
+        
         // FIXME: Is this really necessary?
         // This was moved here from +[PGApplication initialize]. The only
         // comment on the original was, "We use a lot of file descriptors."

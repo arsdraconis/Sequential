@@ -153,55 +153,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
 
 //	MARK: +NSObject
 
-+ (void)initialize
-{
-    if ([PGDocumentController class] != self) return;
-
-    NSUserDefaults * const d   = [NSUserDefaults standardUserDefaults];
-    NSError *error             = nil;
-    NSData *archivedBlackColor = [NSKeyedArchiver archivedDataWithRootObject:NSColor.blackColor
-                                                       requiringSecureCoding:YES
-                                                                       error:&error];
-    // TODO: Move this to Swift UserDefaults extension
-    [d registerDefaults:@{
-        PGAntialiasWhenUpscalingKey: @YES,
-        PGBackgroundColorKey: archivedBlackColor,
-        PGBackgroundPatternKey:
-            @(PGPatternTypeNoPattern),    //	misnomer; should be PGBackgroundPatternTypeKey
-        PGMouseClickActionKey: @(PGActionNextPrevious),
-        PGMaxDepthKey: @1U,
-        PGFullscreenKey: @NO,
-        PGEscapeKeyMappingKey: @(PGEscapeMappingFullscreen),
-        PGDimOtherScreensKey: @NO,
-        PGBackwardsInitialLocationKey: @(PGEndLocation),
-        PGImageScaleConstraintKey: @(PGImageScaleConstraintNone),
-
-        PGShowThumbnailImageNameKey: @NO,
-        PGShowThumbnailImageSizeKey: @NO,
-
-        PGShowThumbnailContainerNameKey: @YES,
-        PGShowThumbnailContainerChildCountKey: @NO,
-        PGShowThumbnailContainerChildSizeTotalKey: @NO,
-
-        PGThumbnailSizeFormatKey: @0U
-    }];
-
-    //	2023/10/01 transition value of the old PGShowFileNameOnImageThumbnail
-    //	default to the new PGShowThumbnailImageName default
-    id o = [d objectForKey:deprecated_PGShowFileNameOnImageThumbnailKey];
-    if (o) { [d setBool:[o boolValue] forKey:PGShowThumbnailImageNameKey]; }
-
-    //	2023/09/11 transition value of the old PGShowCountsAndSizesOnContainerThumbnail
-    //	default to the new PGThumbnailContainerLabelType default
-    o = [d objectForKey:deprecated_PGShowCountsAndSizesOnContainerThumbnailKey];
-    if (o)
-    {
-        BOOL b = [o boolValue];
-        [d setBool:b forKey:PGShowThumbnailContainerChildCountKey];
-        [d setBool:b forKey:PGShowThumbnailContainerChildSizeTotalKey];
-        [d removeObjectForKey:deprecated_PGShowCountsAndSizesOnContainerThumbnailKey];
-    }
-}
 
 //	MARK: - PGDocumentController
 

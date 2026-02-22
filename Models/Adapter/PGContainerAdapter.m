@@ -148,7 +148,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 
 //	MARK: -
 
-NSString *const PGMaxDepthKey = @"PGMaxDepth";
 
 #if __has_feature(objc_arc)
 

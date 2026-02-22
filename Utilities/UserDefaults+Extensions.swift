@@ -11,13 +11,42 @@ let PGPrefObjectAnimateKey = "PGPrefObjectAnimate"
 
 fileprivate let PGShowsInfoKey = "PGShowsInfo"
 fileprivate let PGShowsThumbnailsKey = "PGShowsThumbnails"
+
+fileprivate let PGBackgroundTypeKey = "PGBackgroundType"
+fileprivate let PGBackgroundColorKey = "PGBackgroundColor"
+fileprivate let PGBackgroundPatternKey = "PGBackgroundPattern"
+
 fileprivate let PGReadingDirectionKey = "PGReadingDirectionRightToLeft"
+
+fileprivate let PGShowThumbnailImageNameKey = "PGShowThumbnailImageName"
+fileprivate let PGShowThumbnailImageSizeKey = "PGShowThumbnailImageSize"
+
+fileprivate let PGShowThumbnailContainerNameKey = "PGShowThumbnailContainerName"
+fileprivate let PGShowThumbnailContainerChildCountKey = "PGShowThumbnailContainerChildCount"
+fileprivate let PGShowThumbnailContainerChildSizeTotalKey = "PGShowThumbnailContainerChildSizeTotal"
+
+fileprivate let PGThumbnailSizeFormatKey = "PGThumbnailSizeFormat"
+
 fileprivate let PGImageScaleModeKey = "PGImageScaleMode"
 fileprivate let PGImageScaleFactorKey = "PGImageScaleFactor"
+fileprivate let PGImageScaleConstraintKey = "PGImageScaleConstraint"
+fileprivate let PGAntialiasWhenUpscalingKey = "PGAntialiasWhenUpscaling"
+
 fileprivate let PGAnimatesImagesKey = "PGAnimatesImages"
-fileprivate let PGSortOrderKey = "PGSortOrder2"
-fileprivate let PGTimerIntervalKey = "PGTimerInterval"
 fileprivate let PGBaseOrientationKey = "PGBaseOrientation"
+
+fileprivate let PGFullscreenKey = "PGFullscreen"
+fileprivate let PGDimOtherScreensKey = "PGDimOtherScreens"
+fileprivate let PGUseEntireScreenWhenInFullScreenKey = "PGUseEntireScreenWhenInFullScreen"
+
+fileprivate let PGSortOrderKey = "PGSortOrder2"
+fileprivate let PGBackwardsInitialLocationKey = "PGBackwardsInitialLocation"
+
+fileprivate let PGTimerIntervalKey = "PGTimerInterval"
+fileprivate let PGMaxDepthKey = "PGMaxDepth"
+fileprivate let PGMouseClickActionKey = "PGMouseClickAction"
+fileprivate let PGEscapeKeyMappingKey = "PGEscapeKeyMapping"
+
 
 
 @objc
@@ -25,17 +54,80 @@ extension UserDefaults
 {
     class func registerAppDefaults()
     {
+        let standard = UserDefaults.standard
+        
+        let archivedBlackColor = try! NSKeyedArchiver.archivedData(withRootObject: NSColor.black,
+                                                                   requiringSecureCoding: true)
         standard.register(defaults: [
-            PGShowsInfoKey: true,
-            PGShowsThumbnailsKey: true,
+//            PGBackgroundTypeKey: ,
+            PGBackgroundColorKey: archivedBlackColor,
+            PGBackgroundPatternKey: PGPatternType.noPattern.rawValue,
+            
+            PGMaxDepthKey: 1,
+            PGMouseClickActionKey: PGAction.nextPrevious.rawValue,
+            PGEscapeKeyMappingKey: PGEscapeMapping.fullscreen.rawValue,
+            
             PGReadingDirectionKey: PGReadingDirection.leftToRight.rawValue,
+            PGBackwardsInitialLocationKey: PGPageLocation.endLocation.rawValue,
+
             PGImageScaleModeKey: PGImageScaleMode.constantFactor.rawValue,
             PGImageScaleFactorKey: 1.0,
+            PGImageScaleConstraintKey: PGImageScaleConstraint.none.rawValue,
+            PGAntialiasWhenUpscalingKey: true,
+            
             PGAnimatesImagesKey: true,
-            PGSortOrderKey: [ PGSortOrder.byName, PGSortOrder.repeatMask ],
+            PGSortOrderKey: PGSortOrder([.byName, .repeatMask]).rawValue,
             PGTimerIntervalKey: 30.0,
-            PGBaseOrientationKey: []
+            PGBaseOrientationKey: PGOrientation(rawValue: 0).rawValue,
+            
+            PGFullscreenKey: false,
+            PGDimOtherScreensKey: false,
+            PGUseEntireScreenWhenInFullScreenKey: false,
+            
+            PGShowsInfoKey: true,
+            PGShowsThumbnailsKey: true,
+
+            PGShowThumbnailImageNameKey: false,
+            PGShowThumbnailImageSizeKey: false,
+            
+            PGShowThumbnailContainerNameKey: true,
+            PGShowThumbnailContainerChildCountKey: false,
+            PGShowThumbnailContainerChildSizeTotalKey: false,
+            
+            PGThumbnailSizeFormatKey: 0
         ]);
+        
+        // 2023/10/01 transition value of the old PGShowFileNameOnImageThumbnail
+        // default to the new PGShowThumbnailImageName default
+        if let o = standard.object(forKey: "PGShowFileNameOnImageThumbnail")
+        {
+            let b = (o as! NSNumber).boolValue
+            standard.set(b, forKey: PGShowThumbnailImageNameKey)
+            standard.removeObject(forKey: "PGShowFileNameOnImageThumbnail")
+        }
+        
+        // 2023/09/11 transition value of the old PGShowCountsAndSizesOnContainerThumbnail
+        // default to the new PGThumbnailContainerLabelType default
+        if let o = standard.object(forKey: "PGShowCountsAndSizesOnContainerThumbnail")
+        {
+            let b = (o as! NSNumber).boolValue
+            standard.set(b, forKey: PGShowThumbnailContainerChildCountKey)
+            standard.set(b, forKey: PGShowThumbnailContainerChildSizeTotalKey)
+            standard.removeObject(forKey: "PGShowCountsAndSizesOnContainerThumbnail")
+        }
+    }
+    
+    @objc
+    var maximumRecursionDepth: Int
+    {
+        get
+        {
+            self.integer(forKey: PGMaxDepthKey)
+        }
+        set
+        {
+            self.set(newValue, forKey: PGMaxDepthKey)
+        }
     }
     
     @nonobjc

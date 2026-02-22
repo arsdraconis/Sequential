@@ -40,6 +40,7 @@ extern NSString * const PGPrefObjectSortOrderDidChangeNotification;
 extern NSString * const PGPrefObjectTimerIntervalDidChangeNotification;
 extern NSString * const PGPrefObjectBaseOrientationDidChangeNotification;
 
+extern NSString * const PGMaxDepthKey;
 extern NSString * const PGPrefObjectAnimateKey;
 
 typedef NS_ENUM(NSInteger, PGPatternType) {

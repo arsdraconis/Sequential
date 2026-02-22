@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PGMaxDepthKey;
+
 
 @interface PGContainerAdapter : PGResourceAdapter
 #if !__has_feature(objc_arc)
