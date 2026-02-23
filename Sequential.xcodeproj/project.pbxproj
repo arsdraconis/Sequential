@@ -88,7 +88,6 @@
 		0E8A1C0610157A5200C23B34 /* PGAboutBoxController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8A1C0510157A5200C23B34 /* PGAboutBoxController.m */; };
 		0E9012A50DF22636004B6F69 /* Mirror-Black.png in Resources */ = {isa = PBXBuildFile; fileRef = 0E9012A30DF22636004B6F69 /* Mirror-Black.png */; };
 		0E9012A60DF22636004B6F69 /* Mirror-White.png in Resources */ = {isa = PBXBuildFile; fileRef = 0E9012A40DF22636004B6F69 /* Mirror-White.png */; };
-		0E90163D0DF435AB004B6F69 /* PGPreferenceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E90163C0DF435AB004B6F69 /* PGPreferenceWindowController.m */; };
 		0E9016AB0DF44A7E004B6F69 /* PGColorWell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E9016AA0DF44A7E004B6F69 /* PGColorWell.m */; };
 		0E90195C0DF55F50004B6F69 /* PGDocumentWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E90195A0DF55F50004B6F69 /* PGDocumentWindow.m */; };
 		0E92E1360E2CA88400276801 /* PGGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E92E1350E2CA88400276801 /* PGGeometry.m */; };
@@ -159,6 +158,8 @@
 		AB29A11C2F44194F009EBE8A /* NSBezierPath+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */; };
 		AB29A11E2F4420B1009EBE8A /* NSScreen+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */; };
 		AB29A1202F44335A009EBE8A /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */; };
+		AB8C82652F4C183A007AC077 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */; };
+		AB8C82752F4C3A35007AC077 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82742F4C3A35007AC077 /* Notifications.m */; };
 		ABDD8A382F46D426003DBC39 /* SortOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDD8A372F46D426003DBC39 /* SortOrder.swift */; };
 		B581795C121490A60041F0F4 /* PGXMLAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = B581795B121490A60041F0F4 /* PGXMLAdapter.m */; };
 		B5FE96BD11F5C9C10010BBCA /* Sequential.help in Resources */ = {isa = PBXBuildFile; fileRef = B5FE965911F5C9C10010BBCA /* Sequential.help */; };
@@ -492,8 +493,6 @@
 		0E8A1C0510157A5200C23B34 /* PGAboutBoxController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGAboutBoxController.m; sourceTree = "<group>"; };
 		0E9012A30DF22636004B6F69 /* Mirror-Black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Mirror-Black.png"; sourceTree = "<group>"; };
 		0E9012A40DF22636004B6F69 /* Mirror-White.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Mirror-White.png"; sourceTree = "<group>"; };
-		0E90163B0DF435AB004B6F69 /* PGPreferenceWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPreferenceWindowController.h; sourceTree = "<group>"; };
-		0E90163C0DF435AB004B6F69 /* PGPreferenceWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPreferenceWindowController.m; sourceTree = "<group>"; };
 		0E9016AA0DF44A7E004B6F69 /* PGColorWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGColorWell.m; sourceTree = "<group>"; };
 		0E90195A0DF55F50004B6F69 /* PGDocumentWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDocumentWindow.m; sourceTree = "<group>"; };
 		0E90195B0DF55F50004B6F69 /* PGDocumentWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDocumentWindow.h; sourceTree = "<group>"; };
@@ -607,6 +606,9 @@
 		AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSBezierPath+Extensions.swift"; sourceTree = "<group>"; };
 		AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSScreen+Extensions.swift"; sourceTree = "<group>"; };
 		AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extensions.swift"; sourceTree = "<group>"; };
+		AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
+		AB8C82732F4C3A35007AC077 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
+		AB8C82742F4C3A35007AC077 /* Notifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
 		ABDD8A372F46D426003DBC39 /* SortOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortOrder.swift; sourceTree = "<group>"; };
 		B573CFF3122AC22200F4B7CA /* PGNodeParenting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGNodeParenting.h; sourceTree = "<group>"; };
 		B581795A121490A60041F0F4 /* PGXMLAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGXMLAdapter.h; sourceTree = "<group>"; };
@@ -671,8 +673,6 @@
 				0E1D3EC80A8091FE00C542A6 /* PGDocumentController.m */,
 				0E8A1C0410157A5200C23B34 /* PGAboutBoxController.h */,
 				0E8A1C0510157A5200C23B34 /* PGAboutBoxController.m */,
-				0E90163B0DF435AB004B6F69 /* PGPreferenceWindowController.h */,
-				0E90163C0DF435AB004B6F69 /* PGPreferenceWindowController.m */,
 				0EA496310C6C7C9A00095184 /* PGBookmarkController.h */,
 				0EA496320C6C7C9A00095184 /* PGBookmarkController.m */,
 				0E94FBAD0DAE739600A23F73 /* PGDisplayController.h */,
@@ -695,6 +695,7 @@
 				0E5EC1D50CEDFBBC00E7FF9A /* PGURLAlert.m */,
 				0EE059AF0CF29F380080061B /* PGImageSaveAlert.h */,
 				0EE059B00CF29F380080061B /* PGImageSaveAlert.m */,
+				AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -839,6 +840,8 @@
 				F1CA6DDA26BA587100ECE823 /* only_for_linking_cpp_dylib.cpp */,
 				AB0742772F44035700628E02 /* Sequential-Bridging-Header.h */,
 				AB07427A2F44084800628E02 /* AppDelegate.swift */,
+				AB8C82732F4C3A35007AC077 /* Notifications.h */,
+				AB8C82742F4C3A35007AC077 /* Notifications.m */,
 			);
 			path = "Other Sources";
 			sourceTree = "<group>";
@@ -1374,6 +1377,7 @@
 				0EC0F5FA10F0C758000C8B8B /* PGLocalizing.m in Sources */,
 				0E7B2FF60E9266A600F537CD /* PGKeyboardLayout.m in Sources */,
 				0E04E98E0C23BA7100078EC2 /* PGBezelPanel.m in Sources */,
+				AB8C82652F4C183A007AC077 /* SettingsWindowController.swift in Sources */,
 				F1E5355A26AE74120057A129 /* PGFadeOutPanel.m in Sources */,
 				0E246B4610887DC600C30936 /* PGAppKitAdditions.m in Sources */,
 				8D15AC310486D014006FF6A4 /* PGDocument.m in Sources */,
@@ -1403,6 +1407,7 @@
 				0E90195C0DF55F50004B6F69 /* PGDocumentWindow.m in Sources */,
 				AB29A11E2F4420B1009EBE8A /* NSScreen+Extensions.swift in Sources */,
 				0E04EBD00C253BB100078EC2 /* PGAlertView.m in Sources */,
+				AB8C82752F4C3A35007AC077 /* Notifications.m in Sources */,
 				0E2D08790DD2B4F800EC128A /* PGRoundedBackgroundView.m in Sources */,
 				0E7D74460C9ED641004AA269 /* PGDragHighlightView.m in Sources */,
 				0EF9B2550FA348F700B7E16A /* PGIconTextFieldCell.m in Sources */,
@@ -1430,7 +1435,6 @@
 				0ED4AB170DD18730007C5A77 /* PGInspectorPanelController.m in Sources */,
 				0E255B9B0E3A9A1E00EDF04C /* PGTimerPanelController.m in Sources */,
 				0E8A1C0610157A5200C23B34 /* PGAboutBoxController.m in Sources */,
-				0E90163D0DF435AB004B6F69 /* PGPreferenceWindowController.m in Sources */,
 				0E1BE0E30F5AA246007421EE /* PGThumbnailController.m in Sources */,
 				0E56B8DD0E24918C00987F57 /* PGActivityPanelController.m in Sources */,
 				4BF35D0D2B062D1A008FC486 /* PGFullSizeContentController.m in Sources */,

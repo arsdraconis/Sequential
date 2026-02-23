@@ -33,7 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 // Controllers
 #import "PGDocumentController.h"
-#import "PGPreferenceWindowController.h"
 
 // Other Sources
 #import "PGAppKitAdditions.h"
@@ -92,7 +91,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)displayScreenDidChange:(NSNotification *)aNotif
 {
-	NSScreen *const screen = [[PGPreferenceWindowController sharedPrefController] displayScreen];
+	NSScreen *const screen = [NSUserDefaults.standardUserDefaults displayScreen];
 	[(PGFullscreenWindow *)self.window moveToScreen:screen];
 	if(!self.window.keyWindow) return;
 	[self _setMenuBarHidden:[NSScreen PG_mainScreen] == screen delayed:YES];
@@ -175,10 +174,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)windowDidLoad
 {
 #if __has_feature(objc_arc)
-	NSWindow *const window = [[PGFullscreenWindow alloc] initWithScreen:[PGPreferenceWindowController.sharedPrefController displayScreen]];
+	NSWindow *const window = [[PGFullscreenWindow alloc] initWithScreen:[NSUserDefaults.standardUserDefaults displayScreen]];
 	NSView *const content = self.window.contentView;
 #else
-	NSWindow *const window = [[[PGFullscreenWindow alloc] initWithScreen:[[PGPreferenceWindowController sharedPrefController] displayScreen]] autorelease];
+	NSWindow *const window = [[[PGFullscreenWindow alloc] initWithScreen:[NSUserDefaults.standardUserDefaults displayScreen]] autorelease];
 	NSView *const content = [[[[self window] contentView] retain] autorelease];
 #endif
 	[self.window setContentView:nil];
@@ -200,8 +199,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)init
 {
-	if((self = [super init])) {
-		[[PGPreferenceWindowController sharedPrefController] PG_addObserver:self selector:@selector(displayScreenDidChange:) name:PGPreferenceWindowControllerDisplayScreenDidChangeNotification];
+	if((self = [super init]))
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(displayScreenDidChange:)
+                                                     name:PGDisplayScreenDidChangeNotification
+                                                   object:nil];
 	}
 	return self;
 }
@@ -233,7 +236,7 @@ NS_ASSUME_NONNULL_BEGIN
     // We shouldn't need to observe this value because our fullscreen window isn't going to be key while the user is adjusting the setting in the prefs window.
 	BOOL const dim = NSUserDefaults.standardUserDefaults.dimOtherScreensInFullScreen;
     
-	NSScreen *const displayScreen = [[PGPreferenceWindowController sharedPrefController] displayScreen];
+	NSScreen *const displayScreen = [NSUserDefaults.standardUserDefaults displayScreen];
 
 	if(dim || [NSScreen PG_mainScreen] == displayScreen) [self _setMenuBarHidden:YES delayed:YES];
 
@@ -266,7 +269,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 - (void)windowDidResignKey:(NSNotification *)aNotif
 {
-	if([[PGPreferenceWindowController sharedPrefController] displayScreen] != [NSScreen PG_mainScreen])
+	if([NSUserDefaults.standardUserDefaults displayScreen] != [NSScreen PG_mainScreen])
 		return;
 	[self _setMenuBarHidden:NO delayed:YES];
 	[_shieldWindows makeObjectsPerformSelector:@selector(close)];

@@ -50,7 +50,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 // Controllers
 #import "PGDocumentController.h"
-#import "PGPreferenceWindowController.h"
 #import "PGBookmarkController.h"
 #import "PGThumbnailController.h"
 #import "PGImageSaveAlert.h"
@@ -1377,10 +1376,10 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	//	2023/08/14 added this method to enable the background color to depend on
 	//	whether the view's window is in fullscreen mode and whether user wants it
 	//	used in fullscreen mode.
-	if(fullscreen && ![self _usePreferredBackgroundColorWhenFullScreen])
-		return NSColor.blackColor;
+	if(fullscreen)
+		return [NSUserDefaults.standardUserDefaults fullScreenBackgroundColor];
 	else
-		return [PGPreferenceWindowController.sharedPrefController backgroundPatternColor];
+		return [NSUserDefaults.standardUserDefaults windowBackgroundColor];
 }
 
 - (void)_setClipViewBackground {
@@ -1773,8 +1772,10 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 #endif
 		[self _updateInfoPanelText];
 
-		[[PGPreferenceWindowController sharedPrefController] PG_addObserver:self selector:@selector(prefControllerBackgroundPatternColorDidChange:) name:PGPreferenceWindowControllerBackgroundPatternColorDidChangeNotification];
-		[[PGPreferenceWindowController sharedPrefController] PG_addObserver:self selector:@selector(prefControllerBackgroundColorUsedInFullScreenDidChange:) name:PGPreferenceWindowControllerBackgroundColorUsedInFullScreenDidChangeNotification];
+        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"PGWindowBackgroundType" options:kNilOptions context:NULL];
+        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"PGWindowBackgroundColor" options:kNilOptions context:NULL];
+        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"PGFullscreenBackgroundType" options:kNilOptions context:NULL];
+        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"PGFullscreenBackgroundColor" options:kNilOptions context:NULL];
 		[[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:PGImageScaleConstraintKey options:kNilOptions context:NULL];
 	}
 	return self;
@@ -1815,8 +1816,30 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary *)change context:(nullable void *)context
 {
-	if(PGEqualObjects(keyPath, PGImageScaleConstraintKey)) [self _updateImageViewSizeAllowAnimation:YES];
-	else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	if(PGEqualObjects(keyPath, PGImageScaleConstraintKey))
+    {
+        [self _updateImageViewSizeAllowAnimation:YES];
+    }
+    else if (PGEqualObjects(keyPath, @"PGWindowBackgroundType"))
+    {
+        [self _setClipViewBackground];
+    }
+    else if (PGEqualObjects(keyPath, @"PGWindowBackgroundColor"))
+    {
+        [self _setClipViewBackground];
+    }
+    else if (PGEqualObjects(keyPath, @"PGFullScreenBackgroundType"))
+    {
+        [self _setClipViewBackground];
+    }
+    else if (PGEqualObjects(keyPath, @"PGFullScreenBackgroundColor"))
+    {
+        [self _setClipViewBackground];
+    }
+	else
+    {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 //	MARK: - NSObject(NSMenuValidation)

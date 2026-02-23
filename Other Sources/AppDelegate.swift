@@ -38,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     func applicationDidChangeScreenParameters(_ notification: Notification)
     {
-        PGPreferenceWindowController.sharedPref().screenParametersDidChange()
+        SettingsWindowController.shared.screenParametersDidChange()
     }
     
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool

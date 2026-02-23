@@ -6,15 +6,16 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="PGPreferenceWindowController">
+        <customObject id="-2" userLabel="File's Owner" customClass="SettingsWindowController" customModule="Sequential" customModuleProvider="target">
             <connections>
-                <outlet property="customColorWell" destination="564" id="hHX-m1-XnD"/>
+                <outlet property="fullScreenBackgroundColorWell" destination="vgF-uR-pmy" id="6Ol-gD-nxA"/>
                 <outlet property="generalView" destination="563" id="617"/>
                 <outlet property="navigationView" destination="374" id="794"/>
                 <outlet property="screensPopUp" destination="426" id="468"/>
                 <outlet property="secondaryMouseActionLabel" destination="409" id="469"/>
-                <outlet property="thumbnailView" destination="UmE-EB-wrd" id="mDw-E6-zeT"/>
+                <outlet property="thumbnailsView" destination="UmE-EB-wrd" id="CvX-bl-Rhu"/>
                 <outlet property="window" destination="1" id="78"/>
+                <outlet property="windowBackgroundColorWell" destination="564" id="hHX-m1-XnD"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -35,11 +36,11 @@
         </window>
         <userDefaultsController representsSharedInstance="YES" id="44" userLabel="Shared User Defaults Controller"/>
         <customView id="563" userLabel="General">
-            <rect key="frame" x="0.0" y="0.0" width="540" height="359"/>
+            <rect key="frame" x="0.0" y="0.0" width="540" height="458"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="565">
-                    <rect key="frame" x="18" y="322" width="174" height="17"/>
+                    <rect key="frame" x="18" y="421" width="174" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" alignment="right" title="Background:" id="815">
                         <font key="font" metaFont="system"/>
@@ -48,10 +49,10 @@
                     </textFieldCell>
                 </textField>
                 <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QBh-TR-YhJ">
-                    <rect key="frame" x="193" y="301" width="201" height="38"/>
+                    <rect key="frame" x="195" y="368" width="170" height="70"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="201" height="18"/>
+                    <size key="cellSize" width="170" height="16"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Don-vj-Pub">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -63,41 +64,38 @@
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="This color:" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" tag="1" inset="2" id="qwq-Ji-Y2d">
+                            <buttonCell type="radio" title="Custom color" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" tag="1" inset="2" id="qwq-Ji-Y2d">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="Checkerboard pattern" imagePosition="left" alignment="left" tag="2" inset="2" id="Ced-9a-uZJ">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="Stretch and blur content" imagePosition="left" alignment="left" tag="3" inset="2" id="umP-1F-p4g">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </column>
                     </cells>
                     <connections>
-                        <binding destination="44" name="selectedTag" keyPath="values.PGBackgroundColorSource" id="E8T-4N-Sw1"/>
+                        <binding destination="44" name="selectedTag" keyPath="values.PGWindowBackgroundType" id="xlp-3j-505"/>
                     </connections>
                 </matrix>
                 <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="564" customClass="PGColorWell">
-                    <rect key="frame" x="402" y="301" width="118" height="22"/>
+                    <rect key="frame" x="370" y="402" width="118" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
-                        <binding destination="44" name="value" keyPath="values.PGBackgroundColor" id="f74-dh-BPk">
+                        <binding destination="44" name="value" keyPath="values.PGWindowBackgroundColor" id="k8D-bL-ENJ">
                             <dictionary key="options">
-                                <string key="NSValueTransformerName">NSKeyedUnarchiveFromData</string>
+                                <string key="NSValueTransformerName">NSSecureUnarchiveFromData</string>
                             </dictionary>
                         </binding>
                     </connections>
                 </colorWell>
-                <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="566">
-                    <rect key="frame" x="195" y="276" width="325" height="18"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="check" title="Checkerboard" bezelStyle="regularSquare" imagePosition="leading" alignment="left" lineBreakMode="truncatingTail" inset="2" id="816">
-                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <binding destination="44" name="value" keyPath="values.PGBackgroundPattern" id="584"/>
-                    </connections>
-                </button>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B82-Tt-TiI">
-                    <rect key="frame" x="18" y="240" width="174" height="17"/>
+                    <rect key="frame" x="18" y="331" width="174" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" alignment="right" title="Full screen background:" id="YPh-7l-jar">
                         <font key="font" metaFont="system"/>
@@ -106,10 +104,10 @@
                     </textFieldCell>
                 </textField>
                 <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PcP-tl-GIc">
-                    <rect key="frame" x="193" y="219" width="218" height="38"/>
+                    <rect key="frame" x="195" y="260" width="170" height="88"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="218" height="18"/>
+                    <size key="cellSize" width="170" height="16"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="8J5-CT-RdW">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -117,31 +115,43 @@
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="Black" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" state="on" inset="2" id="y3w-cp-MDL">
+                            <buttonCell type="radio" title="Same as window" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" state="on" inset="2" id="y3w-cp-MDL">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Use the background preference" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" tag="1" inset="2" id="S2C-cj-PFH">
+                            <buttonCell type="radio" title="System appearance" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" tag="1" inset="2" id="S2C-cj-PFH">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="Custom color" imagePosition="left" alignment="left" tag="2" inset="2" id="2qi-KA-rxs">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="Checkboard pattern" imagePosition="left" alignment="left" tag="3" inset="2" id="rBZ-bx-KKK">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="Stretch and blur content" imagePosition="left" alignment="left" tag="4" inset="2" id="Ciz-Iz-PJa">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </column>
                     </cells>
                     <connections>
-                        <binding destination="44" name="selectedTag" keyPath="values.PGBackgroundColorUsedInFullScreen" id="z2G-Bx-sXs"/>
+                        <binding destination="44" name="selectedTag" keyPath="values.PGFullScreenBackgroundType" id="D2l-8x-YNP"/>
                     </connections>
                 </matrix>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="427">
-                    <rect key="frame" x="18" y="179" width="174" height="17"/>
+                    <rect key="frame" x="18" y="221" width="174" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" alignment="right" title="Full screen:" id="813">
+                    <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" alignment="right" title="Primary screen:" id="813">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <popUpButton imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="426">
-                    <rect key="frame" x="194" y="174" width="236" height="26"/>
+                    <rect key="frame" x="194" y="216" width="236" height="26"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" id="812">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -153,9 +163,9 @@
                     </connections>
                 </popUpButton>
                 <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="679">
-                    <rect key="frame" x="195" y="152" width="325" height="18"/>
+                    <rect key="frame" x="195" y="194" width="325" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="check" title="Dim other screens" bezelStyle="regularSquare" imagePosition="leading" alignment="left" lineBreakMode="truncatingTail" inset="2" id="818">
+                    <buttonCell key="cell" type="check" title="Dim other screens when full screen" bezelStyle="regularSquare" imagePosition="leading" alignment="left" lineBreakMode="truncatingTail" inset="2" id="818">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
@@ -164,7 +174,7 @@
                     </connections>
                 </button>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="375">
-                    <rect key="frame" x="18" y="111" width="174" height="17"/>
+                    <rect key="frame" x="18" y="153" width="174" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" alignment="right" title="Images:" id="806">
                         <font key="font" metaFont="system"/>
@@ -173,7 +183,7 @@
                     </textFieldCell>
                 </textField>
                 <popUpButton imageHugsTitle="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="826">
-                    <rect key="frame" x="194" y="105" width="236" height="26"/>
+                    <rect key="frame" x="194" y="147" width="236" height="26"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <popUpButtonCell key="cell" type="push" title="Scale freely" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="830" id="827">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -191,7 +201,7 @@
                     </connections>
                 </popUpButton>
                 <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="376">
-                    <rect key="frame" x="195" y="82" width="325" height="18"/>
+                    <rect key="frame" x="195" y="124" width="325" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Antialias when upscaling" bezelStyle="regularSquare" imagePosition="leading" alignment="left" lineBreakMode="truncatingTail" inset="2" id="807">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -202,7 +212,7 @@
                     </connections>
                 </button>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="410">
-                    <rect key="frame" x="18" y="41" width="174" height="17"/>
+                    <rect key="frame" x="18" y="83" width="174" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" alignment="right" title="Escape key:" id="811">
                         <font key="font" metaFont="system"/>
@@ -211,7 +221,7 @@
                     </textFieldCell>
                 </textField>
                 <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="411">
-                    <rect key="frame" x="193" y="20" width="295" height="38"/>
+                    <rect key="frame" x="193" y="62" width="295" height="38"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="295" height="18"/>
@@ -244,11 +254,34 @@
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                     <connections>
-                        <action selector="showPrefsHelp:" target="-2" id="618"/>
+                        <action selector="showHelp:" target="-2" id="0XC-x5-psN"/>
+                    </connections>
+                </button>
+                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vgF-uR-pmy" customClass="PGColorWell">
+                    <rect key="frame" x="370" y="293" width="118" height="22"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <connections>
+                        <binding destination="44" name="value" keyPath="values.PGFullScreenBackgroundColor" id="IfK-9z-Kdl">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">NSSecureUnarchiveFromData</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </colorWell>
+                <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="566">
+                    <rect key="frame" x="32" y="20" width="325" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="check" title="Checkerboard (old)" bezelStyle="regularSquare" imagePosition="leading" alignment="left" lineBreakMode="truncatingTail" inset="2" id="816">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="44" name="value" keyPath="values.PGBackgroundPattern" id="584"/>
                     </connections>
                 </button>
             </subviews>
-            <point key="canvasLocation" x="38" y="83.5"/>
+            <point key="canvasLocation" x="38" y="133"/>
         </customView>
         <customView id="UmE-EB-wrd" userLabel="Thumbnail">
             <rect key="frame" x="0.0" y="0.0" width="540" height="236"/>
@@ -338,11 +371,22 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <button imageHugsTitle="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VEM-U2-s5x">
+                    <rect key="frame" x="497" y="16" width="25" height="25"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                    <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" inset="2" id="Eft-3a-z0i">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="showHelp:" target="-2" id="zhF-d1-IB4"/>
+                    </connections>
+                </button>
                 <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MEI-Sc-FMc">
-                    <rect key="frame" x="193" y="20" width="297" height="58"/>
+                    <rect key="frame" x="195" y="24" width="286" height="52"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="297" height="18"/>
+                    <size key="cellSize" width="286" height="16"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="3TP-Pk-lTj">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -350,11 +394,11 @@
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="base 10 [ macOS ]" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" state="on" inset="2" id="f4M-9g-sWI">
+                            <buttonCell type="radio" title="base 10 (macOS)" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" state="on" inset="2" id="f4M-9g-sWI">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="base 2 [ web sites, cloud storage, Windows ]" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" tag="1" inset="2" id="6L8-Pd-cyO">
+                            <buttonCell type="radio" title="base 2 (web sites, cloud storage, Windows)" imagePosition="left" alignment="left" lineBreakMode="truncatingTail" tag="1" inset="2" id="6L8-Pd-cyO">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -368,17 +412,6 @@
                         <binding destination="44" name="selectedTag" keyPath="values.PGThumbnailSizeFormat" id="cH6-s4-Bt5"/>
                     </connections>
                 </matrix>
-                <button imageHugsTitle="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VEM-U2-s5x">
-                    <rect key="frame" x="497" y="16" width="25" height="25"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                    <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" inset="2" id="Eft-3a-z0i">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <action selector="showPrefsHelp:" target="-2" id="YOE-7C-81j"/>
-                    </connections>
-                </button>
             </subviews>
             <point key="canvasLocation" x="38" y="434"/>
         </customView>
@@ -490,11 +523,11 @@
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                     <connections>
-                        <action selector="showPrefsHelp:" target="-2" id="620"/>
+                        <action selector="showHelp:" target="-2" id="kpB-ST-cQj"/>
                     </connections>
                 </button>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="382">
-                    <rect key="frame" x="421" y="20" width="13" height="14"/>
+                    <rect key="frame" x="422" y="26" width="13" height="14"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="5" id="800">
                         <font key="font" metaFont="smallSystem"/>
@@ -503,7 +536,7 @@
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="381">
-                    <rect key="frame" x="240" y="20" width="13" height="14"/>
+                    <rect key="frame" x="241" y="26" width="13" height="14"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="1" id="799">
                         <font key="font" metaFont="smallSystem"/>
@@ -521,7 +554,7 @@
                     </textFieldCell>
                 </textField>
                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="377">
-                    <rect key="frame" x="236" y="37" width="200" height="25"/>
+                    <rect key="frame" x="237" y="43" width="200" height="25"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <sliderCell key="cell" state="on" alignment="left" maxValue="4" tickMarkPosition="below" numberOfTickMarks="5" allowsTickMarkValuesOnly="YES" sliderType="linear" id="797">
                         <font key="font" size="12" name="Helvetica"/>

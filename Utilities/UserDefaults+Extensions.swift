@@ -9,48 +9,61 @@ import Cocoa
 
 let PGPrefObjectAnimateKey = "PGPrefObjectAnimate"
 
-fileprivate let PGDisplayScreenIndexKey = "PGDisplayScreenIndex"
 fileprivate let PGRecentItemsKey = "PGRecentItems2"
+fileprivate let PGDisplayScreenIndexKey = "PGDisplayScreenIndex"
+fileprivate let PGShowsInfoInspectorKey = "PGShowsInfo"
+fileprivate let PGMaxRecursionDepthKey = "PGMaxDepth"
+fileprivate let PGMouseClickActionKey = "PGMouseClickAction"
+fileprivate let PGEscapeKeyMappingKey = "PGEscapeKeyMapping"
+fileprivate let PGTimerIntervalKey = "PGTimerInterval"
 
-fileprivate let PGShowsInfoKey = "PGShowsInfo"
-fileprivate let PGShowsThumbnailsKey = "PGShowsThumbnails"
-
-fileprivate let PGBackgroundTypeKey = "PGBackgroundType"
-fileprivate let PGBackgroundColorKey = "PGBackgroundColor"
 fileprivate let PGBackgroundPatternKey = "PGBackgroundPattern"
+public let PGWindowBackgroundTypeKey = "PGWindowBackgroundType"
+public let PGWindowBackgroundColorKey = "PGWindowBackgroundColor"
+public let PGFullScreenBackgroundTypeKey = "PGFullScreenBackgroundType"
+public let PGFullScreenBackgroundColorKey = "PGFullScreenBackgroundColor"
 
-fileprivate let PGReadingDirectionKey = "PGReadingDirectionRightToLeft"
+fileprivate let PGDimOtherScreensWhenFullScreenKey = "PGDimOtherScreens"
+fileprivate let PGUseEntireScreenWhenInFullScreenKey = "PGUseEntireScreenWhenInFullScreen"
 
+fileprivate let PGShowsThumbnailSidebarKey = "PGShowsThumbnails"
 fileprivate let PGShowThumbnailImageNameKey = "PGShowThumbnailImageName"
 fileprivate let PGShowThumbnailImageSizeKey = "PGShowThumbnailImageSize"
-
 fileprivate let PGShowThumbnailContainerNameKey = "PGShowThumbnailContainerName"
 fileprivate let PGShowThumbnailContainerChildCountKey = "PGShowThumbnailContainerChildCount"
 fileprivate let PGShowThumbnailContainerChildSizeTotalKey = "PGShowThumbnailContainerChildSizeTotal"
-
 fileprivate let PGThumbnailSizeFormatKey = "PGThumbnailSizeFormat"
+
+fileprivate let PGBaseOrientationKey = "PGBaseOrientation"
+fileprivate let PGBackwardsInitialLocationKey = "PGBackwardsInitialLocation"
+fileprivate let PGDefaultReadingDirectionKey = "PGReadingDirectionRightToLeft"
+fileprivate let PGAnimatesImagesKey = "PGAnimatesImages"
+
+fileprivate let PGSortOrderKey = "PGSortOrder2"
 
 fileprivate let PGImageScaleModeKey = "PGImageScaleMode"
 fileprivate let PGImageScaleFactorKey = "PGImageScaleFactor"
 fileprivate let PGImageScaleConstraintKey = "PGImageScaleConstraint"
 fileprivate let PGAntialiasWhenUpscalingKey = "PGAntialiasWhenUpscaling"
 
-fileprivate let PGAnimatesImagesKey = "PGAnimatesImages"
-fileprivate let PGBaseOrientationKey = "PGBaseOrientation"
+@objc
+public enum PGWindowBackgroundType : Int
+{
+    case systemAppearance
+    case customColor
+    case pattern
+    case stretchAndBlur
+}
 
-fileprivate let PGFullscreenKey = "PGFullscreen"
-fileprivate let PGDimOtherScreensKey = "PGDimOtherScreens"
-fileprivate let PGUseEntireScreenWhenInFullScreenKey = "PGUseEntireScreenWhenInFullScreen"
-
-fileprivate let PGSortOrderKey = "PGSortOrder2"
-fileprivate let PGBackwardsInitialLocationKey = "PGBackwardsInitialLocation"
-
-fileprivate let PGTimerIntervalKey = "PGTimerInterval"
-fileprivate let PGMaxDepthKey = "PGMaxDepth"
-fileprivate let PGMouseClickActionKey = "PGMouseClickAction"
-fileprivate let PGEscapeKeyMappingKey = "PGEscapeKeyMapping"
-
-
+@objc
+public enum PGFullScreenBackgroundType : Int
+{
+    case sameAsWindow
+    case systemAppearance
+    case customColor
+    case pattern
+    case stretchAndBlur
+}
 
 @objc
 extension UserDefaults
@@ -62,15 +75,14 @@ extension UserDefaults
         let archivedBlackColor = try! NSKeyedArchiver.archivedData(withRootObject: NSColor.black,
                                                                    requiringSecureCoding: true)
         standard.register(defaults: [
-//            PGBackgroundTypeKey: ,
             PGBackgroundColorKey: archivedBlackColor,
             PGBackgroundPatternKey: PGPatternType.noPattern.rawValue,
             
-            PGMaxDepthKey: 1,
+            PGMaxRecursionDepthKey: 1,
             PGMouseClickActionKey: PGAction.nextPrevious.rawValue,
             PGEscapeKeyMappingKey: PGEscapeMapping.fullscreen.rawValue,
             
-            PGReadingDirectionKey: PGReadingDirection.leftToRight.rawValue,
+            PGDefaultReadingDirectionKey: PGReadingDirection.leftToRight.rawValue,
             PGBackwardsInitialLocationKey: PGPageLocation.end.rawValue,
 
             PGImageScaleModeKey: PGImageScaleMode.constantFactor.rawValue,
@@ -83,12 +95,11 @@ extension UserDefaults
             PGTimerIntervalKey: 30.0,
             PGBaseOrientationKey: PGOrientation(rawValue: 0).rawValue,
             
-            PGFullscreenKey: false,
-            PGDimOtherScreensKey: false,
+            PGDimOtherScreensWhenFullScreenKey: false,
             PGUseEntireScreenWhenInFullScreenKey: false,
             
-            PGShowsInfoKey: true,
-            PGShowsThumbnailsKey: true,
+            PGShowsInfoInspectorKey: true,
+            PGShowsThumbnailSidebarKey: true,
 
             PGShowThumbnailImageNameKey: false,
             PGShowThumbnailImageSizeKey: false,
@@ -119,19 +130,37 @@ extension UserDefaults
             standard.removeObject(forKey: "PGShowCountsAndSizesOnContainerThumbnail")
         }
         
+        // 2026/02/22 Transition to new background settings
+        if let o = standard.object(forKey: "PGBackgroundColorSourceKey")
+        {
+            let i = (o as! NSNumber).intValue
+            if i == 1
+            {
+                standard.set(PGWindowBackgroundType.customColor, forKey: PGWindowBackgroundTypeKey as String)
+                standard.set(PGFullScreenBackgroundType.customColor, forKey: PGFullScreenBackgroundTypeKey as String)
+            }
+            else
+            {
+                standard.set(PGWindowBackgroundType.systemAppearance, forKey: PGWindowBackgroundTypeKey as String)
+                standard.set(PGFullScreenBackgroundType.systemAppearance, forKey: PGFullScreenBackgroundTypeKey as String)
+            }
+            standard.removeObject(forKey: "PGBackgroundColorSourceKey")
+        }
+        
         // 2026/02/22 Transition older saved resent items
         if let d = standard.object(forKey: "PGRecentItems")
         {
-            standard.removeObject(forKey: "PGRecentItems")
             standard.set(d, forKey: PGRecentItemsKey)
+            standard.removeObject(forKey: "PGRecentItems")
         }
         if let d = standard.object(forKey: "PGRecentDocuments")
         {
+            standard.set(d, forKey: PGRecentItemsKey)
             standard.removeObject(forKey: "PGRecentDocuments")
-            standard.set(d, forKey: "PGRecentDocuments")
         }
     }
     
+    // MARK: App-Wide Settings
     @objc
     var recentItems: Data?
     {
@@ -155,47 +184,39 @@ extension UserDefaults
         }
         set
         {
-            self.set(max(newValue, 0), forKey: PGDisplayScreenIndexKey)
-        }
-    }
-    
-//    @objc
-//    var backgroundType: PGBackgroundTypeNew
-//    {
-//        get
-//        {
-//            let raw = self.integer(forKey: PGBackgroundTypeKey)
-//            return PGBackgroundTypeNew(rawValue: raw) ?? .systemColor
-//        }
-//        set
-//        {
-//            self.set(newValue.rawValue, forKey: PGBackgroundTypeKey)
-//        }
-//    }
-    
-    @objc
-    var useEntireScreenWhenInFullScreen: Bool
-    {
-        get
-        {
-            self.bool(forKey: PGUseEntireScreenWhenInFullScreenKey)
-        }
-        set
-        {
-            self.set(newValue, forKey: PGUseEntireScreenWhenInFullScreenKey)
+            if (newValue != displayScreenIndex)
+            {
+                self.set(max(newValue, 0), forKey: PGDisplayScreenIndexKey)
+                NotificationCenter.default.post(name: .settingsWindowControllerDisplayScreenDidChange, object: self)
+            }
         }
     }
     
     @objc
-    var dimOtherScreensInFullScreen: Bool
+    var displayScreen: NSScreen?
     {
         get
         {
-            self.bool(forKey: PGDimOtherScreensKey)
+            let index = displayScreenIndex
+            let screens = NSScreen.screens
+            return index < screens.count ? screens[index] : NSScreen.primaryScreen
+        }
+    }
+    
+    @objc
+    var showsInfo: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGShowsInfoInspectorKey)
         }
         set
         {
-            self.set(newValue, forKey: PGDimOtherScreensKey)
+            if newValue != self.showsInfo
+            {
+                self.set(newValue, forKey: PGShowsInfoInspectorKey)
+                NotificationCenter.default.post(name: .PGPrefObjectShowsInfoDidChange, object: self)
+            }
         }
     }
     
@@ -204,25 +225,11 @@ extension UserDefaults
     {
         get
         {
-            self.integer(forKey: PGMaxDepthKey)
+            self.integer(forKey: PGMaxRecursionDepthKey)
         }
         set
         {
-            self.set(newValue, forKey: PGMaxDepthKey)
-        }
-    }
-    
-    @objc
-    var escapeKeyMapping: PGEscapeMapping
-    {
-        get
-        {
-            let raw = UInt(self.integer(forKey: PGEscapeKeyMappingKey))
-            return PGEscapeMapping(rawValue: raw) ?? .fullscreen
-        }
-        set
-        {
-            self.set(Int(newValue.rawValue), forKey: PGEscapeKeyMappingKey)
+            self.set(newValue, forKey: PGMaxRecursionDepthKey)
         }
     }
     
@@ -240,40 +247,213 @@ extension UserDefaults
         }
     }
     
-    @nonobjc
-    private static let validImageScaleModes: [PGImageScaleMode] = [
-        .constantFactor, .automatic, .fitToView
-    ]
-    
     @objc
-    var showsInfo: Bool
+    var escapeKeyMapping: PGEscapeMapping
     {
         get
         {
-            self.bool(forKey: PGShowsInfoKey)
+            let raw = UInt(self.integer(forKey: PGEscapeKeyMappingKey))
+            return PGEscapeMapping(rawValue: raw) ?? .fullscreen
         }
         set
         {
-            if newValue != self.showsInfo
+            self.set(Int(newValue.rawValue), forKey: PGEscapeKeyMappingKey)
+        }
+    }
+
+    @objc
+    var timerInterval: TimeInterval
+    {
+        get
+        {
+            return self.double(forKey: PGTimerIntervalKey)
+        }
+        set
+        {
+            if newValue != self.timerInterval
             {
-                self.set(newValue, forKey: PGShowsInfoKey)
-                NotificationCenter.default.post(name: .PGPrefObjectShowsInfoDidChange, object: self)
+                self.set(newValue, forKey: PGTimerIntervalKey)
+                NotificationCenter.default.post(name: .PGPrefObjectTimerIntervalDidChange, object: self)
+            }
+        }
+    }
+
+    // MARK: Backgound Settings
+    @objc
+    var windowBackgroundType: PGWindowBackgroundType
+    {
+        get
+        {
+            let raw = self.integer(forKey: PGWindowBackgroundTypeKey as String)
+            return PGWindowBackgroundType(rawValue: raw) ?? .systemAppearance
+        }
+        set
+        {
+            self.set(newValue.rawValue, forKey: PGWindowBackgroundTypeKey as String)
+        }
+    }
+    
+    @objc
+    var savedWindowBackgroundColor: NSColor?
+    {
+        get
+        {
+            if let data = self.data(forKey: PGWindowBackgroundColorKey as String)
+            {
+                return try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSColor.self, from: data)
+            }
+            else
+            {
+                return nil
+            }
+        }
+        set
+        {
+            if let newValue
+            {
+                let data = try? NSKeyedArchiver.archivedData(withRootObject: newValue, requiringSecureCoding: true)
+                self.set(data, forKey: PGWindowBackgroundColorKey as String)
             }
         }
     }
     
     @objc
-    var showsThumbnails: Bool
+    var windowBackgroundColor: NSColor
+    {
+        switch windowBackgroundType
+        {
+            case .systemAppearance: return NSColor.windowBackgroundColor
+            case .customColor: return savedWindowBackgroundColor ?? NSColor.black
+            case .pattern: return NSColor.windowBackgroundColor.checkboardPatternColor
+            case .stretchAndBlur: return NSColor.windowBackgroundColor
+        }
+    }
+    
+    @objc
+    var fullscreenBackgroundType: PGFullScreenBackgroundType
     {
         get
         {
-            self.bool(forKey: PGShowsThumbnailsKey)
+            let raw = self.integer(forKey: PGFullScreenBackgroundTypeKey as String)
+            return PGFullScreenBackgroundType(rawValue: raw) ?? .sameAsWindow
         }
         set
         {
-            if newValue != self.showsThumbnails
+            self.set(newValue.rawValue, forKey: PGFullScreenBackgroundTypeKey as String)
+        }
+    }
+    
+    @objc
+    var savedFullscreenBackgroundColor: NSColor?
+    {
+        get
+        {
+            if let data = self.data(forKey: PGFullScreenBackgroundColorKey as String)
             {
-                self.set(newValue, forKey: PGShowsThumbnailsKey)
+                return try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSColor.self, from: data)
+            }
+            else
+            {
+                return nil
+            }
+        }
+        set
+        {
+            if let newValue
+            {
+                let data = try? NSKeyedArchiver.archivedData(withRootObject: newValue, requiringSecureCoding: true)
+                self.set(data, forKey: PGFullScreenBackgroundColorKey as String)
+            }
+        }
+    }
+    
+    @objc
+    var fullScreenBackgroundColor: NSColor
+    {
+        switch fullscreenBackgroundType
+        {
+            case .sameAsWindow: return windowBackgroundColor
+            case .systemAppearance: return NSColor.windowBackgroundColor
+            case .customColor: return savedFullscreenBackgroundColor ?? NSColor.black
+            case .pattern: return NSColor.windowBackgroundColor.checkboardPatternColor
+            case .stretchAndBlur: return NSColor.windowBackgroundColor
+        }
+    }
+    
+    // MARK: Fullscreen Settings
+    @objc
+    var dimOtherScreensInFullScreen: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGDimOtherScreensWhenFullScreenKey)
+        }
+        set
+        {
+            self.set(newValue, forKey: PGDimOtherScreensWhenFullScreenKey)
+        }
+    }
+    
+    @objc
+    var useEntireScreenWhenInFullScreen: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGUseEntireScreenWhenInFullScreenKey)
+        }
+        set
+        {
+            self.set(newValue, forKey: PGUseEntireScreenWhenInFullScreenKey)
+        }
+    }
+    
+    // MARK: Thumbnail Settings
+    @objc
+    var showsThumbnailSidebar: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGShowsThumbnailSidebarKey)
+        }
+        set
+        {
+            if newValue != self.showsThumbnailSidebar
+            {
+                self.set(newValue, forKey: PGShowsThumbnailSidebarKey)
+                NotificationCenter.default.post(name: .PGPrefObjectShowsThumbnailsDidChange, object: self)
+            }
+        }
+    }
+    
+    @objc
+    var showThumbnailImageName: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGShowThumbnailImageNameKey)
+        }
+        set
+        {
+            if newValue != self.showThumbnailImageName
+            {
+                self.set(newValue, forKey: PGShowThumbnailImageNameKey)
+                NotificationCenter.default.post(name: .PGPrefObjectShowsThumbnailsDidChange, object: self)
+            }
+        }
+    }
+    
+    @objc
+    var showThumbnailImageSize: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGShowThumbnailImageSizeKey)
+        }
+        set
+        {
+            if newValue != self.showThumbnailImageSize
+            {
+                self.set(newValue, forKey: PGShowThumbnailImageSizeKey)
                 NotificationCenter.default.post(name: .PGPrefObjectShowsThumbnailsDidChange, object: self)
             }
         }
@@ -291,21 +471,22 @@ extension UserDefaults
             self.set(newValue, forKey: PGThumbnailSizeFormatKey)
         }
     }
-    
+
+    // MARK: Default Document Settings
     @objc
-    var readingDirection: PGReadingDirection
+    var baseOrientation: PGOrientation
     {
         get
         {
-            let raw = self.integer(forKey: PGReadingDirectionKey)
-            return PGReadingDirection(rawValue: raw) ?? .leftToRight
+            let raw = self.integer(forKey: PGBaseOrientationKey)
+            return PGOrientation(rawValue: UInt(raw))
         }
         set
         {
-            if newValue != self.readingDirection
+            if newValue != self.baseOrientation
             {
-                self.set(newValue.rawValue, forKey: PGReadingDirectionKey)
-                NotificationCenter.default.post(name: .PGPrefObjectReadingDirectionDidChange, object: self)
+                self.set(newValue.rawValue, forKey: PGBaseOrientationKey)
+                NotificationCenter.default.post(name: .PGPrefObjectBaseOrientationDidChange, object: self)
             }
         }
     }
@@ -324,6 +505,124 @@ extension UserDefaults
         }
     }
     
+    @objc
+    var defaultReadingDirection: PGReadingDirection
+    {
+        get
+        {
+            let raw = self.integer(forKey: PGDefaultReadingDirectionKey)
+            return PGReadingDirection(rawValue: raw) ?? .leftToRight
+        }
+        set
+        {
+            if newValue != self.defaultReadingDirection
+            {
+                self.set(newValue.rawValue, forKey: PGDefaultReadingDirectionKey)
+                NotificationCenter.default.post(name: .PGPrefObjectReadingDirectionDidChange, object: self)
+            }
+        }
+    }
+    
+    @objc
+    var animatesImages: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGAnimatesImagesKey)
+        }
+        set
+        {
+            if newValue != self.animatesImages
+            {
+                self.set(newValue, forKey: PGAnimatesImagesKey)
+                NotificationCenter.default.post(name: .PGPrefObjectAnimatesImagesDidChange, object: self)
+            }
+        }
+    }
+    
+    // MARK: Default Sort Settings
+    @objc
+    var oldSortOrder: PGSortOrder
+    {
+        get
+        {
+            let raw = self.integer(forKey: PGSortOrderKey)
+            return PGSortOrder(rawValue: UInt(raw))
+        }
+        set
+        {
+            if newValue != self.oldSortOrder
+            {
+                self.set(newValue.rawValue, forKey: PGSortOrderKey)
+                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
+            }
+        }
+    }
+    
+    @nonobjc
+    var sortOrder: SortOrder
+    {
+        get
+        {
+            let raw = self.integer(forKey: PGSortOrderKey)
+            let adapter = SortOrderAdapter(rawValue: raw)
+            return adapter.sortOrder
+        }
+        set
+        {
+            var adapter = SortOrderAdapter(rawValue: self.integer(forKey: PGSortOrderKey))
+            if newValue != adapter.sortOrder
+            {
+                adapter.sortOrder = newValue
+                self.set(adapter.rawValue, forKey: PGSortOrderKey)
+                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
+            }
+        }
+    }
+    
+    @objc
+    var sortDescending: Bool
+    {
+        get
+        {
+            let raw = self.integer(forKey: PGSortOrderKey)
+            let adapter = SortOrderAdapter(rawValue: raw)
+            return adapter.isDescending
+        }
+        set
+        {
+            var adapter = SortOrderAdapter(rawValue: self.integer(forKey: PGSortOrderKey))
+            if newValue != adapter.isDescending
+            {
+                adapter.isDescending = newValue
+                self.set(adapter.rawValue, forKey: PGSortOrderKey)
+                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
+            }
+        }
+    }
+    
+    @objc
+    var isRepeatEnabled: Bool
+    {
+        get
+        {
+            let raw = self.integer(forKey: PGSortOrderKey)
+            let adapter = SortOrderAdapter(rawValue: raw)
+            return adapter.isRepeat
+        }
+        set
+        {
+            var adapter = SortOrderAdapter(rawValue: self.integer(forKey: PGSortOrderKey))
+            if newValue != adapter.isRepeat
+            {
+                adapter.isRepeat = newValue
+                self.set(adapter.rawValue, forKey: PGSortOrderKey)
+                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
+            }
+        }
+    }
+    
+    // MARK: Default Scaling Settings
     @objc
     var imageScaleMode: PGImageScaleMode
     {
@@ -382,136 +681,15 @@ extension UserDefaults
     }
     
     @objc
-    var animatesImages: Bool
+    var antialiasWhenUpscaling: Bool
     {
         get
         {
-            self.bool(forKey: PGAnimatesImagesKey)
+            return self.bool(forKey: PGAntialiasWhenUpscalingKey)
         }
         set
         {
-            if newValue != self.animatesImages
-            {
-                self.set(newValue, forKey: PGAnimatesImagesKey)
-                NotificationCenter.default.post(name: .PGPrefObjectAnimatesImagesDidChange, object: self)
-            }
-        }
-    }
-    
-    @objc
-    var timerInterval: TimeInterval
-    {
-        get
-        {
-            return self.double(forKey: PGTimerIntervalKey)
-        }
-        set
-        {
-            if newValue != self.timerInterval
-            {
-                self.set(newValue, forKey: PGTimerIntervalKey)
-                NotificationCenter.default.post(name: .PGPrefObjectTimerIntervalDidChange, object: self)
-            }
-        }
-    }
-    
-    @objc
-    var baseOrientation: PGOrientation
-    {
-        get
-        {
-            let raw = self.integer(forKey: PGBaseOrientationKey)
-            return PGOrientation(rawValue: UInt(raw))
-        }
-        set
-        {
-            if newValue != self.baseOrientation
-            {
-                self.set(newValue.rawValue, forKey: PGBaseOrientationKey)
-                NotificationCenter.default.post(name: .PGPrefObjectBaseOrientationDidChange, object: self)
-            }
-        }
-    }
-    
-    // MARK: Sorting
-    @objc
-    var oldSortOrder: PGSortOrder
-    {
-        get
-        {
-            let raw = self.integer(forKey: PGSortOrderKey)
-            return PGSortOrder(rawValue: UInt(raw))
-        }
-        set
-        {
-            if newValue != self.oldSortOrder
-            {
-                self.set(newValue.rawValue, forKey: PGSortOrderKey)
-                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
-            }
-        }
-    }
-    
-    @nonobjc
-    var sortOrder: SortOrder
-    {
-        get
-        {
-            let raw = self.integer(forKey: PGSortOrderKey)
-            let adapter = SortOrderAdapter(rawValue: raw)
-            return adapter.sortOrder
-        }
-        set
-        {
-            var adapter = SortOrderAdapter(rawValue: self.integer(forKey: PGSortOrderKey))
-            if newValue != adapter.sortOrder
-            {
-                adapter.sortOrder = newValue
-                self.set(adapter.rawValue, forKey: PGSortOrderKey)
-                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
-            }
-        }
-    }
-    
-    @objc
-    var isRepeatEnabled: Bool
-    {
-        get
-        {
-            let raw = self.integer(forKey: PGSortOrderKey)
-            let adapter = SortOrderAdapter(rawValue: raw)
-            return adapter.isRepeat
-        }
-        set
-        {
-            var adapter = SortOrderAdapter(rawValue: self.integer(forKey: PGSortOrderKey))
-            if newValue != adapter.isRepeat
-            {
-                adapter.isRepeat = newValue
-                self.set(adapter.rawValue, forKey: PGSortOrderKey)
-                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
-            }
-        }
-    }
-    
-    @objc
-    var sortDescending: Bool
-    {
-        get
-        {
-            let raw = self.integer(forKey: PGSortOrderKey)
-            let adapter = SortOrderAdapter(rawValue: raw)
-            return adapter.isDescending
-        }
-        set
-        {
-            var adapter = SortOrderAdapter(rawValue: self.integer(forKey: PGSortOrderKey))
-            if newValue != adapter.isDescending
-            {
-                adapter.isDescending = newValue
-                self.set(adapter.rawValue, forKey: PGSortOrderKey)
-                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
-            }
+            self.set(newValue, forKey: PGAntialiasWhenUpscalingKey)
         }
     }
 }

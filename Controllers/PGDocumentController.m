@@ -46,7 +46,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDisplayController.h"
 #import "PGFullscreenController.h"
 #import "PGInspectorPanelController.h"
-#import "PGPreferenceWindowController.h"
 #import "PGTimerPanelController.h"
 #import "PGURLAlert.h"
 #import "PGWindowController.h"
@@ -165,7 +164,8 @@ static PGDocumentController *PGSharedDocumentController = nil;
 
 - (IBAction)showPreferences:(id)sender
 {
-    [[PGPreferenceWindowController sharedPrefController] showWindow:self];
+    [[SettingsWindowController sharedSettingsWindowController] showWindow:self];
+//    [[PGPreferenceWindowController sharedPrefController] showWindow:self];
 }
 
 - (IBAction)switchToFileManager:(id)sender
