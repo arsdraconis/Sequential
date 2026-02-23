@@ -77,22 +77,6 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
     return @[@(    PGImageScaleModeConstantFactor), @(    PGImageScaleModeAutomatic), @(PGImageScaleModeFitToView)];
 }
 
-//+ (void)initialize
-//{
-//    if ([PGPrefObject class] != self) return;
-//
-//    [NSUserDefaults.standardUserDefaults registerDefaults:@{
-//        PGShowsInfoKey: @YES,
-//        PGShowsThumbnailsKey: @YES,
-//        PGReadingDirectionRightToLeftKey: @NO,
-//        PGImageScaleModeKey: @(    PGImageScaleModeConstantFactor),
-//        PGImageScaleFactorKey: @1.0f,
-//        PGAnimatesImagesKey: @YES,
-//        PGSortOrderKey: @(PGSortOrderByName | PGSortOrderRepeatMask),
-//        PGTimerIntervalKey: @30.0f,
-//        PGBaseOrientationKey: @(PGUpright)
-//    }];
-//}
 
 - (void)setShowsInfo:(BOOL)flag
 {

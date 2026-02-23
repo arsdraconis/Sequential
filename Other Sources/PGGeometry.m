@@ -162,13 +162,13 @@ BOOL PGHasContradictoryRectEdges(PGRectEdgeMask mask)
 
 PGRectEdgeMask PGReadingDirectionAndLocationToRectEdgeMask(PGPageLocation loc, PGReadingDirection dir)
 {
-	NSCParameterAssert(PGPreserveLocation != loc);
+	NSCParameterAssert(PGPageLocationPreserve != loc);
 	BOOL const ltr = dir == PGReadingDirectionLeftToRight;
 	switch(loc) {
-		case PGPreserveLocation: break;
-		case PGHomeLocation: return PGMaxYEdgeMask | (ltr ? PGMinXEdgeMask : PGMaxXEdgeMask);
-		case PGEndLocation: return PGMinYEdgeMask | (ltr ? PGMaxXEdgeMask : PGMinXEdgeMask);
-		case PGEndTopLocation: return PGMaxYEdgeMask | (ltr ? PGMaxXEdgeMask : PGMinXEdgeMask);
+		case PGPageLocationPreserve: break;
+		case PGPageLocationHome: return PGMaxYEdgeMask | (ltr ? PGMinXEdgeMask : PGMaxXEdgeMask);
+		case PGPageLocationEnd: return PGMinYEdgeMask | (ltr ? PGMaxXEdgeMask : PGMinXEdgeMask);
+		case PGPageLocationEndTop: return PGMaxYEdgeMask | (ltr ? PGMaxXEdgeMask : PGMinXEdgeMask);
 	}
 	return PGNoEdges;
 }

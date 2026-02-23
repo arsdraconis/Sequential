@@ -223,7 +223,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	NSRect const r = [self documentFrameWithBorder:YES];
 	if(NSIsEmptyRect(r)) return NSZeroSize;
 	NSRect const b = self.insetBounds;
-	PGRectEdgeMask const pin = [self.delegate clipView:self directionFor:PGHomeLocation];
+	PGRectEdgeMask const pin = [self.delegate clipView:self directionFor:PGPageLocationHome];
 	NSSize const diff = PGPointDiff(PGPointOfPartOfRect(b, pin), PGPointOfPartOfRect(r, pin));
 	if(![self.documentView PG_scalesContentWithFrameSizeInClipView:self]) return diff;
 	return NSMakeSize(diff.width * 2.0f / NSWidth(r), diff.height * 2.0f / NSHeight(r));
@@ -267,7 +267,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 }
 - (BOOL)scrollToLocation:(PGPageLocation)location animation:(PGAnimationType)type
 {
-	NSParameterAssert(PGPreserveLocation != location);
+	NSParameterAssert(PGPageLocationPreserve != location);
 	return [self scrollToEdge:[self.delegate clipView:self directionFor:location] animation:type];
 }
 - (BOOL)scrollCenterTo:(NSPoint)aPoint animation:(PGAnimationType)type
@@ -285,7 +285,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	NSSize o = aSize;
 	NSRect const b = self.insetBounds;
 	NSRect const r = [self documentFrameWithBorder:YES];
-	PGRectEdgeMask const pin = [self.delegate clipView:self directionFor:PGHomeLocation];
+	PGRectEdgeMask const pin = [self.delegate clipView:self directionFor:PGPageLocationHome];
 	if([self.documentView PG_scalesContentWithFrameSizeInClipView:self]) o = NSMakeSize(o.width * NSWidth(r) * 0.5f, o.height * NSHeight(r) * 0.5f);
 	return [self scrollBy:PGPointDiff(PGOffsetPointBySize(PGPointOfPartOfRect(r, pin), o), PGPointOfPartOfRect(b, pin)) animation:type];
 }
@@ -508,7 +508,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 }
 - (void)magicPanForward:(BOOL)forward acrossFirst:(BOOL)across
 {
-	PGRectEdgeMask const mask = [self.delegate clipView:self directionFor:forward ? PGEndLocation : PGHomeLocation];
+	PGRectEdgeMask const mask = [self.delegate clipView:self directionFor:forward ? PGPageLocationEnd : PGPageLocationHome];
 	NSAssert(!PGHasContradictoryRectEdges(mask), @"Delegate returned contradictory directions.");
 	NSPoint position = self.position;
 	PGRectEdgeMask const dir1 = mask & (across ? PGHorzEdgesMask : PGVertEdgesMask);
@@ -663,7 +663,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	NSRect const r = [self convertRect:aRect fromView:view];
 	NSRect const b = self.insetBounds;
 	NSSize o = NSZeroSize;
-	PGRectEdgeMask const part = [self.delegate clipView:self directionFor:PGHomeLocation];
+	PGRectEdgeMask const part = [self.delegate clipView:self directionFor:PGPageLocationHome];
 	NSPoint const preferredVisiblePoint = PGPointOfPartOfRect(r, part);
 	NSPoint const preferredTargetLocation = PGPointOfPartOfRect(b, part);
 	if(NSWidth(r) > NSWidth(b)) o.width = preferredVisiblePoint.x - preferredTargetLocation.x;
@@ -902,11 +902,11 @@ PerformMenuItemActionWithMatchingKeyEquivalent(NSEvent *event, NSMenu *menu) {
 
 - (IBAction)moveToBeginningOfDocument:(nullable id)sender
 {
-	[self scrollToLocation:PGHomeLocation animation:PGPreferAnimation];
+	[self scrollToLocation:PGPageLocationHome animation:PGPreferAnimation];
 }
 - (IBAction)moveToEndOfDocument:(nullable id)sender
 {
-	[self scrollToLocation:PGEndLocation animation:PGPreferAnimation];
+	[self scrollToLocation:PGPageLocationEnd animation:PGPreferAnimation];
 }
 - (IBAction)scrollPageUp:(nullable id)sender
 {

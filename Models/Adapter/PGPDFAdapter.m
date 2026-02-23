@@ -73,13 +73,14 @@ NS_ASSUME_NONNULL_BEGIN
     if (!mainRep) return [self.node fallbackFromFailedAdapter:self];
     NSPDFImageRep * const threadRep = [mainRep copy];
 
-    NSDictionary * const localeDict = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    // Replace the use of localeDict with NSLocale.currentLocale
+//    NSDictionary * const localeDict = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
     NSUInteger const pageCount   = mainRep.pageCount;
     NSMutableArray * const nodes = [NSMutableArray arrayWithCapacity:pageCount];
     for (NSUInteger i = 0; i < pageCount; i++)
     {
         PGDisplayableIdentifier * const identifier = [self.node.identifier subidentifierWithIndex:i].displayableIdentifier;
-        identifier.naturalDisplayName = [@(i + 1) descriptionWithLocale:localeDict];
+        identifier.naturalDisplayName = [@(i + 1) descriptionWithLocale:[NSLocale currentLocale]];
         PGNode * const node = [[PGNode alloc] initWithParent:self identifier:identifier];
         if (!node) continue;
         node.dataProvider = [[PGPDFPageDataProvider alloc] initWithMainRep:mainRep

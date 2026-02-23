@@ -419,7 +419,8 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 - (IBAction)toggleEntireWindowOrScreen:(nullable id)sender	//	2023/08/14 added; 2023/11/16 renamed
 {
 	BOOL const isInFullscreen = PGDocumentController.sharedDocumentController.fullscreen;
-	if(isInFullscreen) {
+	if(isInFullscreen)
+    {
 		PGDocumentController *const dc = PGDocumentController.sharedDocumentController;
 		dc.usesEntireScreenWhenInFullScreen = !dc.usesEntireScreenWhenInFullScreen;
 	} else
@@ -984,8 +985,8 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 - (void)setActiveNode:(PGNode *)aNode forward:(BOOL)flag
 {
 	if(![self _setActiveNode:aNode]) return;
-	if(self.window.currentEvent.modifierFlags & NSEventModifierFlagControl) _initialLocation = PGPreserveLocation;
-	else _initialLocation = flag ? PGHomeLocation : [[[NSUserDefaults standardUserDefaults] objectForKey:PGBackwardsInitialLocationKey] integerValue];
+	if(self.window.currentEvent.modifierFlags & NSEventModifierFlagControl) _initialLocation = PGPageLocationPreserve;
+	else _initialLocation = flag ? PGPageLocationHome : NSUserDefaults.standardUserDefaults.initialLocationWhenNavigatingBackwards;
 	[self _readActiveNode];
 }
 - (BOOL)tryToSetActiveNode:(PGNode *)aNode forward:(BOOL)flag
@@ -1156,7 +1157,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 						   size:[self _sizeForImageRep:rep orientation:orientation]];
 #if __has_feature(objc_arc)
 		_clipView.documentView = _imageView;
-		if(PGPreserveLocation == _initialLocation)
+		if(PGPageLocationPreserve == _initialLocation)
 			[_clipView scrollRelativeCenterTo:relativeCenter animation:PGNoAnimation];
 		else
 			[_clipView scrollToLocation:_initialLocation animation:PGNoAnimation];
@@ -1479,7 +1480,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 		newSize.width *= factor;
 		newSize.height *= factor;
 	} else {
-		PGImageScaleConstraint const constraint = [[[NSUserDefaults standardUserDefaults] objectForKey:PGImageScaleConstraintKey] unsignedIntegerValue];
+		PGImageScaleConstraint const constraint = NSUserDefaults.standardUserDefaults.imageScaleConstraint;
 		BOOL const resIndependent = self.activeNode.resourceAdapter.resolutionIndependent;
 		NSSize const minSize = constraint != PGImageScaleConstraintUpscaleOnly || resIndependent ? NSZeroSize : newSize;
 		NSSize const maxSize = constraint != PGImageScaleConstraintDownscaleOnly || resIndependent ? NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX) : newSize;
@@ -2365,7 +2366,8 @@ proposedFrame.size.width, proposedFrame.size.height); */
 	BOOL const primary = anEvent.type == NSEventTypeLeftMouseDown;
 	BOOL const rtl = self.activeDocument.readingDirection == PGReadingDirectionRightToLeft;
 	BOOL forward;
-	switch([[[NSUserDefaults standardUserDefaults] objectForKey:PGMouseClickActionKey] integerValue]) {
+	switch(NSUserDefaults.standardUserDefaults.mouseClickAction)
+    {
 		case PGActionLeftRight: forward = primary == rtl; break;
 		case PGActionRightLeft: forward = primary != rtl; break;
 		default: forward = primary; break;

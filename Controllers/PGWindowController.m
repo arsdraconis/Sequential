@@ -110,6 +110,7 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 {
 	[super windowDidLoad];
 	NSWindow *const window = self.window;
+    // TODO: Let state restoration handle window positions
 	NSString *const savedFrame = [[NSUserDefaults standardUserDefaults] objectForKey:PGMainWindowFrameKey];
 	if(savedFrame) [window setFrameFromString:savedFrame];
 	else {
@@ -129,6 +130,7 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 
 	NSWindowPersistableFrameDescriptor	desc = self.window.stringWithSavedFrame;
 //NSLog(@"desc.length %lu", (unsigned long) desc.length);
+    // TODO: Let state restoration handle window positions
 	[NSUserDefaults.standardUserDefaults setObject:desc
 											forKey:PGMainWindowFrameKey];
 }

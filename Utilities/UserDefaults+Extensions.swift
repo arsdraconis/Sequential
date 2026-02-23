@@ -9,6 +9,9 @@ import Cocoa
 
 let PGPrefObjectAnimateKey = "PGPrefObjectAnimate"
 
+fileprivate let PGDisplayScreenIndexKey = "PGDisplayScreenIndex"
+fileprivate let PGRecentItemsKey = "PGRecentItems2"
+
 fileprivate let PGShowsInfoKey = "PGShowsInfo"
 fileprivate let PGShowsThumbnailsKey = "PGShowsThumbnails"
 
@@ -68,7 +71,7 @@ extension UserDefaults
             PGEscapeKeyMappingKey: PGEscapeMapping.fullscreen.rawValue,
             
             PGReadingDirectionKey: PGReadingDirection.leftToRight.rawValue,
-            PGBackwardsInitialLocationKey: PGPageLocation.endLocation.rawValue,
+            PGBackwardsInitialLocationKey: PGPageLocation.end.rawValue,
 
             PGImageScaleModeKey: PGImageScaleMode.constantFactor.rawValue,
             PGImageScaleFactorKey: 1.0,
@@ -115,6 +118,85 @@ extension UserDefaults
             standard.set(b, forKey: PGShowThumbnailContainerChildSizeTotalKey)
             standard.removeObject(forKey: "PGShowCountsAndSizesOnContainerThumbnail")
         }
+        
+        // 2026/02/22 Transition older saved resent items
+        if let d = standard.object(forKey: "PGRecentItems")
+        {
+            standard.removeObject(forKey: "PGRecentItems")
+            standard.set(d, forKey: PGRecentItemsKey)
+        }
+        if let d = standard.object(forKey: "PGRecentDocuments")
+        {
+            standard.removeObject(forKey: "PGRecentDocuments")
+            standard.set(d, forKey: "PGRecentDocuments")
+        }
+    }
+    
+    @objc
+    var recentItems: Data?
+    {
+        get
+        {
+            self.data(forKey: PGRecentItemsKey)
+        }
+        set
+        {
+            self.set(newValue, forKey: PGRecentItemsKey)
+        }
+    }
+    
+    @objc
+    var displayScreenIndex: Int
+    {
+        get
+        {
+            let result = self.integer(forKey: PGDisplayScreenIndexKey)
+            return max(result, 0)
+        }
+        set
+        {
+            self.set(max(newValue, 0), forKey: PGDisplayScreenIndexKey)
+        }
+    }
+    
+//    @objc
+//    var backgroundType: PGBackgroundTypeNew
+//    {
+//        get
+//        {
+//            let raw = self.integer(forKey: PGBackgroundTypeKey)
+//            return PGBackgroundTypeNew(rawValue: raw) ?? .systemColor
+//        }
+//        set
+//        {
+//            self.set(newValue.rawValue, forKey: PGBackgroundTypeKey)
+//        }
+//    }
+    
+    @objc
+    var useEntireScreenWhenInFullScreen: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGUseEntireScreenWhenInFullScreenKey)
+        }
+        set
+        {
+            self.set(newValue, forKey: PGUseEntireScreenWhenInFullScreenKey)
+        }
+    }
+    
+    @objc
+    var dimOtherScreensInFullScreen: Bool
+    {
+        get
+        {
+            self.bool(forKey: PGDimOtherScreensKey)
+        }
+        set
+        {
+            self.set(newValue, forKey: PGDimOtherScreensKey)
+        }
     }
     
     @objc
@@ -127,6 +209,34 @@ extension UserDefaults
         set
         {
             self.set(newValue, forKey: PGMaxDepthKey)
+        }
+    }
+    
+    @objc
+    var escapeKeyMapping: PGEscapeMapping
+    {
+        get
+        {
+            let raw = UInt(self.integer(forKey: PGEscapeKeyMappingKey))
+            return PGEscapeMapping(rawValue: raw) ?? .fullscreen
+        }
+        set
+        {
+            self.set(Int(newValue.rawValue), forKey: PGEscapeKeyMappingKey)
+        }
+    }
+    
+    @objc
+    var mouseClickAction: PGAction
+    {
+        get
+        {
+            let raw = UInt(self.integer(forKey: PGMouseClickActionKey))
+            return PGAction(rawValue: raw) ?? .nextPrevious
+        }
+        set
+        {
+            self.set(Int(newValue.rawValue), forKey: PGMouseClickActionKey)
         }
     }
     
@@ -170,6 +280,19 @@ extension UserDefaults
     }
     
     @objc
+    var thumbnailSizeFormat: Int
+    {
+        get
+        {
+            self.integer(forKey: PGThumbnailSizeFormatKey)
+        }
+        set
+        {
+            self.set(newValue, forKey: PGThumbnailSizeFormatKey)
+        }
+    }
+    
+    @objc
     var readingDirection: PGReadingDirection
     {
         get
@@ -184,6 +307,20 @@ extension UserDefaults
                 self.set(newValue.rawValue, forKey: PGReadingDirectionKey)
                 NotificationCenter.default.post(name: .PGPrefObjectReadingDirectionDidChange, object: self)
             }
+        }
+    }
+    
+    @objc
+    var initialLocationWhenNavigatingBackwards: PGPageLocation
+    {
+        get
+        {
+            let raw = self.integer(forKey: PGBackwardsInitialLocationKey)
+            return PGPageLocation(rawValue: raw) ?? .home
+        }
+        set
+        {
+            self.set(newValue.rawValue, forKey: PGBackwardsInitialLocationKey)
         }
     }
     
@@ -227,6 +364,20 @@ extension UserDefaults
                 let userInfo = [ PGPrefObjectAnimateKey : true ]
                 NotificationCenter.default.post(name: .PGPrefObjectImageScaleDidChange, object: self, userInfo: userInfo)
             }
+        }
+    }
+    
+    @objc
+    var imageScaleConstraint: PGImageScaleConstraint
+    {
+        get
+        {
+            let raw = UInt(self.integer(forKey: PGImageScaleConstraintKey))
+            return PGImageScaleConstraint(rawValue: raw) ?? .none
+        }
+        set
+        {
+            self.set(newValue.rawValue, forKey: PGImageScaleConstraintKey)
         }
     }
     

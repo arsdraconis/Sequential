@@ -43,10 +43,10 @@ typedef NS_ENUM(NSInteger, PGReadingDirection) {
 };
 
 typedef NS_ENUM(NSInteger, PGPageLocation) {
-	PGPreserveLocation = -1,
-	PGHomeLocation = 0,
-	PGEndLocation = 1,
-	PGEndTopLocation = 2
+	PGPageLocationPreserve = -1,
+	PGPageLocationHome = 0,
+	PGPageLocationEnd = 1,
+	PGPageLocationEndTop = 2
 };
 
 typedef NS_OPTIONS(NSUInteger, PGOrientation) {

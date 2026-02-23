@@ -24,19 +24,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFullscreenWindow.h"
 
+#import "Sequential-Swift.h"
+
 // Other Sources
 #import "PGAppKitAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 extern const NSString* const PGUseEntireScreenWhenInFullScreenKey;
-
-static
-BOOL
-ShouldUseEntireScreenWhenInFullScreen(void) {
-	return [NSUserDefaults.standardUserDefaults
-			boolForKey:(NSString*)PGUseEntireScreenWhenInFullScreenKey];
-}
 
 static
 CGFloat
@@ -117,7 +112,7 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 
 - (instancetype)initWithScreen:(NSScreen *)screen
 {
-	const BOOL	useEntireScreen = ShouldUseEntireScreenWhenInFullScreen();
+	const BOOL	useEntireScreen = NSUserDefaults.standardUserDefaults.useEntireScreenWhenInFullScreen;
 	if((self = [super initWithContentRect:GetSuitableFrameForScreenWithNotch(useEntireScreen, screen)
 								styleMask:NSWindowStyleMaskFullSizeContentView // NSWindowStyleMaskBorderless
 								  backing:NSBackingStoreBuffered
@@ -134,7 +129,7 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 	if(nil == screen)
 		return;
 
-	const BOOL	useEntireScreen = ShouldUseEntireScreenWhenInFullScreen();
+	const BOOL	useEntireScreen = NSUserDefaults.standardUserDefaults.useEntireScreenWhenInFullScreen;
 
 	if(!useEntireScreen) {
 		if(nil != _blackHideTheNotchWindow) {
@@ -156,7 +151,7 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 - (void)resizeToUseEntireScreen	//	called when the "Use Entire Screen" command is used
 {
 	NSScreen*	screen = self.screen;
-	const BOOL	useEntireScreen = ShouldUseEntireScreenWhenInFullScreen();
+	const BOOL	useEntireScreen = NSUserDefaults.standardUserDefaults.useEntireScreenWhenInFullScreen;
 	if(useEntireScreen) {
 		NSParameterAssert(nil != _blackHideTheNotchWindow);
 		[self _deallocateTheBlackHideTheNotchWindow];

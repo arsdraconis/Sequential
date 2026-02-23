@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDocumentController.h"
 
+#import "Sequential-Swift.h"
+
 #import <objc/Protocol.h>
 #import <sys/resource.h>
 #import <tgmath.h>
@@ -279,7 +281,7 @@ static PGDocumentController *PGSharedDocumentController = nil;
 
 - (BOOL)performEscapeKeyAction
 {
-    switch ([[[NSUserDefaults standardUserDefaults] objectForKey:PGEscapeKeyMappingKey] integerValue])
+    switch (NSUserDefaults.standardUserDefaults.escapeKeyMapping)
     {
         case PGEscapeMappingFullscreen:
             return [self performToggleFullscreen];
@@ -348,7 +350,8 @@ static PGDocumentController *PGSharedDocumentController = nil;
 {
     if (flag == _fullscreen) return;
     _fullscreen = flag;
-    [[NSUserDefaults standardUserDefaults] setObject:@(flag) forKey:PGFullscreenKey];
+    // Removed. In modern macOS, individual documents should go fullscreen, not the entire app itself.
+//    [[NSUserDefaults standardUserDefaults] setObject:@(flag) forKey:PGFullscreenKey];
     [self _setFullscreen:flag];
 }
 
@@ -362,21 +365,12 @@ static PGDocumentController *PGSharedDocumentController = nil;
     return YES;
 }
 
-const NSString * const PGUseEntireScreenWhenInFullScreenKey = @"PGUseEntireScreenWhenInFullScreen";
-
-- (BOOL)usesEntireScreenWhenInFullScreen
-{
-    return [NSUserDefaults.standardUserDefaults
-        boolForKey:(NSString *)PGUseEntireScreenWhenInFullScreenKey];
-}
-
 - (void)setUsesEntireScreenWhenInFullScreen:(BOOL)flag    // 2023/08/14 added
 {
     NSParameterAssert(_fullscreen);
     NSParameterAssert(_fullscreenController);
 
-    [NSUserDefaults.standardUserDefaults setBool:flag
-                                          forKey:(NSString *)PGUseEntireScreenWhenInFullScreenKey];
+    NSUserDefaults.standardUserDefaults.useEntireScreenWhenInFullScreen = flag;
 
     [_fullscreenController resizeToUseEntireScreen];
 }
@@ -540,7 +534,7 @@ const NSString * const PGUseEntireScreenWhenInFullScreenKey = @"PGUseEntireScree
                                                                  error:&error];
     if (error) return;
 
-    [[NSUserDefaults standardUserDefaults] setObject:archivedData forKey:PGRecentItemsKey];
+    NSUserDefaults.standardUserDefaults.recentItems = archivedData;
 }
 
 static BeforeState HandlePreEnterFullScreen(PGFloatingPanelController *panel)
@@ -821,28 +815,18 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
 {
     if ((self = [super init]))
     {
+        // I don't like having this here.
+        [NSUserDefaults registerAppDefaults];
+        
         NSUserDefaults * const defaults = [NSUserDefaults standardUserDefaults];
-        id recentItemsData              = [defaults objectForKey:PGRecentItemsKey];
-        if (!recentItemsData)
-        {
-            recentItemsData = [defaults objectForKey:PGRecentItemsDeprecated2Key];
-            [defaults
-                removeObjectForKey:PGRecentItemsDeprecated2Key];    // Don't leave unused data around.
-        }
-        if (!recentItemsData)
-        {
-            recentItemsData = [defaults objectForKey:PGRecentItemsDeprecatedKey];
-            [defaults
-                removeObjectForKey:PGRecentItemsDeprecatedKey];    // Don't leave unused data around.
-        }
-
+        id recentItemsData = [defaults recentItems];
         NSArray *rdia = nil;
         if (recentItemsData)
         {
             NSError *error = nil;
-            NSSet *classes =
-                [NSSet setWithArray:@[NSArray.class, NSData.class, PGResourceIdentifier.class]];
-            rdia = [NSKeyedUnarchiver unarchivedObjectOfClasses:classes fromData:recentItemsData
+            NSSet *classes = [NSSet setWithArray:@[NSArray.class, NSData.class, PGResourceIdentifier.class]];
+            rdia = [NSKeyedUnarchiver unarchivedObjectOfClasses:classes
+                                                       fromData:recentItemsData
                                                           error:&error];
         }
         else
@@ -857,7 +841,7 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
             [self _setRecentDocumentIdentifiers:rdia];
         }
 
-        _fullscreen = [[defaults objectForKey:PGFullscreenKey] boolValue];
+        _fullscreen = NO;
 
         _documents = [NSMutableArray<PGDocument *> new];
 
@@ -868,11 +852,10 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
         if (!PGSharedDocumentController)
         {
             PGSharedDocumentController = self;
-            [[NSAppleEventManager sharedAppleEventManager]
-                setEventHandler:self
-                    andSelector:@selector(handleAppleEvent:withReplyEvent:)
-                  forEventClass:kInternetEventClass
-                     andEventID:kAEGetURL];
+            [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
+                                                               andSelector:@selector(handleAppleEvent:withReplyEvent:)
+                                                             forEventClass:kInternetEventClass
+                                                                andEventID:kAEGetURL];
             self.nextResponder  = NSApp.nextResponder;
             NSApp.nextResponder = self;
         }
@@ -883,9 +866,10 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
 - (void)dealloc
 {
     if (PGSharedDocumentController == self)
-        [[NSAppleEventManager sharedAppleEventManager]
-            removeEventHandlerForEventClass:kInternetEventClass
-                                 andEventID:kAEGetURL];
+    {
+        [[NSAppleEventManager sharedAppleEventManager] removeEventHandlerForEventClass:kInternetEventClass
+                                                                            andEventID:kAEGetURL];
+    }
     [self PG_removeObserver];
 }
 

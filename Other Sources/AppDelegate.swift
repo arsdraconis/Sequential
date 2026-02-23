@@ -38,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     func applicationDidChangeScreenParameters(_ notification: Notification)
     {
-        PGPreferenceWindowController.sharedPref().onScreenParametersDidChange()
+        PGPreferenceWindowController.sharedPref().screenParametersDidChange()
     }
     
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool
@@ -49,8 +49,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
     
     func applicationWillFinishLaunching(_ notification: Notification)
     {
-        UserDefaults.registerAppDefaults()
-        
         // FIXME: Is this really necessary?
         // This was moved here from +[PGApplication initialize]. The only
         // comment on the original was, "We use a lot of file descriptors."

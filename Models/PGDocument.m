@@ -281,7 +281,7 @@ NSString * const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively"
     {
         _storedNode = newStoredNode;
         _storedOffset =
-            PGRectEdgeMaskToSizeWithMagnitude(PGReadingDirectionAndLocationToRectEdgeMask(PGHomeLocation,
+            PGRectEdgeMaskToSizeWithMagnitude(PGReadingDirectionAndLocationToRectEdgeMask(PGPageLocationHome,
                                                                                           self.readingDirection),
                                               CGFLOAT_MAX);
     }

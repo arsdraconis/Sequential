@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGResourceAdapter.h"
 
+#import "Sequential-Swift.h"
+
 // Models
 #import "PGContainerAdapter.h"
 #import "PGDataProvider.h"
@@ -153,9 +155,7 @@ static NSString * const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
     switch (self.recursionPolicy)
     {
         case PGRecursePolicyToMaxDepth:
-            return self.depth <= [[[NSUserDefaults standardUserDefaults] objectForKey:PGMaxDepthKey]
-                                     unsignedIntegerValue]
-                                     + 1;
+            return self.depth <= (NSUInteger)NSUserDefaults.standardUserDefaults.maximumRecursionDepth + 1;
         case PGRecursePolicyToAnyDepth:
             return YES;
         case PGRecursePolicyNoFurther:

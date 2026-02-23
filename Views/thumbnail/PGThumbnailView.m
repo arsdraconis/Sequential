@@ -58,11 +58,12 @@ extern	NSInteger	GetThumbnailSizeFormat(void);
 //	extern
 NSInteger
 GetThumbnailSizeFormat(void) {
-	NSUserDefaults *sud = NSUserDefaults.standardUserDefaults;
-	NSInteger	thumbnailSizeFormat = [sud integerForKey:PGThumbnailSizeFormatKey];
+	NSInteger thumbnailSizeFormat = NSUserDefaults.standardUserDefaults.thumbnailSizeFormat;
 	NSCAssert(0 <= thumbnailSizeFormat && thumbnailSizeFormat <= 2, @"thumbnailSizeFormat");
 	if(thumbnailSizeFormat < 0 || thumbnailSizeFormat > 2)
-		thumbnailSizeFormat	=	0;
+    {
+        thumbnailSizeFormat    =    0;
+    }
 	return thumbnailSizeFormat;
 }
 

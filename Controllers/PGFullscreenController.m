@@ -230,7 +230,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotif
 {
-	BOOL const dim = [[NSUserDefaults standardUserDefaults] boolForKey:PGDimOtherScreensKey]; // We shouldn't need to observe this value because our fullscreen window isn't going to be key while the user is adjusting the setting in the prefs window.
+    // We shouldn't need to observe this value because our fullscreen window isn't going to be key while the user is adjusting the setting in the prefs window.
+	BOOL const dim = NSUserDefaults.standardUserDefaults.dimOtherScreensInFullScreen;
+    
 	NSScreen *const displayScreen = [[PGPreferenceWindowController sharedPrefController] displayScreen];
 
 	if(dim || [NSScreen PG_mainScreen] == displayScreen) [self _setMenuBarHidden:YES delayed:YES];

@@ -27,6 +27,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
+//NS_ENUM(NSInteger, PGBackgroundType)
+//{
+//    PGBackgroundTypeSystemAppearance,
+//    PGBackgroundTypeCustomColor,
+//    PGBackgroundTypeCheckerboardPattern,
+//    PGBackgroundTypeStretchAndBlur
+//};
+
 extern NSString *const PGPreferenceWindowControllerBackgroundPatternColorDidChangeNotification;
 extern NSString *const PGPreferenceWindowControllerBackgroundColorUsedInFullScreenDidChangeNotification;
 extern NSString *const PGPreferenceWindowControllerDisplayScreenDidChangeNotification;
@@ -42,7 +50,7 @@ extern NSString *const PGPreferenceWindowControllerDisplayScreenDidChangeNotific
 - (IBAction)showPrefsHelp:(id)sender;
 - (IBAction)changePane:(NSToolbarItem *)sender; // Gets the pane name from [sender itemIdentifier].
 
-- (void)onScreenParametersDidChange;
+- (void)screenParametersDidChange;
 
 @end
 
