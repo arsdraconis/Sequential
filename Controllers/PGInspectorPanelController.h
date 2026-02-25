@@ -26,19 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PGInspectorPanelController :
-	PGFloatingPanelController <NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation>
-#if !__has_feature(objc_arc)
-{
-	IBOutlet NSTableView *propertiesTable;
-	IBOutlet NSTableColumn *labelColumn;
-	IBOutlet NSTableColumn *valueColumn;
-	IBOutlet NSSearchField *searchField;
-	NSDictionary *_properties;
-	NSDictionary *_matchingProperties;
-	NSArray *_matchingLabels;
-}
-#endif
+@interface PGInspectorPanelController
+    : PGFloatingPanelController <NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation>
 
 - (IBAction)changeSearch:(nullable id)sender;
 - (IBAction)copy:(nullable id)sender;

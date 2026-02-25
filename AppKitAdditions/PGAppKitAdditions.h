@@ -31,10 +31,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSUInteger, AEIconType)
 {
-    AENoIcon    = 0,
-    AEPlayIcon  = 1,
-    AEPauseIcon = 2,
-    AEStopIcon  = 3
+    AEIconTypeNoIcon = 0,
+    AEIconTypePlay   = 1,
+    AEIconTypePause  = 2,
+    AEIconTypeStop   = 3
 };
 
 @interface NSEvent (PGAppKitAdditions)

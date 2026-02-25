@@ -29,28 +29,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PGTimerButton : NSButton
 
-@property(assign) AEIconType iconType;
-@property(assign) CGFloat progress;
+@property (assign) AEIconType iconType;
+@property (assign) CGFloat progress;
 
 @end
 
 @interface PGTimerButtonCell : NSButtonCell
-#if !__has_feature(objc_arc)
-{
-	@private
-	AEIconType _iconType;
-	CGFloat _progress;
-}
-
-@property(assign) AEIconType iconType;
-@property(assign) CGFloat progress;
-
-#else
 
 @property (nonatomic, assign) AEIconType iconType;
 @property (nonatomic, assign) CGFloat progress;
-
-#endif
 
 @end
 

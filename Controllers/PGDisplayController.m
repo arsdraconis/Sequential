@@ -492,7 +492,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 {
 	NSParameterAssert([_imageView canAnimateRep]);
 	BOOL const nowPlaying = !self.activeDocument.animatesImages;
-	[_graphicPanel.contentView pushGraphic:[PGBezierPathIconGraphic graphicWithIconType:nowPlaying ? AEPlayIcon : AEPauseIcon] window:self.window];
+	[_graphicPanel.contentView pushGraphic:[PGBezierPathIconGraphic graphicWithIconType:nowPlaying ? AEIconTypePlay : AEIconTypePause] window:self.window];
 	self.activeDocument.animatesImages = nowPlaying;
 }
 - (IBAction)toggleColorInversion:(nullable id)sender	//	2024/08/14 added action for better PDF reading in Dark Mode

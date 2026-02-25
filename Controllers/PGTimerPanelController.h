@@ -30,16 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGTimerPanelController : PGFloatingPanelController
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet PGTimerButton *timerButton;
-	IBOutlet NSTextField *remainingField;
-	IBOutlet NSTextField *totalField;
-	IBOutlet NSSlider *intervalSlider;
-	NSTimer *_updateTimer;
-}
-#endif
 
 - (IBAction)toggleTimer:(id)sender;
 - (IBAction)changeTimerInterval:(id)sender;

@@ -19,7 +19,7 @@ extension NSBezierPath
         {
             case .noIcon: break
                 
-            case .playIcon:
+            case .play:
                 let radius = round(scale / 10.0)
                 path.appendArc(withCenter: .init(x: round(rect.maxX - radius), y: round(rect.midY)),
                                radius: radius,
@@ -38,7 +38,7 @@ extension NSBezierPath
                                clockwise: true)
                 path.fill()
 
-            case .pauseIcon:
+            case .pause:
                 path.lineWidth = scale / 4.0
                 path.lineCapStyle = .round
                 path.move(to: .init(x: rect.minX + rect.width * 0.25, y: rect.minY + rect.height * 0.85))
@@ -47,7 +47,7 @@ extension NSBezierPath
                 path.line(to: .init(x: rect.minX + rect.width * 0.75, y: rect.minY + rect.height * 0.15))
                 path.stroke()
                 
-            case .stopIcon:
+            case .stop:
                 rect.insetBy(dx: rect.width * 0.15, dy: rect.height * 0.15)
                     .fill(using: .sourceOver)
                 

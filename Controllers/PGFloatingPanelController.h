@@ -28,29 +28,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef enum PGFloatingPanelToggleInstruction {
-	PGFloatingPanelToggleInstructionHide = 0,
-	PGFloatingPanelToggleInstructionDoNothing = 1,
-	PGFloatingPanelToggleInstructionShowAtStatusWindowLevel = 2,
-} PGFloatingPanelToggleInstruction;
+typedef NS_ENUM(NSInteger, PGFloatingPanelToggleInstruction)
+{
+    PGFloatingPanelToggleInstructionHide                    = 0,
+    PGFloatingPanelToggleInstructionDoNothing               = 1,
+    PGFloatingPanelToggleInstructionShowAtStatusWindowLevel = 2,
+};
 
 @interface PGFloatingPanelController : NSWindowController
-#if !__has_feature(objc_arc)
-{
-	@private
-	BOOL _shown;
-	PGDisplayController *_displayController;
-}
 
-@property(readonly, getter = isShown) BOOL shown;
-- (PGDisplayController *)displayController;
-// For overriding:
-@property(readonly) NSString *nibName;
-//@property(readonly) NSString *windowFrameAutosaveName;	2021/07/21 deprecated
-#else
-@property (nonatomic, assign, getter = isShown) BOOL shown;
+@property (nonatomic, assign, getter=isShown) BOOL shown;
 @property (readonly) PGDisplayController *displayController;
-#endif
+
 - (void)toggleShown;
 - (void)toggleShownUsing:(PGFloatingPanelToggleInstruction)i;
 
@@ -62,9 +51,11 @@ typedef enum PGFloatingPanelToggleInstruction {
 @end
 
 @protocol PGFloatingPanelProtocol
+
 @required
 - (void)windowWillShow;
 - (void)windowWillClose;
+
 @end
 
 NS_ASSUME_NONNULL_END
