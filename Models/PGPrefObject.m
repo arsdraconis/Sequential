@@ -30,36 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-NSString * const PGPrefObjectShowsInfoDidChangeNotification = @"PGPrefObjectShowsInfoDidChange";
-NSString * const PGPrefObjectShowsThumbnailsDidChangeNotification =
-    @"PGPrefObjectShowsThumbnailsDidChange";
-NSString * const PGPrefObjectReadingDirectionDidChangeNotification =
-    @"PGPrefObjectReadingDirectionDidChange";
-NSString * const PGPrefObjectImageScaleDidChangeNotification = @"PGPrefObjectImageScaleDidChange";
-NSString * const PGPrefObjectUpscalesToFitScreenDidChangeNotification =
-    @"PGPrefObjectUpscalesToFitScreenDidChange";
-NSString * const PGPrefObjectAnimatesImagesDidChangeNotification =
-    @"PGPrefObjectAnimatesImagesDidChange";
-NSString * const PGPrefObjectSortOrderDidChangeNotification = @"PGPrefObjectSortOrderDidChange";
-NSString * const PGPrefObjectTimerIntervalDidChangeNotification =
-    @"PGPrefObjectTimerIntervalDidChange";
-NSString * const PGPrefObjectBaseOrientationDidChangeNotification =
-    @"PGPrefObjectBaseOrientationDidChange";
-
-NSString * const PGPrefObjectAnimateKey = @"PGPrefObjectAnimate";
-
-static NSString * const PGShowsInfoKey                   = @"PGShowsInfo";
-static NSString * const PGShowsThumbnailsKey             = @"PGShowsThumbnails";
-static NSString * const PGReadingDirectionRightToLeftKey = @"PGReadingDirectionRightToLeft";
-static NSString * const PGImageScaleModeKey              = @"PGImageScaleMode";
-static NSString * const PGImageScaleFactorKey            = @"PGImageScaleFactor";
-static NSString * const PGAnimatesImagesKey              = @"PGAnimatesImages";
-static NSString * const PGSortOrderKey                   = @"PGSortOrder2";
-static NSString * const PGTimerIntervalKey               = @"PGTimerInterval";
-static NSString * const PGBaseOrientationKey             = @"PGBaseOrientation";
-NSString *const PGMaxDepthKey = @"PGMaxDepth";
-
-// static NSString *const PGSortOrderDeprecatedKey = @"PGSortOrder"; // Deprecated after 1.3.2.
 
 @implementation PGPrefObject
 
@@ -72,44 +42,33 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
     return obj;
 }
 
-+ (NSArray *)imageScaleModes
-{
-    return @[@(    PGImageScaleModeConstantFactor), @(    PGImageScaleModeAutomatic), @(PGImageScaleModeFitToView)];
-}
-
-
 - (void)setShowsInfo:(BOOL)flag
 {
     if (!flag == !_showsInfo) return;
     _showsInfo = flag;
-    [[NSUserDefaults standardUserDefaults] setObject:@(flag) forKey:PGShowsInfoKey];
-    [self PG_postNotificationName:PGPrefObjectShowsInfoDidChangeNotification];
+    [NSUserDefaults.standardUserDefaults setShowsInfo:flag];
 }
 
 - (void)setShowsThumbnails:(BOOL)flag
 {
     if (!flag == !_showsThumbnails) return;
     _showsThumbnails = flag;
-    [[NSUserDefaults standardUserDefaults] setObject:@(flag) forKey:PGShowsThumbnailsKey];
-    [self PG_postNotificationName:PGPrefObjectShowsThumbnailsDidChangeNotification];
+    [NSUserDefaults.standardUserDefaults setShowsThumbnailSidebar:flag];
 }
 
 - (void)setReadingDirection:(PGReadingDirection)aDirection
 {
     if (aDirection == _readingDirection) return;
     _readingDirection = aDirection;
-    [[NSUserDefaults standardUserDefaults]
-        setObject:[NSNumber numberWithBool:aDirection == PGReadingDirectionRightToLeft]
-           forKey:PGReadingDirectionRightToLeftKey];
-    [self PG_postNotificationName:PGPrefObjectReadingDirectionDidChangeNotification];
+    [NSUserDefaults.standardUserDefaults setDefaultReadingDirection:aDirection];
 }
 
 - (void)setImageScaleMode:(PGImageScaleMode)aMode
 {
     _imageScaleMode   = aMode;
     _imageScaleFactor = 1;
-    [[NSUserDefaults standardUserDefaults] setObject:@(aMode) forKey:PGImageScaleModeKey];
-    [[NSUserDefaults standardUserDefaults] setObject:@1.0 forKey:PGImageScaleFactorKey];
+    [NSUserDefaults.standardUserDefaults setImageScaleMode:aMode];
+    [NSUserDefaults.standardUserDefaults setImageScaleFactor:1.0];
     [self PG_postNotificationName:PGPrefObjectImageScaleDidChangeNotification
                          userInfo:@{PGPrefObjectAnimateKey: @YES}];
 }
@@ -122,13 +81,12 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 - (void)setImageScaleFactor:(CGFloat)factor animate:(BOOL)flag
 {
     NSParameterAssert(factor > 0.0f);
-    CGFloat const newFactor =
-        fabs(1.0f - factor) < 0.01f ? 1.0f : factor;    // If it's close to 1, fudge it.
+    // If it's close to 1, fudge it.
+    CGFloat const newFactor = fabs(1.0f - factor) < 0.01f ? 1.0f : factor;
     _imageScaleFactor = newFactor;
-    _imageScaleMode   =     PGImageScaleModeConstantFactor;
-    [[NSUserDefaults standardUserDefaults] setObject:@(newFactor) forKey:PGImageScaleFactorKey];
-    [[NSUserDefaults standardUserDefaults] setObject:@(    PGImageScaleModeConstantFactor)
-                                              forKey:PGImageScaleModeKey];
+    _imageScaleMode   = PGImageScaleModeConstantFactor;
+    [NSUserDefaults.standardUserDefaults setImageScaleFactor:newFactor];
+    [NSUserDefaults.standardUserDefaults setImageScaleMode:PGImageScaleModeConstantFactor];
     [self PG_postNotificationName:PGPrefObjectImageScaleDidChangeNotification
                          userInfo:@{PGPrefObjectAnimateKey: @(flag)}];
 }
@@ -137,37 +95,47 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
 {
     if (!flag == !_animatesImages) return;
     _animatesImages = flag;
-    [[NSUserDefaults standardUserDefaults] setObject:@(flag) forKey:PGAnimatesImagesKey];
-    [self PG_postNotificationName:PGPrefObjectAnimatesImagesDidChangeNotification];
+    [NSUserDefaults.standardUserDefaults setAnimatesImages:flag];
 }
 
 - (void)setSortOrder:(PGSortOrder)anOrder
 {
     if (anOrder == _sortOrder) return;
     _sortOrder = anOrder;
-    [[NSUserDefaults standardUserDefaults] setObject:@(anOrder) forKey:PGSortOrderKey];
-    [self PG_postNotificationName:PGPrefObjectSortOrderDidChangeNotification];
+    [NSUserDefaults.standardUserDefaults setSortOrder:anOrder];
+}
+
+- (void)setSortDescending:(BOOL)sortDescending
+{
+    if (sortDescending == _sortDescending) return;
+    _sortDescending = sortDescending;
+    [NSUserDefaults.standardUserDefaults setSortDescending:sortDescending];
+}
+
+- (void)setSortRepeat:(BOOL)sortRepeat
+{
+    if (sortRepeat == _sortRepeat) return;
+    _sortRepeat = sortRepeat;
+    [NSUserDefaults.standardUserDefaults setIsRepeatEnabled:sortRepeat];
 }
 
 - (void)setTimerInterval:(NSTimeInterval)interval
 {
     if (interval == _timerInterval) return;
     _timerInterval = interval;
-    [[NSUserDefaults standardUserDefaults] setObject:@(interval) forKey:PGTimerIntervalKey];
-    [self PG_postNotificationName:PGPrefObjectTimerIntervalDidChangeNotification];
+    [NSUserDefaults.standardUserDefaults setTimerInterval:interval];
 }
 
 - (void)setBaseOrientation:(PGOrientation)anOrientation
 {
     if (anOrientation == _baseOrientation) return;
     _baseOrientation = anOrientation;
-    [[NSUserDefaults standardUserDefaults] setObject:@(anOrientation) forKey:PGBaseOrientationKey];
-    [self PG_postNotificationName:PGPrefObjectBaseOrientationDidChangeNotification];
+    [NSUserDefaults.standardUserDefaults setBaseOrientation:anOrientation];
 }
 
 - (BOOL)isCurrentSortOrder:(PGSortOrder)order
 {
-    return (PGSortOrderMask & order) == (PGSortOrderMask & self.sortOrder);
+    return order == self.sortOrder;
 }
 
 - (instancetype)init
@@ -175,20 +143,15 @@ NSString *const PGMaxDepthKey = @"PGMaxDepth";
     if ((self = [super init]))
     {
         NSUserDefaults * const d = [NSUserDefaults standardUserDefaults];
-        _showsInfo               = [[d objectForKey:PGShowsInfoKey] boolValue];
-        _showsThumbnails         = [[d objectForKey:PGShowsThumbnailsKey] boolValue];
-        _readingDirection        = [[d objectForKey:PGReadingDirectionRightToLeftKey] boolValue]
-                                       ? PGReadingDirectionRightToLeft
-                                       : PGReadingDirectionLeftToRight;
-        NSNumber * const imageScaleMode = [d objectForKey:PGImageScaleModeKey];
-        _imageScaleMode   = [[[self class] imageScaleModes] containsObject:imageScaleMode]
-                                ? imageScaleMode.integerValue
-                                :     PGImageScaleModeConstantFactor;
-        _imageScaleFactor = (CGFloat)[[d objectForKey:PGImageScaleFactorKey] doubleValue];
-        _animatesImages   = [[d objectForKey:PGAnimatesImagesKey] boolValue];
-        _sortOrder        = [[d objectForKey:PGSortOrderKey] integerValue];
-        _timerInterval    = [[d objectForKey:PGTimerIntervalKey] doubleValue];
-        _baseOrientation  = [[d objectForKey:PGBaseOrientationKey] unsignedIntegerValue];
+        _showsInfo        = d.showsInfo;
+        _showsThumbnails  = d.showsThumbnailSidebar;
+        _readingDirection = d.defaultReadingDirection;
+        _imageScaleMode   = d.imageScaleMode;
+        _imageScaleFactor = d.imageScaleFactor;
+        _animatesImages   = d.animatesImages;
+        _sortOrder        = d.sortOrder;
+        _timerInterval    = d.timerInterval;
+        _baseOrientation  = d.baseOrientation;
     }
     return self;
 }

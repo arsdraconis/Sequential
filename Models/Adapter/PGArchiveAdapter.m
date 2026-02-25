@@ -251,7 +251,7 @@ StringAtDepth(NSInteger depth) {
 													parentAdapter:adapter
 												 remainingIndexes:indexes]
 				//											depth:depth+1]	for debugging only
-							  presortedOrder:PGSortOrderUnsorted];
+							  presortedOrder:PGSortOrderUnspecified];
 //NSLog(@"%@\t<<< exiting recursion to get children of subpath <<<", StringAtDepth(depth));
 			}
 		//	[identifier setIcon:[[[node resourceAdapter] dataProvider] icon]];
@@ -331,7 +331,7 @@ StringAtDepth(NSInteger depth) {
 	NSArray *const children = [self nodesUnderPath:[_archive PG_commonRootPath]
 									 parentAdapter:self
 								  remainingIndexes:indexSet];
-	[self setUnsortedChildren:children presortedOrder:PGSortOrderUnsorted];
+	[self setUnsortedChildren:children presortedOrder:PGSortOrderUnspecified];
 	[self.node loadFinishedForAdapter:self];
 }
 

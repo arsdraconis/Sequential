@@ -28,52 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "PGGeometryTypes.h"
 
+#import "Sequential-Swift.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const PGPrefObjectShowsInfoDidChangeNotification;
-extern NSString * const PGPrefObjectShowsThumbnailsDidChangeNotification;
-extern NSString * const PGPrefObjectReadingDirectionDidChangeNotification;
-extern NSString * const PGPrefObjectImageScaleDidChangeNotification;
-extern NSString * const PGPrefObjectUpscalesToFitScreenDidChangeNotification;
-extern NSString * const PGPrefObjectAnimatesImagesDidChangeNotification;
-extern NSString * const PGPrefObjectSortOrderDidChangeNotification;
-extern NSString * const PGPrefObjectTimerIntervalDidChangeNotification;
-extern NSString * const PGPrefObjectBaseOrientationDidChangeNotification;
-
-extern NSString * const PGMaxDepthKey;
 extern NSString * const PGPrefObjectAnimateKey;
 
-typedef NS_ENUM(NSInteger, PGPatternType) {
-    PGPatternTypeNoPattern    = 0,
-    PGPatternTypeCheckerboard = 1,
-};
-
-typedef NS_ENUM(NSInteger, PGImageScaleMode) {
-    PGImageScaleModeConstantFactor              = 0,    // "Actual Size" Formerly known as PGNoScale.
-    PGImageScaleModeAutomatic                   = 1,    // "Automatic Fit"
-    PGImageScaleModeDeprecatedVerticalFit       = 2,    // Deprecated after 1.0.3.
-    PGImageScaleModeFitToView                   = 3,    // "Fit To Window" Fits the entire image inside the screen/window.
-    PGImageScaleModeDeprecatedActualSizeWithDPI = 4,    // Depcrecated after 2.1.2.
-};
-
-typedef NS_OPTIONS(NSUInteger, PGSortOrder) {
-    PGSortOrderUnsorted           = 0,
-    PGSortOrderMask      = 0x0000FFFF,
-    PGSortOrderByName         = 1,
-    PGSortOrderByDateModified = 2,
-    PGSortOrderByDateCreated  = 3,
-    PGSortOrderBySize         = 4,
-    PGSortOrderByKind         = 5,
-    PGSortOrderShuffle        = 100,
-    PGSortOrderInnateOrder    = 200,
-    PGSortOrderOptionsMask    = 0x7FFF0000,
-    PGSortOrderDescendingMask = 1 << 16,
-    PGSortOrderRepeatMask     = 1 << 17,
-};
-
 @interface PGPrefObject : NSObject
-
-+ (id)globalPrefObject;
 
 @property (nonatomic, assign) BOOL showsInfo;
 @property (nonatomic, assign) BOOL showsThumbnails;
@@ -82,8 +43,13 @@ typedef NS_OPTIONS(NSUInteger, PGSortOrder) {
 @property (nonatomic, assign) CGFloat imageScaleFactor;
 @property (nonatomic, assign) BOOL animatesImages;
 @property (nonatomic, assign) PGSortOrder sortOrder;
+@property (nonatomic, assign) BOOL sortDescending;
+@property (nonatomic, assign) BOOL sortRepeat;
 @property (nonatomic, assign) NSTimeInterval timerInterval;
 @property (nonatomic, assign) PGOrientation baseOrientation;
+
++ (id)globalPrefObject;
+
 
 - (void)setImageScaleFactor:(CGFloat)factor animate:(BOOL)flag;
 - (BOOL)isCurrentSortOrder:(PGSortOrder)order;    // Ignores sort options.

@@ -441,15 +441,29 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 }
 - (IBAction)changeSortOrder:(nullable id)sender
 {
-	self.activeDocument.sortOrder = ([sender tag] & PGSortOrderMask) | (self.activeDocument.sortOrder & PGSortOrderOptionsMask);
+	self.activeDocument.sortOrder = [sender tag];
 }
 - (IBAction)changeSortDirection:(nullable id)sender
 {
-	self.activeDocument.sortOrder = (self.activeDocument.sortOrder & ~PGSortOrderDescendingMask) | [sender tag];
+    if ([sender tag] == 10000)
+    {
+        self.activeDocument.sortDescending = false;
+    }
+    else
+    {
+        self.activeDocument.sortDescending = true;
+    }
 }
 - (IBAction)changeSortRepeat:(nullable id)sender
 {
-	self.activeDocument.sortOrder = (self.activeDocument.sortOrder & ~PGSortOrderRepeatMask) | [sender tag];
+    if ([sender tag] == 20000)
+    {
+        self.activeDocument.sortRepeat = false;
+    }
+    else
+    {
+        self.activeDocument.sortRepeat = true;
+    }
 }
 - (IBAction)revertOrientation:(nullable id)sender
 {
@@ -1008,7 +1022,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 - (void)prepareToLoop
 {
 	PGSortOrder const o = self.activeDocument.sortOrder;
-	if(!(PGSortOrderRepeatMask & o) || (PGSortOrderMask & o) != PGSortOrderShuffle) return;
+	if(o == PGSortOrderUnspecified || o != PGSortOrderShuffle) return;
 	PGDocument *const doc = self.activeDocument;
 	[doc.node noteSortOrderDidChange]; // Reshuffle.
 	[doc noteSortedChildrenDidChange];
@@ -1018,7 +1032,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	PGDocument *const doc = self.activeDocument;
 	BOOL const left = (doc.readingDirection == PGReadingDirectionLeftToRight) == !loopForward;
 	PGSortOrder const o = self.activeDocument.sortOrder;
-	if(PGSortOrderRepeatMask & o && [self tryToSetActiveNode:node forward:pageForward]) {
+	if(o != PGSortOrderUnspecified && [self tryToSetActiveNode:node forward:pageForward]) {
 		if(flag) [_graphicPanel.contentView pushGraphic:left ? [PGAlertGraphic loopedLeftGraphic] : [PGAlertGraphic loopedRightGraphic] window:self.window];
 		return YES;
 	}
@@ -1920,12 +1934,12 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	if(@selector(changeImageScaleFactor:) == action) [[PGDocumentController sharedDocumentController].scaleSlider setDoubleValue:log2([[self activeDocument] imageScaleFactor])];
 
 	// Sort:
-	if(@selector(changeSortOrder:) == action) anItem.state = (PGSortOrderMask & self.activeDocument.sortOrder) == tag;
+	if(@selector(changeSortOrder:) == action) anItem.state = self.activeDocument.sortOrder == tag;
 	if(@selector(changeSortDirection:) == action) {
-		anItem.state = tag == (PGSortOrderDescendingMask & self.activeDocument.sortOrder);
-		if((self.activeDocument.sortOrder & PGSortOrderMask) == PGSortOrderShuffle) return NO;
+		anItem.state = tag == self.activeDocument.sortDescending;
+		if(self.activeDocument.sortOrder == PGSortOrderShuffle) return NO;
 	}
-	if(@selector(changeSortRepeat:) == action) anItem.state = (PGSortOrderRepeatMask & self.activeDocument.sortOrder) == tag;
+	if(@selector(changeSortRepeat:) == action) anItem.state = self.activeDocument.sortOrder == tag;
 
 	// Page:
 	if(@selector(nextPage:) == action || @selector(lastPage:) == action) anItem.keyEquivalent = self.activeDocument.readingDirection == PGReadingDirectionLeftToRight ? @"]" : @"[";

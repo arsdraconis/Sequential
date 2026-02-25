@@ -251,20 +251,28 @@ enum
     NSParameterAssert(node);
     NSParameterAssert([self document]);
     PGSortOrder const o        = self.document.sortOrder;
-    NSInteger const d          = PGSortOrderDescendingMask & o ? -1 : 1;
+    NSInteger const d          = self.document.sortDescending ? -1 : 1;
     PGDataProvider * const dp1 = self.resourceAdapter.dataProvider;
     PGDataProvider * const dp2 = node.resourceAdapter.dataProvider;
     NSComparisonResult r       = NSOrderedSame;
-    switch (PGSortOrderMask & o)
+    switch (o)
     {
-        case PGSortOrderUnsorted:
+        case PGSortOrderInnate:
+        case PGSortOrderUnspecified:
             return NSOrderedSame;
+            
+        case PGSortOrderByName:
+            r = [dp1.identifier.displayableIdentifier.displayName compare:dp2.identifier.displayableIdentifier.displayName];
+            break;
+            
         case PGSortOrderByDateModified:
             r = [dp1.dateModified compare:dp2.dateModified];
             break;
+            
         case PGSortOrderByDateCreated:
             r = [dp1.dateCreated compare:dp2.dateCreated];
             break;
+            
         case PGSortOrderBySize:
             r = CompareByteSize(GetByteSizeForSortingOrDisplay(self.resourceAdapter),
                                 GetByteSizeForSortingOrDisplay(node.resourceAdapter));
@@ -452,7 +460,7 @@ enum
     NSString *info            = nil;
     NSDate *date              = nil;
     PGDataProvider * const dp = self.resourceAdapter.dataProvider;
-    switch (PGSortOrderMask & self.document.sortOrder)
+    switch (self.document.sortOrder)
     {
         case PGSortOrderByDateModified:
             date = dp.dateModified;
@@ -466,6 +474,9 @@ enum
             break;
         case PGSortOrderByKind:
             info = dp.kindString;
+            break;
+            
+        default:
             break;
     }
     if (date && !info)

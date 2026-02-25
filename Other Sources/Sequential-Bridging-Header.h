@@ -6,4 +6,3 @@
 
 #import "PGAppKitAdditions.h"
 #import "PGDocumentController.h"
-#import "PGPrefObject.h"

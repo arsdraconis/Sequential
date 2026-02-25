@@ -177,10 +177,11 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 {
 #if __has_feature(objc_arc)
 	if(!_sortedChildren) {
+        BOOL isDescending = self.document.sortDescending;
 		PGSortOrder const order = self.document.sortOrder;
-		PGSortOrder const maskedUnsortedOrder = PGSortOrderMask & _unsortedOrder;
-		if((PGSortOrderMask & order) == maskedUnsortedOrder || PGSortOrderInnateOrder == maskedUnsortedOrder) {
-			if((PGSortOrderDescendingMask & order) == (PGSortOrderDescendingMask & _unsortedOrder))
+		PGSortOrder const maskedUnsortedOrder = _unsortedOrder;
+		if(order == maskedUnsortedOrder || PGSortOrderInnate == maskedUnsortedOrder) {
+			if(isDescending /*== (PGSortOrderDescendingMask & _unsortedOrder)*/)
 				_sortedChildren = _unsortedChildren;
 			else _sortedChildren = [_unsortedChildren reverseObjectEnumerator].allObjects;
 		} else _sortedChildren = [_unsortedChildren sortedArrayUsingSelector:@selector(compare:)];

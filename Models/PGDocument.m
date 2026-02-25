@@ -496,6 +496,28 @@ NSString * const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively"
     [[PGPrefObject globalPrefObject] setSortOrder:anOrder];
 }
 
+- (void)setSortDescending:(BOOL)sortDescending
+{
+    if (self.sortDescending != sortDescending)
+    {
+        super.sortDescending = sortDescending;
+        [self.node noteSortOrderDidChange];
+        [self noteSortedChildrenDidChange];
+    }
+    [[PGPrefObject globalPrefObject] setSortDescending:sortDescending];
+}
+
+- (void)setSortRepeat:(BOOL)sortRepeat
+{
+    if (self.sortRepeat != sortRepeat)
+    {
+        super.sortRepeat = sortRepeat;
+        [self.node noteSortOrderDidChange];
+        [self noteSortedChildrenDidChange];
+    }
+    [[PGPrefObject globalPrefObject] setSortRepeat:sortRepeat];
+}
+
 - (void)setTimerInterval:(NSTimeInterval)interval
 {
     super.timerInterval = interval;

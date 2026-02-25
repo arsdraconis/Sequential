@@ -315,12 +315,12 @@ CA
                                         <menuItem isSeparatorItem="YES" id="1312">
                                             <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </menuItem>
-                                        <menuItem title="Ascending" id="1311">
+                                        <menuItem title="Ascending" tag="10000" id="1311">
                                             <connections>
                                                 <action selector="changeSortDirection:" target="-1" id="1322"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Descending" tag="65536" id="1310">
+                                        <menuItem title="Descending" tag="10001" id="1310">
                                             <connections>
                                                 <action selector="changeSortDirection:" target="-1" id="1321"/>
                                             </connections>
@@ -328,12 +328,12 @@ CA
                                         <menuItem isSeparatorItem="YES" id="1317">
                                             <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </menuItem>
-                                        <menuItem title="Repeat Off" id="1320">
+                                        <menuItem title="Repeat Off" tag="20000" id="1320">
                                             <connections>
                                                 <action selector="changeSortRepeat:" target="-1" id="1328"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Repeat All" tag="131072" id="1318">
+                                        <menuItem title="Repeat All" tag="20001" id="1318">
                                             <connections>
                                                 <action selector="changeSortRepeat:" target="-1" id="1329"/>
                                             </connections>

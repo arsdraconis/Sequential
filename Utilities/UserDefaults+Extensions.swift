@@ -39,6 +39,7 @@ fileprivate let PGBackwardsInitialLocationKey = "PGBackwardsInitialLocation"
 fileprivate let PGDefaultReadingDirectionKey = "PGReadingDirectionRightToLeft"
 fileprivate let PGAnimatesImagesKey = "PGAnimatesImages"
 
+// static NSString *const PGSortOrderDeprecatedKey = @"PGSortOrder"; // Deprecated after 1.3.2.
 fileprivate let PGSortOrderKey = "PGSortOrder2"
 
 fileprivate let PGImageScaleModeKey = "PGImageScaleMode"
@@ -46,8 +47,28 @@ fileprivate let PGImageScaleFactorKey = "PGImageScaleFactor"
 fileprivate let PGImageScaleConstraintKey = "PGImageScaleConstraint"
 fileprivate let PGAntialiasWhenUpscalingKey = "PGAntialiasWhenUpscaling"
 
-@objc
-public enum PGWindowBackgroundType : Int
+extension Notification.Name
+{
+    public static let displayScreenDidChange = Notification.Name(rawValue: __PGDisplayScreenDidChange.rawValue)
+    public static let showsInfoDidChange = Notification.Name(rawValue: __PGPrefObjectShowsInfoDidChange.rawValue)
+    public static let timerIntervalDidChange = Notification.Name(rawValue: __PGPrefObjectTimerIntervalDidChange.rawValue)
+
+    public static let windowBackgroundDidChange = Notification.Name(rawValue: __PGWindowBackgroundDidChange.rawValue)
+    public static let fullScreenBackgroundDidChange = Notification.Name(rawValue: __PGFullScreenBackgroundDidChange.rawValue)
+    
+    public static let showsThumbnailsSidebarDidChange = Notification.Name(rawValue: __PGPrefObjectShowsThumbnailsDidChange.rawValue)
+    public static let baseOrientationDidChange = Notification.Name(rawValue: __PGPrefObjectBaseOrientationDidChange.rawValue)
+    public static let readingDirectionDidChange = Notification.Name(rawValue: __PGPrefObjectReadingDirectionDidChange.rawValue)
+    public static let animatesImagesDidChange = Notification.Name(rawValue: __PGPrefObjectAnimatesImagesDidChange.rawValue)
+    
+    public static let sortOrderDidChange = Notification.Name(rawValue: __PGPrefObjectSortOrderDidChange.rawValue)
+    
+    public static let imageScaleDidChange = Notification.Name(rawValue: __PGPrefObjectImageScaleDidChange.rawValue)
+    public static let upscalesToFitScreenDidChange = Notification.Name(rawValue: __PGPrefObjectUpscalesToFitScreenDidChange.rawValue)
+}
+
+@objc(PGWindowBackgroundType)
+public enum WindowBackgroundType : Int
 {
     case systemAppearance
     case customColor
@@ -55,14 +76,49 @@ public enum PGWindowBackgroundType : Int
     case stretchAndBlur
 }
 
-@objc
-public enum PGFullScreenBackgroundType : Int
+@objc(PGFullScreenBackgroundType)
+public enum FullScreenBackgroundType : Int
 {
     case sameAsWindow
     case systemAppearance
     case customColor
     case pattern
     case stretchAndBlur
+}
+
+@objc(PGPatternType)
+public enum PatternType: Int
+{
+    case noPattern
+    case checkerboard
+}
+
+@objc(PGImageScaleMode)
+public enum ImageScaleMode: Int
+{
+    /// "Actual size". Formerly known as PGNoScale.
+    case constantFactor
+    /// "Automatic fit".
+    case automatic
+    /// Deprecated after 1.0.3.
+    case deprecatedVerticalFit
+    /// "Fit To Window". Fits the entire image inside the screen/window.
+    case fitToView
+    /// Depcrecated after 2.1.2.
+    case deprecatedActualSizeWithDPI
+}
+
+@objc(PGSortOrder)
+public enum SortOrder: Int, Sendable
+{
+    case unspecified = 0
+    case byName = 1
+    case byDateModified = 2
+    case byDateCreated = 3
+    case bySize = 4
+    case byKind = 5
+    case shuffle = 100
+    case innate = 200
 }
 
 @objc
@@ -76,7 +132,7 @@ extension UserDefaults
                                                                    requiringSecureCoding: true)
         standard.register(defaults: [
             PGBackgroundColorKey: archivedBlackColor,
-            PGBackgroundPatternKey: PGPatternType.noPattern.rawValue,
+            PGBackgroundPatternKey: PatternType.noPattern.rawValue,
             
             PGMaxRecursionDepthKey: 1,
             PGMouseClickActionKey: PGAction.nextPrevious.rawValue,
@@ -85,13 +141,13 @@ extension UserDefaults
             PGDefaultReadingDirectionKey: PGReadingDirection.leftToRight.rawValue,
             PGBackwardsInitialLocationKey: PGPageLocation.end.rawValue,
 
-            PGImageScaleModeKey: PGImageScaleMode.constantFactor.rawValue,
+            PGImageScaleModeKey: ImageScaleMode.constantFactor.rawValue,
             PGImageScaleFactorKey: 1.0,
             PGImageScaleConstraintKey: PGImageScaleConstraint.none.rawValue,
             PGAntialiasWhenUpscalingKey: true,
             
             PGAnimatesImagesKey: true,
-            PGSortOrderKey: PGSortOrder([.byName, .repeatMask]).rawValue,
+            PGSortOrderKey: SortOrder.byName.rawValue,
             PGTimerIntervalKey: 30.0,
             PGBaseOrientationKey: PGOrientation(rawValue: 0).rawValue,
             
@@ -136,13 +192,13 @@ extension UserDefaults
             let i = (o as! NSNumber).intValue
             if i == 1
             {
-                standard.set(PGWindowBackgroundType.customColor, forKey: PGWindowBackgroundTypeKey as String)
-                standard.set(PGFullScreenBackgroundType.customColor, forKey: PGFullScreenBackgroundTypeKey as String)
+                standard.set(WindowBackgroundType.customColor, forKey: PGWindowBackgroundTypeKey as String)
+                standard.set(FullScreenBackgroundType.customColor, forKey: PGFullScreenBackgroundTypeKey as String)
             }
             else
             {
-                standard.set(PGWindowBackgroundType.systemAppearance, forKey: PGWindowBackgroundTypeKey as String)
-                standard.set(PGFullScreenBackgroundType.systemAppearance, forKey: PGFullScreenBackgroundTypeKey as String)
+                standard.set(WindowBackgroundType.systemAppearance, forKey: PGWindowBackgroundTypeKey as String)
+                standard.set(FullScreenBackgroundType.systemAppearance, forKey: PGFullScreenBackgroundTypeKey as String)
             }
             standard.removeObject(forKey: "PGBackgroundColorSourceKey")
         }
@@ -215,7 +271,7 @@ extension UserDefaults
             if newValue != self.showsInfo
             {
                 self.set(newValue, forKey: PGShowsInfoInspectorKey)
-                NotificationCenter.default.post(name: .PGPrefObjectShowsInfoDidChange, object: self)
+                NotificationCenter.default.post(name: .showsInfoDidChange, object: self)
             }
         }
     }
@@ -273,19 +329,19 @@ extension UserDefaults
             if newValue != self.timerInterval
             {
                 self.set(newValue, forKey: PGTimerIntervalKey)
-                NotificationCenter.default.post(name: .PGPrefObjectTimerIntervalDidChange, object: self)
+                NotificationCenter.default.post(name: .timerIntervalDidChange, object: self)
             }
         }
     }
 
     // MARK: Backgound Settings
     @objc
-    var windowBackgroundType: PGWindowBackgroundType
+    var windowBackgroundType: WindowBackgroundType
     {
         get
         {
             let raw = self.integer(forKey: PGWindowBackgroundTypeKey as String)
-            return PGWindowBackgroundType(rawValue: raw) ?? .systemAppearance
+            return WindowBackgroundType(rawValue: raw) ?? .systemAppearance
         }
         set
         {
@@ -330,12 +386,12 @@ extension UserDefaults
     }
     
     @objc
-    var fullscreenBackgroundType: PGFullScreenBackgroundType
+    var fullscreenBackgroundType: FullScreenBackgroundType
     {
         get
         {
             let raw = self.integer(forKey: PGFullScreenBackgroundTypeKey as String)
-            return PGFullScreenBackgroundType(rawValue: raw) ?? .sameAsWindow
+            return FullScreenBackgroundType(rawValue: raw) ?? .sameAsWindow
         }
         set
         {
@@ -420,7 +476,7 @@ extension UserDefaults
             if newValue != self.showsThumbnailSidebar
             {
                 self.set(newValue, forKey: PGShowsThumbnailSidebarKey)
-                NotificationCenter.default.post(name: .PGPrefObjectShowsThumbnailsDidChange, object: self)
+                NotificationCenter.default.post(name: .showsThumbnailsSidebarDidChange, object: self)
             }
         }
     }
@@ -437,7 +493,7 @@ extension UserDefaults
             if newValue != self.showThumbnailImageName
             {
                 self.set(newValue, forKey: PGShowThumbnailImageNameKey)
-                NotificationCenter.default.post(name: .PGPrefObjectShowsThumbnailsDidChange, object: self)
+                NotificationCenter.default.post(name: .showsThumbnailsSidebarDidChange, object: self)
             }
         }
     }
@@ -454,7 +510,7 @@ extension UserDefaults
             if newValue != self.showThumbnailImageSize
             {
                 self.set(newValue, forKey: PGShowThumbnailImageSizeKey)
-                NotificationCenter.default.post(name: .PGPrefObjectShowsThumbnailsDidChange, object: self)
+                NotificationCenter.default.post(name: .showsThumbnailsSidebarDidChange, object: self)
             }
         }
     }
@@ -486,7 +542,7 @@ extension UserDefaults
             if newValue != self.baseOrientation
             {
                 self.set(newValue.rawValue, forKey: PGBaseOrientationKey)
-                NotificationCenter.default.post(name: .PGPrefObjectBaseOrientationDidChange, object: self)
+                NotificationCenter.default.post(name: .baseOrientationDidChange, object: self)
             }
         }
     }
@@ -518,7 +574,7 @@ extension UserDefaults
             if newValue != self.defaultReadingDirection
             {
                 self.set(newValue.rawValue, forKey: PGDefaultReadingDirectionKey)
-                NotificationCenter.default.post(name: .PGPrefObjectReadingDirectionDidChange, object: self)
+                NotificationCenter.default.post(name: .readingDirectionDidChange, object: self)
             }
         }
     }
@@ -535,31 +591,13 @@ extension UserDefaults
             if newValue != self.animatesImages
             {
                 self.set(newValue, forKey: PGAnimatesImagesKey)
-                NotificationCenter.default.post(name: .PGPrefObjectAnimatesImagesDidChange, object: self)
+                NotificationCenter.default.post(name: .animatesImagesDidChange, object: self)
             }
         }
     }
     
     // MARK: Default Sort Settings
     @objc
-    var oldSortOrder: PGSortOrder
-    {
-        get
-        {
-            let raw = self.integer(forKey: PGSortOrderKey)
-            return PGSortOrder(rawValue: UInt(raw))
-        }
-        set
-        {
-            if newValue != self.oldSortOrder
-            {
-                self.set(newValue.rawValue, forKey: PGSortOrderKey)
-                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
-            }
-        }
-    }
-    
-    @nonobjc
     var sortOrder: SortOrder
     {
         get
@@ -575,7 +613,7 @@ extension UserDefaults
             {
                 adapter.sortOrder = newValue
                 self.set(adapter.rawValue, forKey: PGSortOrderKey)
-                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
+                NotificationCenter.default.post(name: .sortOrderDidChange, object: self)
             }
         }
     }
@@ -596,7 +634,7 @@ extension UserDefaults
             {
                 adapter.isDescending = newValue
                 self.set(adapter.rawValue, forKey: PGSortOrderKey)
-                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
+                NotificationCenter.default.post(name: .sortOrderDidChange, object: self)
             }
         }
     }
@@ -617,19 +655,19 @@ extension UserDefaults
             {
                 adapter.isRepeat = newValue
                 self.set(adapter.rawValue, forKey: PGSortOrderKey)
-                NotificationCenter.default.post(name: .PGPrefObjectSortOrderDidChange, object: self)
+                NotificationCenter.default.post(name: .sortOrderDidChange, object: self)
             }
         }
     }
     
     // MARK: Default Scaling Settings
     @objc
-    var imageScaleMode: PGImageScaleMode
+    var imageScaleMode: ImageScaleMode
     {
         get
         {
             let raw = self.integer(forKey: PGImageScaleModeKey)
-            return PGImageScaleMode(rawValue: raw) ?? .constantFactor
+            return ImageScaleMode(rawValue: raw) ?? .constantFactor
         }
         set
         {
@@ -638,7 +676,7 @@ extension UserDefaults
                 self.set(newValue.rawValue, forKey: PGImageScaleModeKey)
                 self.set(1.0, forKey: PGImageScaleFactorKey)
                 let userInfo = [ PGPrefObjectAnimateKey : true ]
-                NotificationCenter.default.post(name: .PGPrefObjectImageScaleDidChange, object: self, userInfo: userInfo)
+                NotificationCenter.default.post(name: .imageScaleDidChange, object: self, userInfo: userInfo)
             }
         }
     }
@@ -658,10 +696,10 @@ extension UserDefaults
                 var newValue = newValue < 0 ? 1.0 : newValue
                 // If it's close to 1, fudge it.
                 newValue = abs(1.0 - newValue) < 0.01 ? 1.0 : newValue
-                self.set(PGImageScaleMode.constantFactor.rawValue, forKey: PGImageScaleModeKey)
+                self.set(ImageScaleMode.constantFactor.rawValue, forKey: PGImageScaleModeKey)
                 self.set(newValue, forKey: PGImageScaleFactorKey)
                 let userInfo = [ PGPrefObjectAnimateKey : true ]
-                NotificationCenter.default.post(name: .PGPrefObjectImageScaleDidChange, object: self, userInfo: userInfo)
+                NotificationCenter.default.post(name: .imageScaleDidChange, object: self, userInfo: userInfo)
             }
         }
     }

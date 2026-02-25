@@ -89,7 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
         [nodes addObject:node];
     }
     
-    [self setUnsortedChildren:nodes presortedOrder:PGSortOrderInnateOrder];
+    [self setUnsortedChildren:nodes presortedOrder:PGSortOrderInnate];
     [self.node loadFinishedForAdapter:self];
 }
 
