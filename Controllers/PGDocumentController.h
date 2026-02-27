@@ -87,16 +87,14 @@ typedef NSUInteger BeforeState;
 
 @interface PGDocumentController : NSResponder <NSMenuDelegate, NSMenuItemValidation>
 
-@property (nonatomic, copy, nonnull)
-    NSArray<PGDisplayableIdentifier *> *recentDocumentIdentifiers;    // 2023/10/29 specified static type
+@property (nonatomic, copy, nonnull) NSArray<PGDisplayableIdentifier *> *recentDocumentIdentifiers;    // 2023/10/29 specified static type
 @property (readonly) NSUInteger maximumRecentDocumentCount;
 @property (readonly, nonnull) PGDisplayController *displayControllerForNewDocument;
 @property (nonatomic, assign, getter=isFullscreen) BOOL fullscreen;
 @property (readonly) BOOL canToggleFullscreen;
 @property (nonatomic, assign) BOOL usesEntireScreenWhenInFullScreen;    // 2023/08/14 added
 @property (readonly) BOOL canToggleUsesEntireScreenWhenInFullScreen;    // 2023/08/14 added
-@property (readonly, nonnull)
-    NSArray *documents;    // removed copy attribute to silence static analyzer warning
+@property (readonly, nonnull) NSArray *documents;    // removed copy attribute to silence static analyzer warning
 @property (readonly, nonnull) NSMenu *scaleMenu;
 @property (nonatomic, weak) IBOutlet NSSlider *scaleSlider;
 @property (readonly, strong, nonnull) IBOutlet NSMenu *defaultPageMenu;

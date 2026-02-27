@@ -153,17 +153,6 @@ InformPossiblePGFullSizeContentProtocolAdopter(id object,
 
 @interface PGFullSizeContentController () <PGFullSizeContentTitlebarAccessoryViewDelegate>
 
-#if !__has_feature(objc_arc)
-{
-	NSWindow *_window;
-	NSTrackingArea *_lhsTrackingArea;
-	NSTrackingArea *_midTrackingArea;
-	NSTrackingArea *_rhsTrackingArea;
-	PGFullSizeContentTitlebarAccessoryViewController
-		*_fullSizeContentTitlebarAccessoryViewController;
-}
-#endif
-
 @property (nonatomic, weak) NSWindow *window;
 @property (nonatomic, strong, nullable) NSTrackingArea *lhsTrackingArea;
 @property (nonatomic, strong, nullable) NSTrackingArea *midTrackingArea;
@@ -218,10 +207,6 @@ InformPossiblePGFullSizeContentProtocolAdopter(id object,
 
 - (void)dealloc {
 	[NSNotificationCenter.defaultCenter removeObserver:self];
-
-#if !__has_feature(objc_arc)
-	[super dealloc];
-#endif
 }
 
 //	MARK: private methods

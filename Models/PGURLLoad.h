@@ -30,18 +30,12 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol PGURLLoadDelegate;
 
 @interface PGURLLoad : NSObject <PGActivityOwner>
-#if !__has_feature(objc_arc)
-{
-	@private
-	NSObject<PGURLLoadDelegate> * _delegate;
-	BOOL _loaded;
-	NSURLConnection *_connection;
-	NSURLRequest *_request;
-	NSURLResponse *_response;
-	NSMutableData *_data;
-	PGActivity *_activity;
-}
-#endif
+
+@property (readonly, weak) NSObject<PGURLLoadDelegate> *delegate;
+@property (readonly) NSURLRequest *request;
+@property (readonly) NSURLResponse *response;
+@property (readonly) NSMutableData *data;
+@property (nonatomic, readonly, getter = isLoaded) BOOL loaded;
 
 + (NSString *)userAgent;
 + (void)setUserAgent:(NSString *)aString;
@@ -49,20 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithRequest:(NSURLRequest *)aRequest parent:(id<PGActivityOwner>)parent delegate:(NSObject<PGURLLoadDelegate> *)delegate NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
-#if __has_feature(objc_arc)
-@property (readonly, weak) NSObject<PGURLLoadDelegate> *delegate;
-@property (readonly) NSURLRequest *request;
-@property (readonly) NSURLResponse *response;
-@property (readonly) NSMutableData *data;
-#else
-@property(readonly) NSObject<PGURLLoadDelegate> *delegate;
-@property(readonly) NSURLRequest *request;
-@property(readonly) NSURLResponse *response;
-@property(readonly) NSMutableData *data;
-#endif
-
 - (void)cancelAndNotify:(BOOL)notify;
-@property (nonatomic, readonly, getter = isLoaded) BOOL loaded;
 
 @end
 

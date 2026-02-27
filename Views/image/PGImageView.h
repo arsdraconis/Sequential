@@ -28,35 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGImageView : NSView
-#if !__has_feature(objc_arc)
-{
-	@private
-	NSImageRep *_rep;
-	PGOrientation _orientation;
-	NSSize _size;
-	NSSize _immediateSize;
-	NSTimeInterval _lastSizeAnimationTime;
-	NSTimer *_sizeTransitionTimer;
-	CGFloat _rotationInDegrees;
-	BOOL _antialiasWhenUpscaling;
-	BOOL _usesRoundedCorners;
-	BOOL _usesCaching;
 
-	BOOL _animates;
-	NSUInteger _pauseCount;
-
-	NSUInteger _imageRepHash;
-	NSImage *_image;
-	BOOL _isPDF;
-	NSUInteger _numberOfFrames;
-//	CGLayerRef _cacheLayer;		2023/10/16 removed; -setUsesCaching: is now a no-op
-	BOOL _awaitingUpdate;
-}
-#endif
-
-+ (NSArray *)pasteboardTypes;
-
-#if __has_feature(objc_arc)
 @property (readonly, nullable) NSImageRep *rep;
 @property (readonly) PGOrientation orientation;
 @property (readonly) NSSize size;
@@ -71,22 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL canAnimateRep;
 @property (nonatomic, assign) BOOL animates;
 @property (nonatomic, assign, getter = isPaused) BOOL paused;
-#else
-@property(readonly) NSImageRep *rep;
-@property(readonly) PGOrientation orientation;
-@property(readonly) NSSize size;
-@property(readonly) NSSize originalSize;
-@property(readonly) CGFloat averageScaleFactor;
-@property(assign, nonatomic) CGFloat rotationInDegrees;
-@property(assign, nonatomic) BOOL antialiasWhenUpscaling;
-@property(readonly) NSImageInterpolation interpolation;
-@property(assign, nonatomic) BOOL usesRoundedCorners;
-@property(assign, nonatomic) BOOL usesCaching;
 
-@property(readonly) BOOL canAnimateRep;
-@property(assign, nonatomic) BOOL animates;
-@property(assign, nonatomic, getter = isPaused) BOOL paused;
-#endif
++ (NSArray *)pasteboardTypes;
 
 - (void)setImageRep:(nullable NSImageRep *)rep orientation:(PGOrientation)orientation size:(NSSize)size;
 - (void)setSize:(NSSize)size allowAnimation:(BOOL)flag; // Use this function to control how big the image is displayed. PGImageView manages its own frame size.

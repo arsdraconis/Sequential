@@ -23,6 +23,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGClipView.h"
+
 #import <IOKit/hidsystem/IOHIDLib.h>
 #import <IOKit/hidsystem/event_status_driver.h>
 #import <tgmath.h>
@@ -62,7 +63,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	return NSMakePoint(CLAMP(NSMinX(aRect), aPoint.x, NSMaxX(aRect)), CLAMP(NSMinY(aRect), aPoint.y, NSMaxY(aRect)));
 }
 
-#if __has_feature(objc_arc)
 
 @interface PGClipView()
 
@@ -86,20 +86,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 
 @end
 
-#else
-
-@interface PGClipView(Private)
-
-- (BOOL)_setPosition:(NSPoint)aPoint scrollEnclosingClipViews:(BOOL)scroll markForRedisplay:(BOOL)redisplay;
-- (BOOL)_scrollTo:(NSPoint)aPoint;
-- (void)_scrollOneFrame;
-- (void)_beginPreliminaryDrag:(NSValue *)val;
-- (void)_delayedEndGesture;
-
-@end
-
-#endif
-
 //	MARK: -
 @implementation PGClipView
 
@@ -114,31 +100,15 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
     }
 }
 
-#if __has_feature(objc_arc)
 @synthesize documentView;	//	IBOutlet
 @synthesize acceptsFirstResponder = _acceptsFirstResponder;
-#else
-@synthesize documentView;	//	IBOutlet
-@synthesize acceptsFirstResponder = _acceptsFirstResponder;
-@synthesize delegate;
-//@synthesize documentFrame = _documentFrame;
-//@synthesize boundsInset = _boundsInset;
-//@synthesize backgroundColor = _backgroundColor;
-//@synthesize showsBorder = _showsBorder;
-//@synthesize cursor = _cursor;
-//@synthesize allowsAnimation = _allowsAnimation;
-#endif
+
 - (void)setDocumentView:(nullable NSView *)aView
 {
 	if(aView == documentView) return;
 	[documentView PG_removeObserver:self name:NSViewFrameDidChangeNotification];
 	[documentView removeFromSuperview];
-#if __has_feature(objc_arc)
 	documentView = aView;
-#else
-	[documentView release];
-	documentView = [aView retain];
-#endif
 	if(!documentView) return;
 	[self addSubview:documentView];
 	[documentView PG_addObserver:self selector:@selector(viewFrameDidChange:) name:NSViewFrameDidChangeNotification];
@@ -160,9 +130,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 - (void)setBackgroundColor:(nullable NSColor *)aColor
 {
 	if(PGEqualObjects(aColor, _backgroundColor)) return;
-#if !__has_feature(objc_arc)
-	[_backgroundColor release];
-#endif
 	_backgroundColor = [aColor copy];
 	_backgroundIsComplex = !_backgroundColor ||
 	//	PGEqualObjects([_backgroundColor colorSpaceName], NSPatternColorSpace);
@@ -177,12 +144,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 - (void)setCursor:(NSCursor *)cursor
 {
 	if(cursor == _cursor) return;
-#if __has_feature(objc_arc)
 	_cursor = cursor;
-#else
-	[_cursor release];
-	_cursor = [cursor retain];
-#endif
 	[self.window invalidateCursorRectsForView:self];
 }
 - (BOOL)isScrolling
@@ -244,15 +206,11 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	_animationProgress = 0.0f;
 	if(!_animationTimer) {
 		self.scrolling = YES;
-#if __has_feature(objc_arc)
 		_animationTimer = [self PG_performSelector:@selector(_scrollOneFrame)
 										withObject:nil
 										  fireDate:nil
 										  interval:PGAnimationFramerate
 										   options:PGRepeatOnInterval];
-#else
-		_animationTimer = [[self PG_performSelector:@selector(_scrollOneFrame) withObject:nil fireDate:nil interval:PGAnimationFramerate options:PGRepeatOnInterval] retain];
-#endif
 	}
 	return YES;
 }
@@ -294,9 +252,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 {
 	if(!_animationTimer) return;
 	[_animationTimer invalidate];
-#if !__has_feature(objc_arc)
-	[_animationTimer release];
-#endif
 	_animationTimer = nil;
 	_animationProgress = 0.0f;
 	_lastAnimationTime = 0.0f;
@@ -392,13 +347,12 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	}
 	PGDragMode dragMode = PGNotDragging;
 	NSValue *const dragModeValue = [NSValue valueWithPointer:&dragMode];
-	[self PG_performSelector:@selector(_beginPreliminaryDrag:) withObject:dragModeValue fireDate:nil interval:
-#if __LP64__
-		[NSEvent doubleClickInterval]
-#else
-		GetDblTime() / 60.0f
-#endif
-		options:kNilOptions mode:NSEventTrackingRunLoopMode];
+	[self PG_performSelector:@selector(_beginPreliminaryDrag:)
+                  withObject:dragModeValue
+                    fireDate:nil
+                    interval:[NSEvent doubleClickInterval]
+                     options:kNilOptions
+                        mode:NSEventTrackingRunLoopMode];
 	NSPoint const originalPoint = firstEvent.locationInWindow; // Don't convert the point to our view coordinates, since we change them when scrolling.
 	NSPoint finalPoint = originalPoint; // We use CGAssociateMouseAndMouseCursorPosition() to prevent the mouse from moving during the drag, so we have to keep track of where it should reappear ourselves.
 	NSRect const availableDragRect = [self convertRect:NSInsetRect(self.insetBounds, 4, 4) toView:nil];
@@ -942,12 +896,6 @@ PerformMenuItemActionWithMatchingKeyEquivalent(NSEvent *event, NSMenu *menu) {
 {
 	[self PG_removeObserver];
 	[self stopAnimatedScrolling];
-#if !__has_feature(objc_arc)
-	[documentView release];
-	[_backgroundColor release];
-	[_cursor release];
-	[super dealloc];
-#endif
 }
 
 @end

@@ -26,18 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PGActivityPanelController :
-	PGFloatingPanelController <NSOutlineViewDataSource, NSOutlineViewDelegate, PGFloatingPanelProtocol>
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet NSOutlineView *activityOutline;
-	IBOutlet NSTableColumn *identifierColumn;
-	IBOutlet NSTableColumn *progressColumn;
-	IBOutlet NSButton      *cancelButton;
-	         NSTimer      *_updateTimer;
-}
-#endif
+@interface PGActivityPanelController : PGFloatingPanelController <NSOutlineViewDataSource, NSOutlineViewDelegate, PGFloatingPanelProtocol>
 
 - (IBAction)cancelLoad:(id)sender;
 

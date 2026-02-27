@@ -50,11 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	NSRect f = [self contentRectForFrameRect:self.frame];
 	NSSize s = [self.contentView PG_zoomedFrameSize];
-#if 0	//	2021/07/21 userSpaceScaleFactor is deprecated and not needed anymore
-	CGFloat factor = [self userSpaceScaleFactor];
-	s.width /= factor;
-	s.height /= factor;
-#endif
 	f.origin.y += NSHeight(f) - s.height;
 	f.size = s;
 	return [self PG_constrainedFrameRect:[self frameRectForContentRect:f]];

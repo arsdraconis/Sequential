@@ -31,20 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGThumbnailView : NSView
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet NSObject<PGThumbnailViewDataSource> * dataSource;
-	IBOutlet NSObject<PGThumbnailViewDelegate> * delegate;
-	IBOutlet id representedObject;
-	PGOrientation _thumbnailOrientation;
-	NSArray *_items;
-	NSMutableSet *_selection;
-	id _selectionAnchor;
-}
-#endif
 
-#if __has_feature(objc_arc)
 @property (nonatomic, weak) IBOutlet NSObject<PGThumbnailViewDataSource> *dataSource;
 @property (nonatomic, weak) IBOutlet NSObject<PGThumbnailViewDelegate> *delegate;
 @property (nonatomic, strong, nullable) id representedObject;
@@ -52,18 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly) NSArray *items;
 @property (nonatomic, copy, nullable) NSSet *selection;
-//@property (nonatomic, readonly) NSSet *selection;
 @property (readonly, weak) id selectionAnchor;
-#else
-@property(assign, nonatomic) NSObject<PGThumbnailViewDataSource> *dataSource;
-@property(assign, nonatomic) NSObject<PGThumbnailViewDelegate> *delegate;
-@property(retain, nonatomic) id representedObject;
-@property(assign, nonatomic) PGOrientation thumbnailOrientation;
 
-@property(readonly) NSArray *items;
-@property(copy, nonatomic) NSSet *selection;
-@property(readonly) id selectionAnchor;
-#endif
 - (void)selectItem:(nullable id)item byExtendingSelection:(BOOL)extend;
 - (void)deselectItem:(id)item;
 - (void)toggleSelectionOfItem:(nullable id)item;
@@ -86,6 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+// MARK: -
 @protocol PGThumbnailViewDataSource <NSObject>
 
 @required	//@optional
@@ -114,6 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+// MARK: -
 @protocol PGThumbnailViewDelegate <NSObject>
 
 @optional

@@ -39,15 +39,6 @@ typedef NS_ENUM(NSUInteger, PGAlertGraphicType) {
 };
 
 @interface PGAlertView : NSView<NSWindowDelegate, PGBezelPanelContentView>
-#if !__has_feature(objc_arc)
-{
-	@private
-	NSMutableArray *_graphicStack;
-	PGAlertGraphic *_currentGraphic;
-	NSUInteger _frameCount;
-	NSTimer *_frameTimer;
-}
-#endif
 
 @property(readonly) PGAlertGraphic *currentGraphic;
 @property(readonly) NSUInteger frameCount;
@@ -63,15 +54,15 @@ typedef NS_ENUM(NSUInteger, PGAlertGraphicType) {
 
 @interface PGAlertGraphic : NSObject
 
-+ (id)cannotGoRightGraphic;
-+ (id)cannotGoLeftGraphic;
-+ (id)loopedRightGraphic;
-+ (id)loopedLeftGraphic;
-
 @property(readonly) PGAlertGraphicType graphicType;
 @property(readonly) NSTimeInterval fadeOutDelay;
 @property(readonly) NSTimeInterval frameDelay;
 @property(readonly) NSUInteger frameCount;
+
++ (id)cannotGoRightGraphic;
++ (id)cannotGoLeftGraphic;
++ (id)loopedRightGraphic;
++ (id)loopedLeftGraphic;
 
 - (void)drawInView:(PGAlertView *)anAlertView;
 - (void)flipHorizontally;

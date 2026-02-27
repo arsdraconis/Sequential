@@ -30,13 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGWebAdapter : PGResourceAdapter <PGURLLoadDelegate>
-#if !__has_feature(objc_arc)
-{
-	@private
-	PGURLLoad *_mainLoad;
-	PGURLLoad *_faviconLoad;
-}
-#endif
 
 @end
 

@@ -30,26 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGBookmarkController : NSObject
-#if !__has_feature(objc_arc)
-{
-	@public
-	IBOutlet NSMenuItem *bookmarkItem;
-	IBOutlet NSMenu *bookmarkMenu;
-	IBOutlet NSMenuItem *emptyMenuItem;
-	BOOL _deletesBookmarks;
-	NSMutableArray<PGBookmark*> *_bookmarks;
-}
-#endif
+
+@property (nonatomic, assign) BOOL deletesBookmarks; // If YES, the "Resume" menu becomes a "Delete" menu.
 
 + (PGBookmarkController*)sharedBookmarkController;
 
 - (IBAction)open:(id)sender;
-
-#if __has_feature(objc_arc)
-@property (nonatomic, assign) BOOL deletesBookmarks; // If YES, the "Resume" menu becomes a "Delete" menu.
-#else
-@property(assign) BOOL deletesBookmarks; // If YES, the "Resume" menu becomes a "Delete" menu.
-#endif
 
 - (void)addBookmark:(PGBookmark *)aBookmark;
 - (void)removeBookmark:(PGBookmark *)aBookmark;

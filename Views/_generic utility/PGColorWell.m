@@ -63,9 +63,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)dealloc
 {
 	[self PG_removeObserver];
-#if !__has_feature(objc_arc)
-	[super dealloc];
-#endif
 }
 
 @end

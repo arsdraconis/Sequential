@@ -163,30 +163,6 @@ NS_ASSUME_NONNULL_BEGIN
         UTType *contentType = [UTType typeWithMIMEType:MIMEType];
         return [NSWorkspace.sharedWorkspace iconForContentType:contentType];
     }
-    /* Old implementation
-    NSString *const MIMEType = self.MIMEType;
-    OSType typeCode = self.typeCode;
-    if(MIMEType || typeCode) {
-        IconRef iconRef = NULL;
-
-        if('fold' == typeCode)
-            typeCode = kGenericFolderIcon;
-#if __has_feature(objc_arc)
-        if(noErr == GetIconRefFromTypeInfo('????', typeCode, NULL, (__bridge CFStringRef)MIMEType,
-                                            kIconServicesNormalUsageFlag, &iconRef) && iconRef) {
-            NSImage *const icon = [[NSImage alloc] initWithIconRef:iconRef];
-            ReleaseIconRef(iconRef);
-            return icon;
-        }
-#else
-        if(noErr == GetIconRefFromTypeInfo('????', typeCode, NULL, (CFStringRef)MIMEType,
-                                            kIconServicesNormalUsageFlag, &iconRef) && iconRef) {
-            NSImage *const icon = [[[NSImage alloc] initWithIconRef:iconRef] autorelease];
-            ReleaseIconRef(iconRef);
-            return icon;
-        }
-#endif
-    }*/
     NSString * const extension = self.extension;
     if (extension) return [NSWorkspace.sharedWorkspace iconForFileType:extension];
     return nil;
@@ -199,7 +175,6 @@ NS_ASSUME_NONNULL_BEGIN
                              : nil;    // Ugly ("Portable Network Graphics image"), but more
                                        // accurate than file extensions.
     if (kind) return kind;
-#if 1
     if (utiType)
     {
         if (@available(macOS 11.0, *))
@@ -240,15 +215,6 @@ NS_ASSUME_NONNULL_BEGIN
             if (desc) return (NSString *)CFBridgingRelease(desc);
         }
     }
-#else
-    //	original code:
-    if (noErr
-        == LSCopyKindStringForTypeInfo(kLSUnknownType, kLSUnknownCreator,
-                                       (CFStringRef)[self extension], (CFStringRef *)&kind))
-        return [kind autorelease];
-    if (noErr == LSCopyKindStringForMIMEType((CFStringRef)[self MIMEType], (CFStringRef *)&kind))
-        return [kind autorelease];    // Extremely ugly ("TextEdit.app Document"), worst case.
-#endif
     return nil;
 }
 

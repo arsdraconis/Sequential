@@ -24,25 +24,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGColumnView.h"
 
-// Views
-#import "PGClipView.h"
 #include <tgmath.h>
 
-// Other Sources
+#import "PGClipView.h"
 #import "PGGeometry.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if __has_feature(objc_arc)
 
 @interface PGColumnView ()
+
 @property (nonatomic, strong) PGClipView *clipView;
 @property (nonatomic, strong) NSView *view;
 @property (nonatomic, strong) NSMutableArray<__kindof NSView *> *clipViews;
 @property (nonatomic, strong) NSMutableArray *views;
+
 @end
 
-#endif
 
 //	MARK: -
 @implementation PGColumnView
@@ -78,11 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	NSParameterAssert(aView);
 	NSParameterAssert([_views indexOfObjectIdenticalTo:aView] == NSNotFound);
-#if __has_feature(objc_arc)
 	PGClipView *const clip = [PGClipView new];
-#else
-	PGClipView *const clip = [[[PGClipView alloc] init] autorelease];
-#endif
 	[_clipViews insertObject:clip atIndex:index];
 	[_views insertObject:aView atIndex:index];
 	[_view addSubview:clip];
@@ -166,16 +160,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	return [self initWithFrame:NSZeroRect];
 }
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-	[_clipView release];
-	[_view release];
-	[_clipViews release];
-	[_views release];
-	[super dealloc];
-}
-#endif
 
 //	MARK: - <PGClipViewDelegate>
 

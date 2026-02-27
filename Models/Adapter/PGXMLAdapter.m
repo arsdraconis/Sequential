@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if __has_feature(objc_arc)
 
 @interface PGXMLAdapter ()
 
@@ -40,7 +39,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#endif
 
 @implementation PGXMLAdapter
 
@@ -49,11 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSXMLDocument *)XMLDocument
 {
 	if(!_XMLDocument) _XMLDocument = [[NSXMLDocument alloc] initWithData:self.data options:NSXMLNodeOptionsNone error:NULL];
-#if __has_feature(objc_arc)
 	return _XMLDocument;
-#else
-	return [[_XMLDocument retain] autorelease];
-#endif
 }
 
 //	MARK: - PGContainerAdapter
@@ -63,37 +57,15 @@ NS_ASSUME_NONNULL_BEGIN
 	return PGRecursePolicyNoFurther;
 }
 
-//	MARK: - NSObject
-
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-	[_XMLDocument release];
-	[super dealloc];
-}
-#endif
-
 @end
 
 //	MARK: -
-
-#if __has_feature(objc_arc)
 
 @interface PGMediaRSSAdapter()
 
 - (BOOL)_createChildren;
 
 @end
-
-#else
-
-@interface PGMediaRSSAdapter(Private)
-
-- (BOOL)_createChildren;
-
-@end
-
-#endif
 
 @implementation PGMediaRSSAdapter
 
@@ -117,11 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 		PGDisplayableIdentifier *const ident = [NSURL URLWithString:URLString].PG_displayableIdentifier;
 		ident.customDisplayName = title;
-#if __has_feature(objc_arc)
 		PGNode *const node = [[PGNode alloc] initWithParent:self identifier:ident];
-#else
-		PGNode *const node = [[[PGNode alloc] initWithParent:self identifier:ident] autorelease];
-#endif
 		if(!node) continue;
 		node.dataProvider = [PGDataProvider providerWithResourceIdentifier:ident];
 		[items addObject:node];

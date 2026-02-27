@@ -10,11 +10,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol PGFullSizeContentTitlebarAccessoryViewDelegate;
 
-@interface PGFullSizeContentTitlebarAccessoryViewController :
-	NSTitlebarAccessoryViewController
+@interface PGFullSizeContentTitlebarAccessoryViewController : NSTitlebarAccessoryViewController
 
 @property (nonatomic, weak) NSObject<PGFullSizeContentTitlebarAccessoryViewDelegate> *delegate;
-
 @property (nonatomic, assign) NSInteger toggleButtonIntegerValue;
 @property (nonatomic, assign, getter=isToggleButtonEnabled) BOOL toggleButtonEnabled;
 

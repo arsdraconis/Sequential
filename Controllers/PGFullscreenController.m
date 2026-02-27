@@ -28,23 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <Carbon/Carbon.h>
 
-// Views
 #import "PGFullscreenWindow.h"
-
-// Controllers
 #import "PGDocumentController.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGDelayedPerforming.h"
 #import "PGFoundationAdditions.h"
-
-// Models
 #import "PGDocument.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-#if __has_feature(objc_arc)
 
 @interface PGFullscreenController ()
 
@@ -57,22 +48,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#else
-
-@interface PGFullscreenController(Private)
-
-- (void)_setMenuBarHidden:(BOOL)hidden delayed:(BOOL)delayed; // Delaying prevents the menu bar from messing up when the application unhides on Leopard.
-- (void)_hideMenuBar;
-- (void)_showMenuBar;
-
-@end
-
-#endif
 
 //	MARK: -
 @implementation PGFullscreenController
-
-//	MARK: +PGFullscreenController
 
 + (PGFullscreenController*)sharedFullscreenController
 {
@@ -80,8 +58,6 @@ NS_ASSUME_NONNULL_BEGIN
 	if(!sharedFullscreenController) sharedFullscreenController = [[self alloc] init];
 	return sharedFullscreenController;
 }
-
-//	MARK: - PGFullscreenController
 
 - (void)prepareToExitFullscreen
 {
@@ -139,11 +115,7 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	if(document || _isExitingFullscreen) return [super setActiveDocument:document closeIfAppropriate:NO];
 	if(!self.activeDocument) return NO;
-#if __has_feature(objc_arc)
 	NSMutableArray *const docs = [[PGDocumentController sharedDocumentController].documents mutableCopy];
-#else
-	NSMutableArray *const docs = [[[[PGDocumentController sharedDocumentController] documents] mutableCopy] autorelease];
-#endif
 	PGDocument *const nextDoc = [[PGDocumentController sharedDocumentController] next:YES documentBeyond:self.activeDocument];
 	[docs removeObjectIdenticalTo:self.activeDocument];
 	[super setActiveDocument:nextDoc closeIfAppropriate:NO]; // PGDocumentController knows when to close us, so don't close ourselves.
@@ -173,13 +145,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 - (void)windowDidLoad
 {
-#if __has_feature(objc_arc)
 	NSWindow *const window = [[PGFullscreenWindow alloc] initWithScreen:[NSUserDefaults.standardUserDefaults displayScreen]];
 	NSView *const content = self.window.contentView;
-#else
-	NSWindow *const window = [[[PGFullscreenWindow alloc] initWithScreen:[NSUserDefaults.standardUserDefaults displayScreen]] autorelease];
-	NSView *const content = [[[[self window] contentView] retain] autorelease];
-#endif
 	[self.window setContentView:nil];
 	window.contentView = content;
 	window.delegate = self.window.delegate;
@@ -213,10 +180,6 @@ NS_ASSUME_NONNULL_BEGIN
 	[self PG_cancelPreviousPerformRequests];
 	[self PG_removeObserver];
 	[_shieldWindows makeObjectsPerformSelector:@selector(close)];
-#if !__has_feature(objc_arc)
-	[_shieldWindows release];
-	[super dealloc];
-#endif
 }
 
 //	MARK: - <NSWindowDelegate>
@@ -242,13 +205,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 	if(!dim) return;
 	[_shieldWindows makeObjectsPerformSelector:@selector(close)];
-#if !__has_feature(objc_arc)
-	[_shieldWindows release];
-#endif
 	_shieldWindows = [NSMutableArray new];
 	for(NSScreen *const screen in [NSScreen screens]) {
 		if(displayScreen == screen) continue;
-#if __has_feature(objc_arc)
 		NSWindow *const w = [[NSWindow alloc] initWithContentRect:screen.frame
 		// Use borderless windows instead of CGSetDisplayTransferByFormula() so that
 		// 1. the menu bar remains visible (if it's on a different screen), and
@@ -256,9 +215,6 @@ NS_ASSUME_NONNULL_BEGIN
 														styleMask:NSWindowStyleMaskBorderless
 														  backing:NSBackingStoreBuffered
 															defer:YES];
-#else
-		NSWindow *const w = [[[NSWindow alloc] initWithContentRect:[screen frame] styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:YES] autorelease]; // Use borderless windows instead of CGSetDisplayTransferByFormula() so that 1. the menu bar remains visible (if it's on a different screen), and 2. the user can't click on things that can't be seen.
-#endif
 		[w setReleasedWhenClosed:NO];
 		w.backgroundColor = [NSColor blackColor];
 		[w setHasShadow:NO];
@@ -273,9 +229,6 @@ NS_ASSUME_NONNULL_BEGIN
 		return;
 	[self _setMenuBarHidden:NO delayed:YES];
 	[_shieldWindows makeObjectsPerformSelector:@selector(close)];
-#if !__has_feature(objc_arc)
-	[_shieldWindows release];
-#endif
 	_shieldWindows = nil;
 }
 
@@ -286,37 +239,21 @@ NS_ASSUME_NONNULL_BEGIN
 	if(!(info.draggingSourceOperationMask & NSDragOperationGeneric)) return NSDragOperationNone;
 	NSPasteboard *const pboard = info.draggingPasteboard;
 	NSArray *const types = pboard.types;
-#if 1
 	if([types containsObject:NSPasteboardTypeFileURL]) {
 		return NSDragOperationGeneric;	//	2023/08/16 bugfix: no complex testing is now done
 	} else if([types containsObject:NSPasteboardTypeURL]) {
 		return [NSURL URLFromPasteboard:pboard] ? NSDragOperationGeneric : NSDragOperationNone;
 	}
-#else
-	if([types containsObject:NSFilenamesPboardType]) {
-		NSArray *const paths = [pboard propertyListForType:NSFilenamesPboardType];
-		return [paths count] == 1 ? NSDragOperationGeneric : NSDragOperationNone;
-	} else if([types containsObject:NSPasteboardTypeURL]) {
-		return [NSURL URLFromPasteboard:pboard] ? NSDragOperationGeneric : NSDragOperationNone;
-	}
-#endif
 	return NSDragOperationNone;
 }
 - (BOOL)window:(PGDocumentWindow *)window performDragOperation:(id<NSDraggingInfo>)info
 {
 	NSPasteboard *const pboard = info.draggingPasteboard;
 	NSArray *const types = pboard.types;
-#if 1
 	if([types containsObject:NSPasteboardTypeFileURL])
 		return !![[PGDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[[[pboard propertyListForType:NSPasteboardTypeFileURL] lastObject] PG_fileURL] display:YES];
 	else if([types containsObject:NSPasteboardTypeURL])
 		return !![[PGDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[NSURL URLFromPasteboard:pboard] display:YES];
-#else
-	if([types containsObject:NSFilenamesPboardType])
-		return !![[PGDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[[[pboard propertyListForType:NSFilenamesPboardType] lastObject] PG_fileURL] display:YES];
-	else if([types containsObject:NSPasteboardTypeURL])
-		return !![[PGDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[NSURL URLFromPasteboard:pboard] display:YES];
-#endif
 	return NO;
 }
 

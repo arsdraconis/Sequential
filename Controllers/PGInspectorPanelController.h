@@ -26,8 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PGInspectorPanelController
-    : PGFloatingPanelController <NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation>
+@interface PGInspectorPanelController : PGFloatingPanelController <NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation>
 
 - (IBAction)changeSearch:(nullable id)sender;
 - (IBAction)copy:(nullable id)sender;

@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Other Sources
 #import "PGGeometryTypes.h"
 
+@protocol PGClipViewDelegate;
+
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSString *const PGClipViewBoundsDidChangeNotification;
@@ -46,53 +48,9 @@ typedef NS_ENUM(NSUInteger, PGScrollToRectType) {
 	PGScrollMostToRect = 2
 };
 
-@protocol PGClipViewDelegate;
 
 //	MARK: -
 @interface PGClipView : NSView
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet NSResponder<PGClipViewDelegate> * delegate;
-	IBOutlet NSView *documentView;
-	NSRect _documentFrame;
-	PGInset _boundsInset;
-	NSColor *_backgroundColor;
-	BOOL _backgroundIsComplex;
-	BOOL _showsBorder;
-	NSCursor *_cursor;
-	NSPoint _position;
-	BOOL _acceptsFirstResponder;
-	NSUInteger _documentViewIsResizing;
-	BOOL _firstMouse;
-	NSUInteger _scrollCount;
-
-	BOOL _allowsAnimation;
-	NSPoint _startPosition;
-	NSPoint _targetPosition;
-	CGFloat _animationProgress;
-	NSTimer *_animationTimer;
-	NSTimeInterval _lastAnimationTime;
-}
-
-@property(assign, nonatomic) NSResponder<PGClipViewDelegate> *delegate;
-@property(retain, nonatomic) NSView *documentView;
-@property(readonly) NSRect documentFrame;
-@property(assign, nonatomic) PGInset boundsInset;
-@property(readonly) NSRect insetBounds;
-@property(retain, nonatomic) NSColor *backgroundColor;
-@property(assign, nonatomic) BOOL showsBorder;
-@property(retain, nonatomic) NSCursor *cursor;
-@property(assign, nonatomic, getter = isScrolling) BOOL scrolling;
-@property(assign, nonatomic) BOOL allowsAnimation;
-@property(assign, nonatomic) BOOL acceptsFirstResponder;
-
-@property(readonly) NSPoint position;
-@property(readonly) NSPoint center;
-@property(readonly) NSPoint relativeCenter;
-@property(readonly) NSSize pinLocationOffset;
-
-#else
 
 @property (nonatomic, weak, nullable) IBOutlet NSResponder<PGClipViewDelegate> *delegate;
 @property (nonatomic, strong, nullable) IBOutlet NSView *documentView;
@@ -111,7 +69,6 @@ typedef NS_ENUM(NSUInteger, PGScrollToRectType) {
 @property (readonly) NSPoint relativeCenter;
 @property (readonly) NSSize pinLocationOffset;
 
-#endif
 
 - (BOOL)scrollTo:(NSPoint)aPoint animation:(PGAnimationType)type;
 - (BOOL)scrollBy:(NSSize)aSize animation:(PGAnimationType)type;

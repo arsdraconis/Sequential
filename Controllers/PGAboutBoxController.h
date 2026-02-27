@@ -26,13 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGAboutBoxController : NSWindowController<NSToolbarDelegate>
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet NSSegmentedControl *paneControl;
-	IBOutlet NSTextView *textView;
-}
-#endif
 
 + (PGAboutBoxController*)sharedAboutBoxController;
 

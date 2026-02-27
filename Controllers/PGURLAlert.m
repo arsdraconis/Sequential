@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if __has_feature(objc_arc)
 
 @interface PGURLAlert ()
 
@@ -38,8 +37,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) IBOutlet NSButton *OKButton;
 
 @end
-
-#endif
 
 //	MARK: -
 @implementation PGURLAlert
@@ -62,22 +59,14 @@ NS_ASSUME_NONNULL_BEGIN
 	BOOL const canceled = [NSApp runModalForWindow:self.window] == NSAlertSecondButtonReturn;
 	[self.window close];
 	if(canceled) return nil;
-#if __has_feature(objc_arc)
 	return [NSURL PG_URLWithString:_URLField.stringValue];
-#else
-	return [NSURL PG_URLWithString:URLField.stringValue];
-#endif
 }
 
 //	MARK: - NSWindowController
 
 - (void)enableOKButton
 {
-#if __has_feature(objc_arc)
 	_OKButton.enabled = [NSURL PG_URLWithString:_URLField.stringValue] != nil;
-#else
-	[OKButton setEnabled:[NSURL PG_URLWithString:[URLField stringValue]] != nil];
-#endif
 }
 
 - (void)windowDidLoad

@@ -24,19 +24,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGActivityPanelController.h"
 
-// Models
 #import "PGActivity.h"
-
-// Views
 #import "PGProgressIndicatorCell.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-#if __has_feature(objc_arc)
 
 @interface PGActivityPanelController ()
 
@@ -50,55 +43,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#else
-
-@interface PGActivityPanelController(Private)
-
-- (void)_update;
-
-@end
-
-#endif
-
 //	MARK: -
 @implementation PGActivityPanelController
 
 - (IBAction)cancelLoad:(id)sender
 {
-#if __has_feature(objc_arc)
 	NSIndexSet *const indexes = _activityOutline.selectedRowIndexes;
-#else
-	NSIndexSet *const indexes = [activityOutline selectedRowIndexes];
-#endif
 	NSUInteger i = indexes.firstIndex;
 	for(; NSNotFound != i; i = [indexes indexGreaterThanIndex:i])
-#if __has_feature(objc_arc)
-		[[_activityOutline itemAtRow:i] cancel:sender];
-#else
-		[[activityOutline itemAtRow:i] cancel:sender];
-#endif
+    {
+        [[_activityOutline itemAtRow:i] cancel:sender];
+    }
 }
 
 //	MARK: - PGActivityPanelController(Private)
 
 - (void)_update
 {
-#if __has_feature(objc_arc)
 	[_activityOutline reloadData];
 	[_activityOutline expandItem:nil expandChildren:YES];
-#else
-	[activityOutline reloadData];
-	[activityOutline expandItem:nil expandChildren:YES];
-#endif
 }
 
 - (void)_enableCancelButton
 {
-#if __has_feature(objc_arc)
 	_cancelButton.enabled = _activityOutline.selectedRowIndexes.count > 0;
-#else
-	[cancelButton setEnabled:[[activityOutline selectedRowIndexes] count] > 0];
-#endif
 }
 
 //	MARK: - NSObject(NSOutlineViewNotifications)
@@ -116,19 +84,12 @@ NS_ASSUME_NONNULL_BEGIN
 }
 - (void)windowWillShow
 {
-#if __has_feature(objc_arc)
 	_updateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(_update) userInfo:nil repeats:YES];
-#else
-	_updateTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(_update) userInfo:nil repeats:YES] retain];
-#endif
 	[self _update];
 }
 - (void)windowWillClose
 {
 	[_updateTimer invalidate];
-#if !__has_feature(objc_arc)
-	[_updateTimer release];
-#endif
 	_updateTimer = nil;
 }
 
@@ -137,11 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)windowDidLoad
 {
 	[super windowDidLoad];
-#if __has_feature(objc_arc)
 	_progressColumn.dataCell = [PGProgressIndicatorCell new];
-#else
-	[progressColumn setDataCell:[[[PGProgressIndicatorCell alloc] init] autorelease]];
-#endif
 	[self _enableCancelButton];	//	[self outlineViewSelectionDidChange:nil];
 }
 
@@ -150,9 +107,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)dealloc
 {
 	[self windowWillClose];
-#if !__has_feature(objc_arc)
-	[super dealloc];
-#endif
 }
 
 //	MARK: - id<NSOutlineViewDataSource>
@@ -177,33 +131,17 @@ NS_ASSUME_NONNULL_BEGIN
  objectValueForTableColumn:(nullable NSTableColumn *)tableColumn
 					byItem:(nullable id)item
 {
-#if __has_feature(objc_arc)
 	if(tableColumn == _identifierColumn)
-#else
-	if(tableColumn == identifierColumn)
-#endif
 	{
 		static NSDictionary *attrs = nil;
 		if(!attrs) {
-#if __has_feature(objc_arc)
 			NSMutableParagraphStyle *const style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-#else
-			NSMutableParagraphStyle *const style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-#endif
 			style.tighteningFactorForTruncation = 0.3f;
 			style.lineBreakMode = NSLineBreakByTruncatingMiddle;
 			attrs = @{NSParagraphStyleAttributeName: style};
 		}
-#if __has_feature(objc_arc)
 		return [[NSAttributedString alloc] initWithString:[item activityDescription] attributes:attrs];
-#else
-		return [[[NSAttributedString alloc] initWithString:[item activityDescription] attributes:attrs] autorelease];
-#endif
-#if __has_feature(objc_arc)
 	} else if(tableColumn == _progressColumn) {
-#else
-	} else if(tableColumn == progressColumn) {
-#endif
 		return @(((PGActivity*) item).progress);
 	}
 	return nil;
@@ -211,17 +149,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 //	MARK: - id<NSOutlineViewDelegate>
 
-#if 1
 // View Based OutlineView: See the delegate method -tableView:viewForTableColumn:row: in NSTableView.
 - (nullable NSView *)outlineView:(NSOutlineView *)outlineView
 			  viewForTableColumn:(nullable NSTableColumn *)tableColumn
 							item:(id)item
 {
-#if __has_feature(objc_arc)
 	NSTextField*	result = [NSTextField new];
-#else
-	NSTextField*	result = [[NSTextField new] autorelease];
-#endif
 	result.drawsBackground	=	NO;
 	result.bordered			=	NO;
 	result.bezeled			=	NO;
@@ -230,11 +163,7 @@ NS_ASSUME_NONNULL_BEGIN
 	result.font				=	[NSFont systemFontOfSize:0.0];
 	result.alignment		=	NSTextAlignmentLeft;
 
-#if __has_feature(objc_arc)
 	if(tableColumn == _progressColumn)
-#else
-	if(tableColumn == progressColumn)
-#endif
 	{
 		PGActivity*		ai		=	(PGActivity*) item;
 		if(!ai.progress || 0 != [ai childActivities:YES].count)
@@ -242,22 +171,6 @@ NS_ASSUME_NONNULL_BEGIN
 	}
 	return result;
 }
-
-/* View Based OutlineView: See the delegate method -tableView:rowViewForRow: in NSTableView.
-- (nullable NSTableRowView *)outlineView:(NSOutlineView *)outlineView
-						  rowViewForItem:(id)item
-{
-} */
-
-#else
-
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
-{
-	if(tableColumn == progressColumn)
-		[cell setHidden:![(PGActivity*) item progress] || [[(PGActivity*) item childActivities:YES] count]];
-}
-
-#endif
 
 @end
 

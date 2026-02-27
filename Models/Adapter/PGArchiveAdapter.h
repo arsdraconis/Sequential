@@ -31,14 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGArchiveAdapter : PGContainerAdapter
-#if !__has_feature(objc_arc)
-{
-	@private
-	XADArchive *_archive;
-	BOOL _needsPassword;
-	PGNode *_currentSubnode;
-}
-#endif
 
 - (NSArray *)nodesUnderPath:(NSString *)path parentAdapter:(PGContainerAdapter *)parent remainingIndexes:(NSMutableIndexSet *)indexes;
 

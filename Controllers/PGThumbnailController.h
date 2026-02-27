@@ -22,55 +22,27 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-// Models
-@class PGDocument;
-
-// Views
-@class PGBezelPanel;
 #import "PGThumbnailBrowser.h"
-
-// Controllers
 #import "PGDisplayController.h"
-
-// Other Sources
 #import "PGGeometryTypes.h"
+
+@class PGDocument;
+@class PGBezelPanel;
 
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSString *const PGThumbnailControllerContentInsetDidChangeNotification;
 
 @interface PGThumbnailController : NSObject <NSWindowDelegate,
-	PGThumbnailBrowserDataSource, PGThumbnailBrowserDelegate, PGThumbnailViewDataSource>
-#if !__has_feature(objc_arc)
-{
-	@private
-	PGBezelPanel *_window;			//	retains; owns the reference
-	PGThumbnailBrowser *_browser;	//	references; does not own the reference
+    PGThumbnailBrowserDataSource, PGThumbnailBrowserDelegate, PGThumbnailViewDataSource>
 
-	PGDisplayController *_displayController;	//	references; does not own the reference; backs the displayController @property
-	PGDocument *_document;			//	references; does not own the reference; backs the document @property
-
-	BOOL _selfRetained;
-
-	PGBezelPanel *_infoWindow;		//	retains; owns the reference; 2023/10/02 added
-	NSView *_infoView;	//	references; does not own the reference; 2023/10/02 added [PGThumbnailInfoView]
-}
-#endif
-
-+ (BOOL)canShowThumbnailsForDocument:(PGDocument *)aDoc;
-+ (BOOL)shouldShowThumbnailsForDocument:(PGDocument *)aDoc;
-
-#if __has_feature(objc_arc)
 @property (nonatomic, weak, nullable) PGDisplayController *displayController;
 @property (nonatomic, weak, nullable) PGDocument *document;
 @property (readonly) PGInset contentInset;
-@property (nonatomic, copy) NSSet *selectedNodes;	//	2023/10/02 was readonly
-#else
-@property(assign, nonatomic) PGDisplayController *displayController;
-@property(assign, nonatomic) PGDocument *document;
-@property(readonly) PGInset contentInset;
-@property(copy, nonatomic) NSSet *selectedNodes;	//	2023/10/02 was readonly
-#endif
+@property (nonatomic, copy) NSSet *selectedNodes;    //    2023/10/02 was readonly
+
++ (BOOL)canShowThumbnailsForDocument:(PGDocument *)aDoc;
++ (BOOL)shouldShowThumbnailsForDocument:(PGDocument *)aDoc;
 
 - (void)selectAll;
 - (void)display;

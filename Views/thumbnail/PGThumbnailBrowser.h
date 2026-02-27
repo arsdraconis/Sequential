@@ -23,8 +23,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGColumnView.h"
-
-// Views
 #import "PGThumbnailView.h"
 
 @protocol PGThumbnailBrowserDataSource;
@@ -33,30 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGThumbnailBrowser : PGColumnView <PGThumbnailViewDelegate>
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet NSObject<PGThumbnailBrowserDataSource, PGThumbnailViewDataSource> *dataSource;
-	IBOutlet NSObject<PGThumbnailBrowserDelegate> *delegate;
-	PGOrientation _thumbnailOrientation;
-	NSUInteger _updateCount;
-}
-#endif
 
-#if __has_feature(objc_arc)
 @property (nonatomic, weak) IBOutlet NSObject<PGThumbnailBrowserDataSource, PGThumbnailViewDataSource> *dataSource;
 @property (nonatomic, weak) IBOutlet NSObject<PGThumbnailBrowserDelegate> *delegate;
 @property (nonatomic, assign) PGOrientation thumbnailOrientation;
 @property (nonatomic, copy, nullable) NSSet *selection;
-#else
-@property(nonatomic, assign) NSObject<PGThumbnailBrowserDataSource, PGThumbnailViewDataSource> *dataSource;
-@property(nonatomic, assign) NSObject<PGThumbnailBrowserDelegate> *delegate;
-@property(nonatomic, assign) PGOrientation thumbnailOrientation;
-@property(nonatomic, copy) NSSet *selection;
-#endif
 
 - (void)redisplayItem:(id)item recursively:(BOOL)flag;
-- (void)selectionNeedsDisplay;	//	2023/11/23
+- (void)selectionNeedsDisplay;  // 2023/11/23
 
 - (void)selectAll;
 

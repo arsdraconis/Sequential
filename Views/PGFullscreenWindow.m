@@ -26,7 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "Sequential-Swift.h"
 
-// Other Sources
 #import "PGAppKitAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -60,12 +59,11 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 }
 
 //	MARK: -
-
-#if __has_feature(objc_arc)
 @interface PGFullscreenWindow ()
+
 @property (nonatomic, strong, nullable) NSWindow* blackHideTheNotchWindow;	//	2023/08/14 added
+
 @end
-#endif
 
 //	MARK: -
 @implementation PGFullscreenWindow
@@ -95,19 +93,12 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 - (void)_deallocateTheBlackHideTheNotchWindow {
 	if(_blackHideTheNotchWindow) {
 		[_blackHideTheNotchWindow orderOut:self];
-#if !__has_feature(objc_arc)
-		[_blackHideTheNotchWindow release];
-#endif
 		_blackHideTheNotchWindow	=	nil;
 	}
 }
 
 - (void)dealloc {
 	[self _deallocateTheBlackHideTheNotchWindow];
-
-#if !__has_feature(objc_arc)
-	[super dealloc];
-#endif
 }
 
 - (instancetype)initWithScreen:(NSScreen *)screen

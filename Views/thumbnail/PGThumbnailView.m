@@ -28,17 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <tgmath.h>
 
-// Views
 #import "PGClipView.h"
-
-// Controller
 #import "PGThumbnailController.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
-#import "PGDocumentController.h"	//	for thumbnail userDefault keys
 
 #if !defined(NDEBUG) && 0	//	used to fix the incorrect -[PGNode isEqual:] bug
 	#import "PGNode.h"
@@ -47,13 +41,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-//extern	void	Unpack2HalfUInts(NSUInteger packed, NSUInteger* upper, NSUInteger* lower);
-extern	void	Unpack_ByteSize_FolderImageCounts(uint64_t packed, uint64_t* byteSize,
+//extern void Unpack2HalfUInts(NSUInteger packed, NSUInteger* upper, NSUInteger* lower);
+extern void Unpack_ByteSize_FolderImageCounts(uint64_t packed, uint64_t* byteSize,
 												  NSUInteger* folders, NSUInteger* images);
 
 //	MARK: -
 
-extern	NSInteger	GetThumbnailSizeFormat(void);
+extern NSInteger GetThumbnailSizeFormat(void);
 
 //	extern
 NSInteger
@@ -81,7 +75,6 @@ GetThumbnailSizeFormat(void) {
 #define PGOuterTotalWidth (PGInnerTotalWidth + 2.0f)
 
 typedef NS_ENUM(unsigned int, PGBackgroundType) {
-#if 1
 	PGBackground_NotSelected,
 
 	PGBackground_Selected_Active_MainWindow,
@@ -90,16 +83,9 @@ typedef NS_ENUM(unsigned int, PGBackgroundType) {
 	PGBackground_Selected_ParentOfActive_NotMainWindow,
 	PGBackground_Selected_NotActive_MainWindow,
 	PGBackground_Selected_NotActive_NotMainWindow,
-#else
-	PGBackgroundDeselected,
-	PGBackgroundSelectedActive,
-	PGBackgroundSelectedInactive,
-#endif
 	PGBackgroundCount,
 };
 static NSColor * _Nullable PGBackgroundColors[PGBackgroundCount];
-
-#if __has_feature(objc_arc)
 
 //	There are several ways to implement a public @property(copy) NSSet*
 //	selection:
@@ -158,19 +144,6 @@ static NSColor * _Nullable PGBackgroundColors[PGBackgroundCount];
 @property (nonatomic, weak) id selectionAnchor;
 
 @end
-
-#else
-
-@interface PGThumbnailView(Private)
-
-- (void)_validateSelection;
-- (NSColor *)_backgroundColorWithType:(PGBackgroundType)type;
-//	2023/08/17 made this method private; was -(void)scrollToSelectionAnchor;
-- (void)_scrollToSelectionAnchor:(PGScrollToRectType)scrollToRect;
-
-@end
-
-#endif
 
 //	MARK: -
 
@@ -734,41 +707,35 @@ DrawUpperAndLower(BOOL const drawAtMidY, NSString* const label, NSColor* const l
 			MeasureTextInBubbleUsing(test, enabled, attributes, textStorage, layoutManager,
 									 textContainer, frameWithMarginSize, &testMT);
 			if(testMT.textSize.height <= fontLineHeight) {
-#if __has_feature(objc_arc)
 				finalStr	=	test;
-#else
-				finalStr	=	[test retain];
-#endif
 				break;
 			}
 		}
 		if(finalStr)
-#if __has_feature(objc_arc)
-			s	=	finalStr;
-#else
-			s	=	[finalStr autorelease];
-#endif
+        {
+            s = finalStr;
+        }
 		else
-			//	if the text needs more than a single line, fall back to using
-			//	the default number of decimal digits, which is 0 digits if the
-			//	string shows more than or equal to 10 <units> or 1 digit if the
-			//	string shows less than 10 <units>, eg, 12kiB or 9.3MiB (the
-			//	default string is achieved by passing -1)
-			s	=	[NSMutableString stringWithFormat:@"%@%@",
-					 s, StringForByteSizeWithFormat(sizeFormat, byteSize, -1)];
+        {
+            // if the text needs more than a single line, fall back to using
+            // the default number of decimal digits, which is 0 digits if the
+            // string shows more than or equal to 10 <units> or 1 digit if the
+            // string shows less than 10 <units>, eg, 12kiB or 9.3MiB (the
+            // default string is achieved by passing -1)
+            s = [NSMutableString stringWithFormat:@"%@%@", s, StringForByteSizeWithFormat(sizeFormat, byteSize, -1)];
+        }
 	} else if(SizeFormatNone != sizeFormat && ~0ull != byteSizeOfAllChildren) {
 		if(0 != s.length)
 			[s appendString:@" "];	//	[s appendString:@" │ "];
 
-		//	this is a container which has zero images in it; instead of
-		//	showing nothing, show the total size of all of this
-		//	container's children
+		// this is a container which has zero images in it; instead of
+		// showing nothing, show the total size of all of this
+		// container's children
 		enum { DECIMAL_DIGITS = 2 };
 		s	=	[NSMutableString stringWithFormat:@"%@[%@]", s,
 				 StringForByteSizeWithFormat(sizeFormat, byteSizeOfAllChildren, DECIMAL_DIGITS)];
 	} else if(0 == s.length) {
-		if(!showCounts)
-			return;	//	nothing to draw
+		if(!showCounts) return;	// nothing to draw
 
 		assert(0 == imageCount);
 	//	[s appendFormat:@"0 "STRING_IMAGE_ICON];
@@ -876,8 +843,7 @@ DrawUpperAndLower(BOOL const drawAtMidY, NSString* const label, NSColor* const l
 
 //	MARK: -
 
-#if __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET) || \
-	__has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[3] or [4]
+#if defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET) || defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[3] or [4]
 
 typedef const void *id_type;
 
@@ -960,7 +926,7 @@ SetPtrEqualsSet(CFSetRef cfSet, NSSet *const nsSet) {
 	return YES;
 }
 
-	#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)
+	#elif defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)
 
 static
 BOOL
@@ -976,7 +942,7 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 }
 
 	#endif
-#endif
+#endif // defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET) || defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)
 
 //	MARK: -
 
@@ -985,21 +951,18 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 - (instancetype)initWithFrame:(NSRect)aRect
 {
 	if((self = [super initWithFrame:aRect])) {
-#if __has_feature(objc_arc) && defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
+#if defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 		// [NSMutableSet new] creates the wrong kind of mutable set
 		// because inserted objects are NOT to be retained; the code
 		// in this class requires that behavior so it must be created
 		// as a CF object which is then transferred to ARC to manage
-	//	_selection = [NSMutableSet new];  <=== wrong
 		_selection = (NSMutableSet *)CFBridgingRelease(CFSetCreateMutable(kCFAllocatorDefault, 0, NULL));
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_NSSET)	//	[2]
+#elif defined(SELECTION_IVAR_NSSET)	//	[2]
 		_selection = [NSSet set];
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
+#elif defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
 		_mutableSelection = CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
+#elif defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 		_mutableSelection = (NSMutableSet *)CFBridgingRelease(CFSetCreateMutable(kCFAllocatorDefault, 0, NULL));
-#else
-		_selection = (NSMutableSet *)CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
 #endif
 		[NSNotificationCenter.defaultCenter addObserver:self
 											   selector:@selector(systemColorsDidChange:)
@@ -1054,8 +1017,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	return (NSUInteger) CFSetGetCount(_mutableSelection);
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	return _mutableSelection.count;
-#else
-	return _selection.count;
 #endif
 }
 
@@ -1068,8 +1029,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	return (__bridge NSSet * _Nonnull)_mutableSelection;
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	return _mutableSelection;
-#else
-	return _selection;
 #endif
 }
 
@@ -1082,8 +1041,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	return [(__bridge NSSet *)_mutableSelection copy];
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	return [_mutableSelection copy];
-#else
-	return [[_selection copy] autorelease];
 #endif
 }
 
@@ -1096,8 +1053,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	return [(__bridge NSMutableSet *)_mutableSelection mutableCopy];
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	return [_mutableSelection mutableCopy];
-#else
-	return [_selection mutableCopy];
 #endif
 }
 
@@ -1110,8 +1065,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	return CFSetContainsValue(_mutableSelection, (const void *)item);
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	return [_mutableSelection containsObject:item];
-#else
-	return [_selection containsObject:item];
 #endif
 }
 
@@ -1126,8 +1079,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	CFSetAddValue(_mutableSelection, (__bridge const void *)item);
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	[_mutableSelection addObject:item];
-#else	//	non-ARC (MMR)
-	[_selection addObject:item];
 #endif
 }
 
@@ -1142,8 +1093,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	CFSetRemoveValue(_mutableSelection, (__bridge const void *)item);
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	[_mutableSelection removeObject:item];
-#else	//	non-ARC (MMR)
-	[_selection removeObject:item];
 #endif
 }
 
@@ -1161,8 +1110,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 		CFSetSetValue(_mutableSelection, (__bridge const void *)item);
 #elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	[_mutableSelection setSet:items];
-#else	//	non-ARC (MMR)
-	[_selection setSet:items];
 #endif
 }
 
@@ -1200,15 +1147,12 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 #endif
 	}
 
-#if 1	//	optimized
 	if(!NSEqualRects(lastItemFrame, NSZeroRect)) {
 		[self PG_scrollRectToVisible:lastItemFrame type:PGScrollLeastToRect];
 		self.needsDisplay = YES;
 	}
 
 	[self.delegate thumbnailViewSelectionDidChange:self];
-#else
-#endif
 }
 
 - (void)_selectAllDirectChildrenOf:(nullable id)item {
@@ -1239,60 +1183,49 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 
 //	MARK: - public selection methods
 
-#if __has_feature(objc_arc) && defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
+#if defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 //@synthesize selection = _selection;
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_NSSET)	//	[2]
+#elif defined(SELECTION_IVAR_NSSET)	//	[2]
 //@synthesize selection = _selection;
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
+#elif defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
 - (NSSet *)selection {
 	return [self _copyOfSelection];
 }
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
+#elif defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 - (nullable NSSet *)selection {
 	return [self _copyOfSelection];
 }
-#else
-//@synthesize selection = _selection;
 #endif
 
 - (void)setSelection:(nullable NSSet *)items
 {
-#if __has_feature(objc_arc) && defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
+#if defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 	if([_selection isEqualToSet:items])	//	probably incorrect: -isEqualToSet: does not work with the custom set
 		return;
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_NSSET)	//	[2]
+#elif defined(SELECTION_IVAR_NSSET)	//	[2]
 	if([_selection isEqualToSet:items])	//	probably incorrect: -isEqualToSet: does not work with the custom set
 		return;
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
+#elif defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
 	NSAssert((__bridge void *)items != _mutableSelection, @"");
 //	if((__bridge void *)items == _mutableSelection)
 //		return;
 	if(SetPtrEqualsSet(_mutableSelection, items))
 		return;	//	contents are identical (all pointer match)
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
+#elif defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	NSAssert(items != _mutableSelection, @"");
 	//	SetEqualsSet() works correctly whereas -isEqualToSet: does not
 	if(SetEqualsSet(_mutableSelection, items))	//	if([_mutableSelection isEqualToSet:items])
 		return;	//	contents are identical (all pointer match)
-#else
-	if(items == _selection)	//	NB: original code uses an incorrect test
-		return;
 #endif
 	if(items) {
 		NSMutableSet *const removedItems = [self _mutableCopyOfSelection];
 		[removedItems minusSet:items];
 		[self _invalidateItems:removedItems];
-#if !__has_feature(objc_arc)
-		[removedItems release];
-#endif
 	}
 	if(items) {
 		NSMutableSet *const addedItems = [items mutableCopy];
 		[addedItems minusSet:[self _immutableSelection]];
 		[self _invalidateItems:addedItems];
-#if !__has_feature(objc_arc)
-		[addedItems release];
-#endif
 	}
 
 	PGScrollToRectType scrollToRect = PGScrollCenterToRect;	//	default is scroll to center
@@ -1321,34 +1254,28 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 		return;
 	}
 
-#if __has_feature(objc_arc) && defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
+#if defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 	if(!flag) {
 		[_selection removeAllObjects];
 		[self setNeedsDisplay:YES];
 	}
 	[self _selectItem:item];
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_NSSET)	//	[2]
+#elif defined(SELECTION_IVAR_NSSET)	//	[2]
 	if(!flag) {
 		[self _invalidateItems:_selection];
 		_selection = [NSSet setWithObject:item];
 	} else {
 		[self _selectItem:item];
 	}
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
+#elif defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
 	if(!flag) {
 		CFSetRemoveAllValues(_mutableSelection);
 		[self setNeedsDisplay:YES];
 	}
 	[self _selectItem:item];
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
+#elif defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	if(!flag) {
 		[_mutableSelection removeAllObjects];
-		[self setNeedsDisplay:YES];
-	}
-	[self _selectItem:item];
-#else	//	non-ARC (MMR)
-	if(!flag) {
-		[_selection removeAllObjects];
 		[self setNeedsDisplay:YES];
 	}
 	[self _selectItem:item];
@@ -1421,13 +1348,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 
 //	MARK: - PGThumbnailView
 
-#if !__has_feature(objc_arc)
-@synthesize dataSource;
-@synthesize delegate;
-@synthesize representedObject;
-//@synthesize thumbnailOrientation = _thumbnailOrientation;
-//@synthesize items = _items;
-#endif
 - (void)setThumbnailOrientation:(PGOrientation)orientation
 {
 	if(orientation == _thumbnailOrientation) return;
@@ -1451,9 +1371,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	BOOL const hadSelection = 0 != [self _selectionCount];
 	NSArray *items = [self.dataSource itemsForThumbnailView:self];
 	if(![_items isEqualToArray:items]) {
-#if !__has_feature(objc_arc)
-		[_items release];
-#endif
 		_items = [items copy];
 	}
 #if !defined(NDEBUG) && 0	//	used to fix the incorrect -[PGNode isEqual:] bug
@@ -1506,9 +1423,6 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 {
 	NSUInteger i = PGBackgroundCount;
 	while(i--) {
-#if !__has_feature(objc_arc)
-		[PGBackgroundColors[i] release];
-#endif
 		PGBackgroundColors[i] = nil;
 	}
 	[self setNeedsDisplay:YES];
@@ -1518,11 +1432,11 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 
 - (void)_validateSelection
 {
-#if __has_feature(objc_arc) && defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
+#if defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 	for(id const selectedItem in [_selection copy])
 		if([_items indexOfObjectIdenticalTo:selectedItem] == NSNotFound)
 			[_selection removeObject:selectedItem];
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_NSSET)	//	[2]
+#elif defined(SELECTION_IVAR_NSSET)	//	[2]
 	NSMutableSet *s = [_selection mutableCopy];
 	for(id const selectedItem in _selection)
 		if([_items indexOfObjectIdenticalTo:selectedItem] == NSNotFound)
@@ -1530,18 +1444,14 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 
 	if(s.count != _selection.count)
 		_selection = s;
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
+#elif defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)	//	[3]
 	RemoveAllNotInArray(_mutableSelection, _items);
-#elif __has_feature(objc_arc) && defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
+#elif defined(SELECTION_IVAR_SPECIAL_NSMUTABLESET)	//	[4]
 	RemoveAllNotInArray((__bridge CFMutableSetRef) _mutableSelection, _items);	//	no heap usage
 	//	this version creates a temporary object on the heap:
 //	for(id const selectedItem in [_mutableSelection copy])
 //		if([_items indexOfObjectIdenticalTo:selectedItem] == NSNotFound)
 //			[_mutableSelection removeObject:selectedItem];
-#else	//	non-ARC (MMR)
-	for(id const selectedItem in [[_selection copy] autorelease])
-		if([_items indexOfObjectIdenticalTo:selectedItem] == NSNotFound)
-			[_selection removeObject:selectedItem];
 #endif
 
 	if([self _isItemSelected:_selectionAnchor]) return;
@@ -1558,18 +1468,10 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 - (NSColor *)_backgroundColorWithType:(PGBackgroundType)type
 {
 	if(PGBackgroundColors[type]) return PGBackgroundColors[type];
-#if __has_feature(objc_arc)
 	NSImage *const background = [[NSImage alloc] initWithSize:NSMakeSize(PGOuterTotalWidth, PGBackgroundHeight)];
-#else
-	NSImage *const background = [[[NSImage alloc] initWithSize:NSMakeSize(PGOuterTotalWidth, PGBackgroundHeight)] autorelease];
-#endif
 	[background lockFocus];
 
-#if __has_feature(objc_arc)
 	NSShadow *const shadow = [NSShadow new];
-#else
-	NSShadow *const shadow = [[[NSShadow alloc] init] autorelease];
-#endif
 	shadow.shadowOffset = NSMakeSize(0.0f, -2.0f);
 	shadow.shadowBlurRadius = 4.0f;
 	[shadow set];
@@ -1577,7 +1479,6 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 	CGContextBeginTransparencyLayerWithRect(imageContext, CGRectMake(0, 0, PGOuterTotalWidth, PGBackgroundHeight), NULL);
 	NSRect const r = NSMakeRect(0.0f, 0.0f, PGInnerTotalWidth, PGBackgroundHeight);
 	PGDrawGradient();
-#if 1
 	if(PGBackground_NotSelected != type) {
 		NSColor* c = nil;
 		switch(type) {
@@ -1608,15 +1509,6 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 			NSRectFillUsingOperation(r, NSCompositingOperationSourceOver);
 		}
 	}
-#else
-	if(PGBackgroundDeselected != type) {
-		NSColor* c = PGBackgroundSelectedActive == type ?
-						[NSColor selectedContentBackgroundColor] :				//	PGBackgroundSelectedActive
-						[NSColor unemphasizedSelectedContentBackgroundColor];	//	PGBackgroundSelectedInactive
-		[[c colorWithAlphaComponent:0.5f] set];
-		NSRectFillUsingOperation(r, NSCompositingOperationSourceOver);
-	}
-#endif
 
 	NSRect const leftHoleRect = NSMakeRect(PGBackgroundHoleSpacingWidth, 0.0f, PGBackgroundHoleWidth, PGBackgroundHoleHeight);
 	NSRect const rightHoleRect = NSMakeRect(PGInnerTotalWidth - PGThumbnailMarginWidth + PGBackgroundHoleSpacingWidth, 0.0f, PGBackgroundHoleWidth, PGBackgroundHoleHeight);
@@ -1635,11 +1527,7 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 	CGContextEndTransparencyLayer(imageContext);
 	[background unlockFocus];
 	NSColor *const color = [NSColor colorWithPatternImage:background];
-#if __has_feature(objc_arc)
 	PGBackgroundColors[type] = color;
-#else
-	PGBackgroundColors[type] = [color retain];
-#endif
 	return color;
 }
 
@@ -1689,24 +1577,12 @@ NSLog(@"view %p [%@], has window: %p [%@] \"%@\", is key %c, is 1st responder %c
 	NSRect const *rects = NULL;
 	[self getRectsBeingDrawn:&rects count:&count];
 
-#if 1
 	[[self _backgroundColorWithType:PGBackground_NotSelected] set];
-#else
-	[[self _backgroundColorWithType:PGBackgroundDeselected] set];
-#endif
 	NSRectFillList(rects, count);
 
-#if __has_feature(objc_arc)
 	NSShadow *const nilShadow = [NSShadow new];
-#else
-	NSShadow *const nilShadow = [[[NSShadow alloc] init] autorelease];
-#endif
 	[nilShadow setShadowColor:nil];
-#if __has_feature(objc_arc)
 	NSShadow *const shadow = [NSShadow new];
-#else
-	NSShadow *const shadow = [[[NSShadow alloc] init] autorelease];
-#endif
 	shadow.shadowOffset = NSMakeSize(0.0f, -2.0f);
 	shadow.shadowBlurRadius = 4.0f;
 	[shadow set];
@@ -1719,9 +1595,7 @@ NSLog(@"view %p [%@], has window: %p [%@] \"%@\", is key %c, is 1st responder %c
 	BOOL const	showThumbnailContainerChildSizeTotal = [sud boolForKey:PGShowThumbnailContainerChildSizeTotalKey];
 	NSInteger const	thumbnailSizeFormat = GetThumbnailSizeFormat();
 	NSUInteger i = 0;
-#if 1
 	id activeNode = [self.dataSource activeNodeForThumbnailView:self];
-#endif
 #if 0	//	debugging
 NSMutableString *logStr = [NSMutableString stringWithFormat:@"self %p activeNode %p sel.count %lu",
 (__bridge const void *)self, (__bridge const void *)activeNode, [self _selectionCount]];
@@ -1816,18 +1690,10 @@ if(activeNode == item)
 			static NSMutableDictionary *attributes = nil;
 			static CGFloat fontLineHeight = 0;
 			if(!attributes) {
-#if __has_feature(objc_arc)
 				NSMutableParagraphStyle *const style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-#else
-				NSMutableParagraphStyle *const style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-#endif
 				style.lineBreakMode = NSLineBreakByWordWrapping;
 				style.alignment = NSTextAlignmentCenter;
-#if __has_feature(objc_arc)
 				NSShadow *const textShadow = [NSShadow new];
-#else
-				NSShadow *const textShadow = [[[NSShadow alloc] init] autorelease];
-#endif
 				textShadow.shadowBlurRadius = 2.0f;
 				textShadow.shadowOffset = NSMakeSize(0.0f, -1.0f);
 				NSFont *font = [NSFont systemFontOfSize:11];
@@ -1837,18 +1703,6 @@ if(activeNode == item)
 				fontLineHeight = ceil(font.ascender - font.descender);
 			}
 
-#if 1
-			//	this is now done inside MeasureTextInBubble()
-#else
-			//	while disabledControlTextColor can be used, it's much harder
-			//	to read so controlTextColor is used for disabled items
-			attributes[NSForegroundColorAttributeName] = enabled ?
-						NSColor.controlTextColor : //alternateSelectedControlTextColor :
-						NSColor.controlTextColor; // disabledControlTextColor;
-		//	[attributes setObject:enabled ? [NSColor alternateSelectedControlTextColor] : [NSColor disabledControlTextColor]
-		//					forKey:NSForegroundColorAttributeName];
-#endif
-
 			static NSTextStorage *textStorage = nil;
 			static NSLayoutManager *layoutManager = nil;
 			static NSTextContainer *textContainer = nil;
@@ -1856,13 +1710,8 @@ if(activeNode == item)
 				textStorage = [[NSTextStorage alloc] init];
 				layoutManager = [[NSLayoutManager alloc] init];
 				textContainer = [[NSTextContainer alloc] init];
-#if __has_feature(objc_arc)
 				[layoutManager addTextContainer:textContainer];
 				[textStorage addLayoutManager:layoutManager];
-#else
-				[layoutManager addTextContainer:[textContainer autorelease]];
-				[textStorage addLayoutManager:[layoutManager autorelease]];
-#endif
 				textContainer.lineFragmentPadding = 0;
 			}
 
@@ -2082,20 +1931,12 @@ NSLog(@"%@", logStr);
 }
 - (IBAction)selectAll:(nullable id)sender
 {
-#if 1
-	//	2023/09/18 optimized version
+	// 2023/09/18 optimized version
 	NSUInteger const count = _items.count;
 	if(0 == count)
 		return;
 
 	[self _selectItemsFrom:count to:0];
-#else
-	NSMutableSet *const selection = [NSMutableSet set];
-	for(id const item in _items)
-		if([[self dataSource] thumbnailView:self canSelectItem:item])
-			[selection addObject:item];
-	[self setSelection:selection];
-#endif
 }
 
 //	MARK: -
@@ -2129,17 +1970,7 @@ NSLog(@"%@", logStr);
 	if(anEvent.modifierFlags & NSEventModifierFlagCommand) [self toggleSelectionOfItem:item];
 	else if(validItemHit && _selectionAnchor && (anEvent.modifierFlags & NSEventModifierFlagShift)) {
 		NSUInteger const si = [_items indexOfObjectIdenticalTo:_selectionAnchor];
-#if 1
 		[self _selectItemsFrom:si to:i];
-#else
-		NSAssert(NSNotFound != si, @"si");
-		NSArray *const items = [_items subarrayWithRange:i < si ? NSMakeRange(i, si-i) : NSMakeRange(si, 1+i-si)];
-		for(id const item in i < si ? (id<NSFastEnumeration>)items.reverseObjectEnumerator : (id<NSFastEnumeration>)items) {
-			if(![self.dataSource thumbnailView:self canSelectItem:item]) continue;
-			if([self _isItemSelected:item]) continue;
-			[self selectItem:item byExtendingSelection:YES]; // NB: this call mutates _selectionAnchor
-		}
-#endif
 	} else if(validItemHit && _selectionAnchor && (anEvent.modifierFlags & NSEventModifierFlagOption)) {
 		//	2023/09/18 option-clicking selects the item's direct children
 		[self _selectAllDirectChildrenOf:item];
@@ -2170,13 +2001,6 @@ NSLog(@"%@", logStr);
 
 #if defined(SELECTION_IVAR_SPECIAL_CFMUTABLESET)
 	CFRelease(_mutableSelection);
-#endif
-
-#if !__has_feature(objc_arc)
-	[representedObject release];
-	[_items release];
-	[_selection release];
-	[super dealloc];
 #endif
 }
 

@@ -149,8 +149,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 //	MARK: -
 
 
-#if __has_feature(objc_arc)
-
 @interface PGContainerAdapter ()
 
 @property (nonatomic, strong, nullable) NSArray<PGNode*> *sortedChildren;
@@ -160,8 +158,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 @property (nonatomic, assign) NSUInteger folderCount, imageCount;
 
 @end
-
-#endif
 
 //	MARK: -
 @implementation PGContainerAdapter
@@ -175,7 +171,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 
 - (NSArray<PGNode*> *)sortedChildren
 {
-#if __has_feature(objc_arc)
 	if(!_sortedChildren) {
         BOOL isDescending = self.document.sortDescending;
 		PGSortOrder const order = self.document.sortOrder;
@@ -187,57 +182,27 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 		} else _sortedChildren = [_unsortedChildren sortedArrayUsingSelector:@selector(compare:)];
 	}
 	return _sortedChildren;
-#else
-	if(!_sortedChildren) {
-		PGSortOrder const order = [[self document] sortOrder];
-		PGSortOrder const maskedUnsortedOrder = PGSortOrderMask & _unsortedOrder;
-		if((PGSortOrderMask & order) == maskedUnsortedOrder || PGSortInnateOrder == maskedUnsortedOrder) {
-			if((PGSortDescendingMask & order) == (PGSortDescendingMask & _unsortedOrder))
-				_sortedChildren = [_unsortedChildren retain];
-			else _sortedChildren = [[[_unsortedChildren reverseObjectEnumerator] allObjects] retain];
-		} else _sortedChildren = [[_unsortedChildren sortedArrayUsingSelector:@selector(compare:)] retain];
-	}
-	return [[_sortedChildren retain] autorelease];
-#endif
 }
 - (NSArray<PGNode*> *)unsortedChildren
 {
-#if __has_feature(objc_arc)
 	return _unsortedChildren;
-#else
-	return [[_unsortedChildren retain] autorelease];
-#endif
 }
 - (void)setUnsortedChildren:(NSArray<PGNode*> *)anArray presortedOrder:(PGSortOrder)anOrder
 {
 	if(anArray == _unsortedChildren) return;
-#if __has_feature(objc_arc)
 	NSMutableArray *const removedChildren = [_unsortedChildren mutableCopy];
-#else
-	NSMutableArray *const removedChildren = [[_unsortedChildren mutableCopy] autorelease];
-#endif
 	for(PGNode *const newChild in anArray) [removedChildren removeObjectIdenticalTo:newChild];
 	if(removedChildren.count) {
 		[self.document noteNode:self.node willRemoveNodes:removedChildren];
 		[removedChildren makeObjectsPerformSelector:@selector(detachFromTree)];
 	}
 
-#if !__has_feature(objc_arc)
-	[_unsortedChildren release];
-#endif
 	_unsortedChildren = [anArray copy];
 	_byteSizeAllChildren	=	~0ull;	//	invalidate cached value
 
 	_unsortedOrder = anOrder;
-#if !__has_feature(objc_arc)
-	[_sortedChildren release];
-#endif
 	_sortedChildren = nil;
-#if __has_feature(objc_arc)
 	self.node.menuItem.submenu = _unsortedChildren.count ? [NSMenu new] : nil;
-#else
-	[[[self node] menuItem] setSubmenu:_unsortedChildren.count ? [[[NSMenu alloc] init] autorelease] : nil];
-#endif
 	[self.document noteSortedChildrenDidChange];
 
 //NSLog(@">>> %@ >>>", self.node.identifier.displayName);
@@ -260,11 +225,7 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 }
 - (void)removeChild:(PGNode *)node
 {
-#if __has_feature(objc_arc)
 	NSMutableArray<PGNode*> *const unsortedChildren = [_unsortedChildren mutableCopy];
-#else
-	NSMutableArray<PGNode*> *const unsortedChildren = [[_unsortedChildren mutableCopy] autorelease];
-#endif
 	[unsortedChildren removeObjectIdenticalTo:node];
 	[self setUnsortedChildren:unsortedChildren presortedOrder:_unsortedOrder];
 }
@@ -308,9 +269,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 - (void)noteChildValueForCurrentSortOrderDidChange:(PGNode *)child
 {
 	if([_unsortedChildren indexOfObjectIdenticalTo:child] == NSNotFound) return;
-#if !__has_feature(objc_arc)
-	[_sortedChildren release];
-#endif
 	_sortedChildren = nil;
 	[self.document noteSortedChildrenDidChange];
 }
@@ -336,11 +294,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 - (void)dealloc
 {
 	[_unsortedChildren makeObjectsPerformSelector:@selector(detachFromTree)];
-#if !__has_feature(objc_arc)
-	[_sortedChildren release];
-	[_unsortedChildren release];
-	[super dealloc];
-#endif
 }
 
 //	MARK: - <PGResourceAdapter>
@@ -483,9 +436,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 
 - (void)noteSortOrderDidChange
 {
-#if !__has_feature(objc_arc)
-	[_sortedChildren release];
-#endif
 	_sortedChildren = nil;
 	for(PGNode *const child in _unsortedChildren)
 		[child noteSortOrderDidChange];

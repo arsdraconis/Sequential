@@ -24,17 +24,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDocumentWindow.h"
 
-// Views
-//#import "PGBezelPanel.h"
 #import "PGDragHighlightView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if __has_feature(objc_arc)
 @interface PGDocumentWindow ()
+
 @property (nonatomic, strong, nullable) PGBezelPanel *dragHighlightPanel;
+
 @end
-#endif
 
 //	MARK: -
 @implementation PGDocumentWindow
@@ -45,21 +43,13 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	NSDragOperation const op = [(id<PGDocumentWindowDelegate>)self.delegate window:self dragOperationForInfo:sender];
 	if(NSDragOperationNone == op) return NSDragOperationNone;
-#if __has_feature(objc_arc)
 	_dragHighlightPanel = [PGDragHighlightView PG_bezelPanel];
-#else
-	_dragHighlightPanel = [[PGDragHighlightView PG_bezelPanel] retain];
-#endif
 	[_dragHighlightPanel displayOverWindow:self];
 	return op;
 }
 - (void)draggingExited:(nullable id<NSDraggingInfo>)sender
 {
-#if __has_feature(objc_arc)
 	[_dragHighlightPanel fadeOut];
-#else
-	[[_dragHighlightPanel autorelease] fadeOut];
-#endif
 	_dragHighlightPanel = nil;
 }
 
@@ -77,22 +67,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)close
 {
-//	NSDisableScreenUpdates();	2021/07/21 deprecated
 	for(NSWindow *const childWindow in self.childWindows)
-		[childWindow close];
+    {
+        [childWindow close];
+    }
 	[super close];
-//	NSEnableScreenUpdates();	2021/07/21 deprecated
 }
-
-//	MARK: - NSObject
-
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-	[_dragHighlightPanel release];
-	[super dealloc];
-}
-#endif
 
 @end
 

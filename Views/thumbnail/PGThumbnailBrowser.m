@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if __has_feature(objc_arc)
 
 @interface PGThumbnailBrowser ()
 
@@ -44,8 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#endif
-
+// MARK: -
 @interface PGThumbnailBrowser(Private)
 
 - (void)_addColumnWithItem:(nullable id)item;
@@ -55,21 +53,14 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGThumbnailBrowser
 
-#if __has_feature(objc_arc)
 @synthesize dataSource;
-#else
-@synthesize dataSource;
-#endif
+
 - (void)setDataSource:(nullable NSObject<PGThumbnailBrowserDataSource, PGThumbnailViewDataSource> *)obj
 {
 	if(obj == dataSource) return;
 	dataSource = obj;
 	[self.views makeObjectsPerformSelector:@selector(setDataSource:) withObject:obj];
 }
-#if !__has_feature(objc_arc)
-@synthesize delegate;
-//@synthesize thumbnailOrientation = _thumbnailOrientation;
-#endif
 - (void)setThumbnailOrientation:(PGOrientation)orientation
 {
 	_thumbnailOrientation = orientation;
@@ -200,11 +191,7 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 - (void)_addColumnWithItem:(nullable id)item
 {
 	if(item && dataSource && ![dataSource thumbnailBrowser:self itemCanHaveChildren:item]) return;
-#if __has_feature(objc_arc)
 	PGThumbnailView *const thumbnailView = [PGThumbnailView new];
-#else
-	PGThumbnailView *const thumbnailView = [[[PGThumbnailView alloc] init] autorelease];
-#endif
 //NSLog(@"PGThumbnailView %p . dataSource := %p %@", thumbnailView, [self dataSource], [[self dataSource] description]);
 	thumbnailView.dataSource = self.dataSource;
 	thumbnailView.delegate = self;

@@ -26,10 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "Sequential-Swift.h"
 
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGFoundationAdditions.h"
-#import "PGDocumentController.h"	//	for thumbnail userDefault keys
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -50,9 +49,6 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 
 
 //	MARK: -
-
-#if __has_feature(objc_arc)
-
 @interface PGThumbnailInfoView ()
 
 @property (nonatomic, assign) NSUInteger imageCount;
@@ -60,7 +56,6 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 
 @end
 
-#endif
 
 //	MARK: -
 @implementation PGThumbnailInfoView
@@ -78,28 +73,15 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 
 - (NSAttributedString *)attributedStringValue
 {
-#if __has_feature(objc_arc)
 	NSMutableParagraphStyle *const style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-#else
-	NSMutableParagraphStyle *const style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-#endif
 	style.alignment = NSTextAlignmentCenter;
 	style.lineBreakMode = NSLineBreakByTruncatingMiddle;
-#if __has_feature(objc_arc)
 	return [[NSAttributedString alloc] initWithString:StringForDisplay(_imageCount, _byteSizeTotal)
 										   attributes:@{
 		NSFontAttributeName: [NSFont labelFontOfSize:0.0f],
 		NSForegroundColorAttributeName: NSColor.whiteColor,
 		NSParagraphStyleAttributeName: style,
 	}];
-#else
-	return [[[NSAttributedString alloc] initWithString:StringForDisplay(_imageCount, _byteSizeTotal)
-											attributes:@{
-		NSFontAttributeName: [NSFont labelFontOfSize:0.0f],
-		NSForegroundColorAttributeName: NSColor.whiteColor,
-		NSParagraphStyleAttributeName: style,
-	}] autorelease];
-#endif
 }
 - (void)setImageCount:(NSUInteger)imageCount byteSizeTotal:(uint64_t)byteSizeTotal {
 	_imageCount = imageCount;
@@ -143,10 +125,6 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 {
 	NSUserDefaults *sud = NSUserDefaults.standardUserDefaults;
 	[sud removeObserver:self forKeyPath:PGThumbnailSizeFormatKey];
-
-#if !__has_feature(objc_arc)
-	[super dealloc];
-#endif
 }
 
 //	MARK: - NSObject(NSKeyValueObserving)
@@ -157,12 +135,16 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 					   context:(nullable void *)context
 {
 	if(PGEqualObjects(keyPath, PGThumbnailSizeFormatKey))
-		self.needsDisplay	=	YES;
-	else
-		[super observeValueForKeyPath:keyPath
-							 ofObject:object
-							   change:change
-							  context:context];
+    {
+        self.needsDisplay = YES;
+    }
+    else
+    {
+        [super observeValueForKeyPath:keyPath
+                             ofObject:object
+                               change:change
+                              context:context];
+    }
 }
 
 //	MARK: - <PGBezelPanelContentView>

@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PGFindView : NSView <PGBezelPanelContentView>
 @end
 
+// MARK: -
 @interface PGFindlessTextView : NSTextView
 @end
 

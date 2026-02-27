@@ -28,17 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGThumbnailInfoView : NSView<PGBezelPanelContentView>
-#if !__has_feature(objc_arc)
-{
-	@private
-//	NSString *_stringValue;
-	NSUInteger _imageCount;
-	uint64_t _byteSizeTotal;
-}
-#endif
 
 @property(readonly) NSAttributedString *attributedStringValue;
-//@property(copy, nonatomic) NSString *stringValue;
 
 - (void)setImageCount:(NSUInteger)imageCount byteSizeTotal:(uint64_t)byteSizeTotal;
 

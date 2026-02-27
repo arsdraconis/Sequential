@@ -26,14 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "Sequential-Swift.h"
 
-// Models
 #import "PGDocument.h"
 #import "PGPrefObject.h"
-
-// Controllers
 #import "PGDisplayController.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
@@ -62,7 +57,6 @@ NS_ASSUME_NONNULL_BEGIN
     [self PG_removeObserver];
     [_updateTimer invalidate];
 }
-
 
 - (void)windowDidLoad
 {

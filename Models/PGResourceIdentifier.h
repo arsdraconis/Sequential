@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 extern NSString *const PGDisplayableIdentifierIconDidChangeNotification;
 extern NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification;
 
-#if 1	//	2021/07/21 modernized
+// 2021/07/21 modernized
 
 @interface PGResourceIdentifier : NSObject <NSSecureCoding>	//	NSCoding
 
@@ -58,63 +58,11 @@ extern NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification;
 
 @end
 
-#else
-/*
-
-enum {
-	PGLabelNone   = 0,
-	PGLabelRed    = 6,
-	PGLabelOrange = 7,
-	PGLabelYellow = 5,
-	PGLabelGreen  = 2,
-	PGLabelBlue   = 4,
-	PGLabelPurple = 3,
-	PGLabelGray   = 1
-};
-typedef UInt8 PGLabelColor;
-
-@interface PGResourceIdentifier : NSObject <NSCoding>
-
-+ (id)resourceIdentifierWithURL:(NSURL *)URL;
-//+ (id)resourceIdentifierWithAliasData:(const uint8_t *)data length:(NSUInteger)length; // For backward compatability.
-
-@property(readonly) PGResourceIdentifier *identifier;
-@property(readonly) PGDisplayableIdentifier *displayableIdentifier;
-@property(readonly) PGResourceIdentifier *superidentifier;
-@property(readonly) PGResourceIdentifier *rootIdentifier;
-@property(readonly) NSURL *URL; // Equivalent to -URLByFollowingAliases:NO.
-@property(readonly) NSInteger index;
-@property(readonly) BOOL hasTarget;
-@property(readonly) BOOL isFileIdentifier;
-
-- (PGResourceIdentifier *)subidentifierWithIndex:(NSInteger)index;
-
-- (NSURL *)superURLByFollowingAliases:(BOOL)flag; // Our URL, or our superidentifier's otherwise.
-- (NSURL *)URLByFollowingAliases:(BOOL)flag;
-- (BOOL)getRef:(out FSRef *)outRef byFollowingAliases:(BOOL)flag;
-
-- (PGSubscription *)subscriptionWithDescendents:(BOOL)flag;
-
-@end
-
-*/
-#endif
 
 //	MARK: -
 
 @interface PGDisplayableIdentifier : PGResourceIdentifier
-#if !__has_feature(objc_arc)
-{
-	@private
-	PGResourceIdentifier *_identifier;
-	BOOL _postsNotifications;
-	NSImage *_icon;
-	NSString *_naturalDisplayName;
-	NSString *_customDisplayName;
-}
-#endif
 
-#if __has_feature(objc_arc)
 @property (nonatomic, assign) BOOL postsNotifications;
 @property (nonatomic, strong) NSImage *icon;
 @property (nonatomic, readonly) NSString *displayName;
@@ -122,15 +70,6 @@ typedef UInt8 PGLabelColor;
 @property (nonatomic, copy) NSString *naturalDisplayName; // The name from the filesystem or raw address of the URL.
 //@property(readonly) PGLabelColor labelColor;	2021/07/21 modernized
 @property (nonatomic, readonly, nullable) NSColor* labelColor;
-#else
-@property(assign) BOOL postsNotifications;
-@property(retain) NSImage *icon;
-@property(readonly) NSString *displayName;
-@property(copy) NSString *customDisplayName;
-@property(copy) NSString *naturalDisplayName; // The name from the filesystem or raw address of the URL.
-//@property(readonly) PGLabelColor labelColor;	2021/07/21 modernized
-@property(readonly) NSColor* labelColor;
-#endif
 
 - (NSAttributedString *)attributedStringWithAncestory:(BOOL)flag;
 - (void)noteNaturalDisplayNameDidChange;

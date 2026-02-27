@@ -28,29 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGColumnView : NSView <PGClipViewDelegate>
-#if !__has_feature(objc_arc)
-{
-	@private
-	PGClipView *_clipView;
-	NSView *_view;
-	NSMutableArray *_clipViews;
-	NSMutableArray *_views;
-	CGFloat _columnWidth;
-}
-
-@property(readonly) NSUInteger numberOfColumns;
-@property(readonly, copy) NSArray *views;
-@property(readonly) id lastView;
-@property(assign, nonatomic) CGFloat columnWidth;
-
-#else
 
 @property (readonly) NSUInteger numberOfColumns;
-@property (readonly) NSArray *views;	//	was copy, now strong (to silence a static analyzer warning)
+@property (readonly) NSArray *views;    // was copy, now strong (to silence a static analyzer warning)
 @property (readonly) id lastView;
 @property (nonatomic, assign) CGFloat columnWidth;
-
-#endif
 
 - (id)viewAtIndex:(NSUInteger)index;
 

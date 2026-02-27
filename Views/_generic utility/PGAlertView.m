@@ -40,8 +40,6 @@ NS_ASSUME_NONNULL_BEGIN
 #define PGAlertViewSize 100.0f
 #define PGMarginSize 4.0f
 
-#if __has_feature(objc_arc)
-
 @interface PGAlertView ()
 
 @property (nonatomic, strong) NSMutableArray *graphicStack;
@@ -53,15 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#else
-
-@interface PGAlertView(Private)
-
-- (void)_updateCurrentGraphic;
-
-@end
-
-#endif
+// MARK: -
 
 @interface PGCannotGoRightGraphic : PGAlertGraphic
 @end
@@ -107,13 +97,13 @@ NS_ASSUME_NONNULL_BEGIN
 }
 - (void)popGraphicsOfType:(PGAlertGraphicType)type
 {
-#if __has_feature(objc_arc)
-	for(PGAlertGraphic *const graphic in [_graphicStack copy])
-#else
-	for(PGAlertGraphic *const graphic in [[_graphicStack copy] autorelease])
-#endif
-		if(graphic.graphicType == type)
-			[_graphicStack removeObjectIdenticalTo:graphic];
+    for(PGAlertGraphic *const graphic in [_graphicStack copy])
+    {
+        if(graphic.graphicType == type)
+        {
+            [_graphicStack removeObjectIdenticalTo:graphic];
+        }
+    }
 	[self _updateCurrentGraphic];
 }
 
@@ -135,12 +125,7 @@ NS_ASSUME_NONNULL_BEGIN
 		else [self.window close];
 		return;
 	}
-#if __has_feature(objc_arc)
 	_currentGraphic = _graphicStack[0];
-#else
-	[_currentGraphic release];
-	_currentGraphic = [[_graphicStack objectAtIndex:0] retain];
-#endif
 	[_frameTimer invalidate];
 	_frameCount = 0;
 	NSTimeInterval const frameDelay = _currentGraphic.frameDelay;
@@ -187,14 +172,7 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	[self PG_cancelPreviousPerformRequests];
 	[self PG_removeObserver];
-#if !__has_feature(objc_arc)
-	[_graphicStack release];
-	[_currentGraphic release];
-#endif
 	[_frameTimer invalidate];
-#if !__has_feature(objc_arc)
-	[super dealloc];
-#endif
 }
 
 //	MARK: - <NSWindowDelegate>
@@ -229,35 +207,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (id)cannotGoRightGraphic
 {
-#if __has_feature(objc_arc)
 	return [PGCannotGoRightGraphic new];
-#else
-	return [[[PGCannotGoRightGraphic alloc] init] autorelease];
-#endif
 }
 + (id)cannotGoLeftGraphic
 {
-#if __has_feature(objc_arc)
 	return [PGCannotGoLeftGraphic new];
-#else
-	return [[[PGCannotGoLeftGraphic alloc] init] autorelease];
-#endif
 }
 + (id)loopedRightGraphic
 {
-#if __has_feature(objc_arc)
 	return [PGLoopedRightGraphic new];
-#else
-	return [[[PGLoopedRightGraphic alloc] init] autorelease];
-#endif
 }
 + (id)loopedLeftGraphic
 {
-#if __has_feature(objc_arc)
 	return [PGLoopedLeftGraphic new];
-#else
-	return [[[PGLoopedLeftGraphic alloc] init] autorelease];
-#endif
 }
 
 //	MARK: - PGAlertGraphic
@@ -318,11 +280,7 @@ NS_ASSUME_NONNULL_BEGIN
 		[path fill];
 	}
 
-#if __has_feature(objc_arc)
 	NSShadow *const shadow = [NSShadow new];
-#else
-	NSShadow *const shadow = [[[NSShadow alloc] init] autorelease];
-#endif
 	shadow.shadowBlurRadius = 4.0f;
 	shadow.shadowOffset = NSMakeSize(0.0f, -1.0f);
 	shadow.shadowColor = [NSColor blackColor];
@@ -330,11 +288,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 - (void)flipHorizontally
 {
-#if __has_feature(objc_arc)
 	NSAffineTransform *const flip = [NSAffineTransform new];
-#else
-	NSAffineTransform *const flip = [[[NSAffineTransform alloc] init] autorelease];
-#endif
 	[flip translateXBy:PGAlertViewSize yBy:0.0f];
 	[flip scaleXBy:-1.0f yBy:1.0f];
 	[flip concat];
@@ -467,11 +421,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)loadingGraphic
 {
-#if __has_feature(objc_arc)
 	return [PGLoadingGraphic new];
-#else
-	return [[[PGLoadingGraphic alloc] init] autorelease];
-#endif
 }
 
 //	MARK: - PGLoadingGraphic
@@ -544,11 +494,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)graphicWithIconType:(AEIconType)type
 {
-#if __has_feature(objc_arc)
 	return [[self alloc] initWithIconType:type];
-#else
-	return [[[self alloc] initWithIconType:type] autorelease];
-#endif
 }
 
 //	MARK: - PGBezierPathIconGraphic

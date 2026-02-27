@@ -23,29 +23,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-// Models
+#import "PGDocumentWindow.h"
+#import "PGClipView.h"
+#import "PGGeometryTypes.h"
+
 @class PGDocument;
 @class PGNode;
 @class PGBookmark;
-
-// Views
-#import "PGDocumentWindow.h"
-#import "PGClipView.h"
-
-#if !__has_feature(objc_arc)
-@class PGImageView;
-@class PGBezelPanel;
-@class PGLoadingGraphic;
-@class PGFindView;
-@class PGFindlessTextView;
-
-// Controllers
-@class PGThumbnailController;
-@class PGFullSizeContentController;
-#endif
-
-// Other Sources
-#import "PGGeometryTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -55,47 +39,24 @@ extern NSString *const PGDisplayControllerTimerDidChangeNotification;
 
 @interface PGDisplayController : NSWindowController <NSWindowDelegate, NSMenuItemValidation,
 	PGClipViewDelegate, PGDocumentWindowDelegate>
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet PGClipView *clipView;
-	IBOutlet PGFindView *findView;
-	IBOutlet NSSearchField *searchField;
-	IBOutlet PGFindView *goToPageView;
-	IBOutlet NSTextField *pageNumberField;
-	IBOutlet NSView *errorView;
-	IBOutlet NSTextField *errorLabel;
-	IBOutlet NSTextField *errorMessage;
-	IBOutlet NSButton *reloadButton;
-	IBOutlet NSView *passwordView;
-	IBOutlet NSTextField *passwordLabel;
-	IBOutlet NSTextField *passwordField;
 
-	PGDocument *_activeDocument;
-	PGNode *_activeNode;
-	PGImageView *_imageView;
-	PGPageLocation _initialLocation;
-	BOOL _reading;
-	NSUInteger _displayImageIndex;
-
-	PGBezelPanel *_graphicPanel;
-	PGLoadingGraphic *_loadingGraphic;
-	PGBezelPanel *_infoPanel;
-
-	PGThumbnailController *_thumbnailController;
-
-	PGBezelPanel *_findPanel;
-	PGFindlessTextView *_findFieldEditor;
-
-	NSDate *_nextTimerFireDate;
-	NSTimer *_timer;
-
-	PGFullSizeContentController *_fullSizeContentController;
-
-	NSRect _windowFrameForNonFullScreenMode;
-	BOOL _isInFullSizeContentModeForNonFullScreenMode;
-}
-#endif
+@property (readonly, nullable) PGDocument *activeDocument;
+@property (readonly) PGNode *activeNode;
+@property (readonly, nullable) NSWindow *windowForSheet;
+@property (nonatomic, copy) NSSet *selectedNodes;    // 2023/10/02 was readonly
+@property (readonly, nullable) PGNode *selectedNode;
+@property (readonly, weak) PGClipView *clipView;
+@property (readonly) PGPageLocation initialLocation;
+@property (readonly, getter = isReading) BOOL reading;
+@property (readonly, getter = isDisplayingImage) BOOL displayingImage;
+@property (readonly) BOOL canShowInfo;
+@property (readonly) BOOL shouldShowInfo;
+@property (readonly) BOOL loadingIndicatorShown;
+@property (nonatomic, assign) BOOL findPanelShown;
+@property (nonatomic, assign) BOOL goToPagePanelShown;
+@property (readonly) NSDate *nextTimerFireDate;
+@property (nonatomic, assign) BOOL timerRunning;
+@property (nonatomic, assign, getter=isInFullSizeContentModeForNonFullScreenMode) BOOL inFullSizeContentModeForNonFullScreenMode;
 
 + (NSArray *)pasteboardTypes;
 
@@ -147,46 +108,6 @@ extern NSString *const PGDisplayControllerTimerDidChangeNotification;
 
 - (IBAction)reload:(nullable id)sender;
 - (IBAction)decrypt:(nullable id)sender;
-
-#if __has_feature(objc_arc)
-@property (readonly, nullable) PGDocument *activeDocument;
-@property (readonly) PGNode *activeNode;
-@property (readonly, nullable) NSWindow *windowForSheet;
-@property (nonatomic, copy) NSSet *selectedNodes;	//	2023/10/02 was readonly
-@property (readonly, nullable) PGNode *selectedNode;
-@property (readonly, weak) PGClipView *clipView;
-@property (readonly) PGPageLocation initialLocation;
-@property (readonly, getter = isReading) BOOL reading;
-@property (readonly, getter = isDisplayingImage) BOOL displayingImage;
-@property (readonly) BOOL canShowInfo;
-@property (readonly) BOOL shouldShowInfo;
-@property (readonly) BOOL loadingIndicatorShown;
-@property (nonatomic, assign) BOOL findPanelShown;
-@property (nonatomic, assign) BOOL goToPagePanelShown;
-@property (readonly) NSDate *nextTimerFireDate;
-@property (nonatomic, assign) BOOL timerRunning;
-@property (nonatomic, assign, getter=isInFullSizeContentModeForNonFullScreenMode)
-					BOOL inFullSizeContentModeForNonFullScreenMode;
-#else
-@property(readonly) PGDocument *activeDocument;
-@property(readonly) PGNode *activeNode;
-@property(readonly) NSWindow *windowForSheet;
-@property(copy, nonatomic) NSSet *selectedNodes;	//	2023/10/02 was readonly
-@property(readonly) PGNode *selectedNode;
-@property(readonly) PGClipView *clipView;
-@property(readonly) PGPageLocation initialLocation;
-@property(readonly, getter = isReading) BOOL reading;
-@property(readonly, getter = isDisplayingImage) BOOL displayingImage;
-@property(readonly) BOOL canShowInfo;
-@property(readonly) BOOL shouldShowInfo;
-@property(readonly) BOOL loadingIndicatorShown;
-@property(assign) BOOL findPanelShown;
-@property(assign) BOOL goToPagePanelShown;
-@property(readonly) NSDate *nextTimerFireDate;
-@property(assign) BOOL timerRunning;
-@property(assign, getter = isInFullSizeContentModeForNonFullScreenMode)
-					BOOL inFullSizeContentModeForNonFullScreenMode;
-#endif
 
 - (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag; // Returns YES if the window was closed.
 - (void)activateDocument:(PGDocument *)document;

@@ -28,10 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <tgmath.h>
 
-// Views
 #import "PGBezelPanel.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGFoundationAdditions.h"
 
@@ -58,52 +55,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSAttributedString *)attributedStringValue
 {
-#if __has_feature(objc_arc)
 	NSMutableParagraphStyle *const style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-#else
-	NSMutableParagraphStyle *const style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-#endif
 	style.alignment = NSTextAlignmentCenter;
 	style.lineBreakMode = NSLineBreakByTruncatingMiddle;
-#if __has_feature(objc_arc)
 	return [[NSAttributedString alloc] initWithString:self.stringValue attributes:@{
 		NSFontAttributeName: [NSFont labelFontOfSize:0.0f],
 		NSForegroundColorAttributeName: NSColor.whiteColor,
 		NSParagraphStyleAttributeName: style}];
-#elif 1
-	return [[[NSAttributedString alloc] initWithString:self.stringValue attributes:@{
-		NSFontAttributeName: [NSFont labelFontOfSize:0.0f],
-		NSForegroundColorAttributeName: NSColor.whiteColor,
-		NSParagraphStyleAttributeName: style,
-	}] autorelease];
-#else
-	if(![self showsProgressBar]) [style setAlignment:NSTextAlignmentCenter];
-	NSString *const string = PGGraphicalProgressBarStyle ? [self stringValue] : [NSString stringWithFormat:@"%@ (%lu/%lu)", [self stringValue], (unsigned long)[self index] + 1, (unsigned long)[self count]];
-	return [[[NSAttributedString alloc] initWithString:string attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-		[NSFont labelFontOfSize:0.0f], NSFontAttributeName,
-		[NSColor whiteColor], NSForegroundColorAttributeName,
-		style, NSParagraphStyleAttributeName,
-		nil]] autorelease];
-#endif
 }
-#if __has_feature(objc_arc)
+
 @synthesize stringValue = _stringValue;
-#endif
+
 - (NSString *)stringValue
 {
-#if __has_feature(objc_arc)
 	return _stringValue ? _stringValue : [NSString string];
-#else
-	return _stringValue ? [[_stringValue retain] autorelease] : @"";
-#endif
 }
 - (void)setStringValue:(NSString *)aString
 {
 	NSString *const string = aString ? aString : @"";
 	if(string == _stringValue) return;
-#if !__has_feature(objc_arc)
-	[_stringValue release];
-#endif
 	_stringValue = [string copy];
 	[self setNeedsDisplay:YES];
 	[self PG_postNotificationName:PGBezelPanelFrameShouldChangeNotification];
@@ -240,21 +210,14 @@ NS_ASSUME_NONNULL_BEGIN
                     NSUInteger const curValue = [self index];
 #endif
                     
-#if 1
                     //	2023/10/26 draw anti-aliased rounded knob at fractional locations
                     CGFloat x = ((CGFloat)MIN(curValue, maxValue) / maxValue) * (PGProgressBarWidth - PGProgressBarHeight) +
                     PGProgressBarHeight / 2.0f;
-#else
-                    //	original code: draws unaliased diamond at integral locations
-                    CGFloat x = round(((CGFloat)MIN(curValue, maxValue) / maxValue) * (PGProgressBarWidth - PGProgressBarHeight) +
-                                      PGProgressBarHeight / 2.0f);
-#endif
                     if(self.originCorner == PGMaxXMinYCorner) x = -x + origin;
                     else x = x + origin;
                     
                     {
-#if 1
-                        //	2023/10/26 draw anti-aliased rounded knob at fractional locations
+                        // 2023/10/26 draw anti-aliased rounded knob at fractional locations
 #define PGProgressThreeQuartersKnobSize (PGProgressKnobSize * 0.75f)
                         NSRect const knobRect = NSMakeRect(x + (0.5f - PGProgressThreeQuartersKnobSize / 2.0f),
                                                            0.5f + PGProgressBarHeight / 2.0f,
@@ -264,20 +227,6 @@ NS_ASSUME_NONNULL_BEGIN
                                                                                    xRadius:knobRadius
                                                                                    yRadius:knobRadius];
                         [knob fill];
-#else
-                        //	original code: draws unaliased diamond at integral locations
-                        [NSGraphicsContext saveGraphicsState];
-                        [[NSGraphicsContext currentContext] setShouldAntialias:NO];
-                        NSBezierPath *const knob = [NSBezierPath bezierPath];
-                        CGFloat const halfKnob = PGProgressKnobSize / 2.0f;
-                        [knob moveToPoint:NSMakePoint(0.5f + x           , 1.5f + PGProgressBarBorder)];
-                        [knob lineToPoint:NSMakePoint(0.5f + x - halfKnob, 1.5f + PGProgressBarBorder + halfKnob)];
-                        [knob lineToPoint:NSMakePoint(0.5f + x           , 1.5f + PGProgressBarBorder + PGProgressKnobSize)];
-                        [knob lineToPoint:NSMakePoint(0.5f + x + halfKnob, 1.5f + PGProgressBarBorder + halfKnob)];
-                        [knob closePath];
-                        [knob fill];
-                        [NSGraphicsContext restoreGraphicsState];
-#endif
                     }
                 }
 #endif
@@ -295,35 +244,26 @@ NS_ASSUME_NONNULL_BEGIN
                                                               NSHeight(b) - PGTextTotalVertPadding)];
         }
         
-        //	MARK: - NSObject
         
-#if !__has_feature(objc_arc)
-        - (void)dealloc
-        {
-            [_stringValue release];
-            [super dealloc];
-        }
-#endif
-        
-        //	MARK: - <PGBezelPanelContentView>
-        
-        - (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)scaleFactor
-        {
-            NSSize const messageSize = [self.attributedStringValue size];
-            NSSize const progressBarSize = self.showsProgressBar ? NSMakeSize(PGProgressBarWidth + 1.0f + PGProgressBarMargin * 2.0f, PGProgressBarHeight + 1.0f + PGProgressBarBorder * 2.0f) : NSZeroSize;
-            CGFloat const scaledMarginSize = PGMarginSize * scaleFactor;
-            NSRect frame = NSIntersectionRect(
-                                              NSMakeRect(
-                                                         NSMinX(aRect) + scaledMarginSize,
-                                                         NSMinY(aRect) + scaledMarginSize,
-                                                         ceilf((messageSize.width + PGTextTotalHorzPadding + progressBarSize.width + PGTotalPaddingSize) * scaleFactor),
-                                                         ceilf(MAX(messageSize.height + PGTextTotalVertPadding, progressBarSize.height) * scaleFactor)),
-                                              NSInsetRect(aRect, scaledMarginSize, scaledMarginSize));
-            frame.size.width = MAX(NSWidth(frame), NSHeight(frame)); // Don't allow the panel to be narrower than it is tall.
-            if(self.originCorner == PGMaxXMinYCorner) frame.origin.x = NSMaxX(aRect) - scaledMarginSize - NSWidth(frame);
-            return frame;
-        }
-        
-        @end
-        
-        NS_ASSUME_NONNULL_END
+//	MARK: - <PGBezelPanelContentView>
+
+- (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)scaleFactor
+{
+    NSSize const messageSize = [self.attributedStringValue size];
+    NSSize const progressBarSize = self.showsProgressBar ? NSMakeSize(PGProgressBarWidth + 1.0f + PGProgressBarMargin * 2.0f, PGProgressBarHeight + 1.0f + PGProgressBarBorder * 2.0f) : NSZeroSize;
+    CGFloat const scaledMarginSize = PGMarginSize * scaleFactor;
+    NSRect frame = NSIntersectionRect(
+                                      NSMakeRect(
+                                                 NSMinX(aRect) + scaledMarginSize,
+                                                 NSMinY(aRect) + scaledMarginSize,
+                                                 ceilf((messageSize.width + PGTextTotalHorzPadding + progressBarSize.width + PGTotalPaddingSize) * scaleFactor),
+                                                 ceilf(MAX(messageSize.height + PGTextTotalVertPadding, progressBarSize.height) * scaleFactor)),
+                                      NSInsetRect(aRect, scaledMarginSize, scaledMarginSize));
+    frame.size.width = MAX(NSWidth(frame), NSHeight(frame)); // Don't allow the panel to be narrower than it is tall.
+    if(self.originCorner == PGMaxXMinYCorner) frame.origin.x = NSMaxX(aRect) - scaledMarginSize - NSWidth(frame);
+    return frame;
+}
+
+@end
+
+NS_ASSUME_NONNULL_END

@@ -26,13 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGURLAlert : NSWindowController <NSControlTextEditingDelegate>
-#if !__has_feature(objc_arc)
-{
-	@private
-	IBOutlet NSTextField *URLField;
-	IBOutlet NSButton *OKButton;
-}
-#endif
 
 - (IBAction)ok:(id)sender;
 - (IBAction)cancel:(id)sender;

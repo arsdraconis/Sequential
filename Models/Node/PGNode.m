@@ -154,6 +154,7 @@ enum
 {
     NSParameterAssert(PGNodeLoading & _status);
     NSParameterAssert(adapter == _resourceAdapter);
+    
     [self _stopLoading];
     [self readIfNecessary];
 }
@@ -162,6 +163,7 @@ enum
 {
     NSParameterAssert(PGNodeLoading & _status);
     NSParameterAssert(adapter == _resourceAdapter);
+    
     [self _setResourceAdapter:_potentialAdapters.lastObject];
     if (!_potentialAdapters.count) return [self _stopLoading];
     [_potentialAdapters removeLastObject];
@@ -214,10 +216,15 @@ enum
 {    //	2023/10/21
     NSParameterAssert((PGNodeLoadingOrReading & _status) == PGNodeNothing
                       || (PGNodeLoadingOrReading & _status) == PGNodeReading);
+    
     if (reading)
+    {
         _status |= PGNodeReading;
+    }
     else
+    {
         _status &= ~PGNodeReading;
+    }
 }
 
 - (void)readFinishedWithImageRep:(nullable NSImageRep *)aRep
@@ -250,11 +257,13 @@ enum
 {
     NSParameterAssert(node);
     NSParameterAssert([self document]);
+    
     PGSortOrder const o        = self.document.sortOrder;
     NSInteger const d          = self.document.sortDescending ? -1 : 1;
     PGDataProvider * const dp1 = self.resourceAdapter.dataProvider;
     PGDataProvider * const dp2 = node.resourceAdapter.dataProvider;
     NSComparisonResult r       = NSOrderedSame;
+    
     switch (o)
     {
         case PGSortOrderInnate:
@@ -284,10 +293,8 @@ enum
             return random() & 1 ? NSOrderedAscending : NSOrderedDescending;
     }
     return (NSOrderedSame == r
-                ? [self.identifier.displayName
-                      PG_localizedCaseInsensitiveNumericCompare:node.identifier.displayName]
-                : r)
-           * d;    // If the actual sort order doesn't produce a distinct ordering, then sort by name too.
+                ? [self.identifier.displayName PG_localizedCaseInsensitiveNumericCompare:node.identifier.displayName]
+                : r) * d;    // If the actual sort order doesn't produce a distinct ordering, then sort by name too.
 }
 
 - (BOOL)writeToPasteboard:(nullable NSPasteboard *)pboard types:(NSArray *)types
@@ -302,7 +309,7 @@ enum
         }
         wrote = YES;
     }
-#if 1
+    
     //	2023/09/10 the original code is time- and space- expensive if the caller does
     //	not provide a NSPasteboard instance. When one is provided, the NSData instance
     //	must be created, but if one is not provided, avoid the creation of the NSData
@@ -340,38 +347,7 @@ enum
         }
         wrote = YES;
     }
-#else
-    NSData * const data = [[self resourceAdapter] canGetData] ? [[self resourceAdapter] data] : nil;
-    if (data)
-    {
-        if ([types containsObject:NSPasteboardTypeRTFD])
-        {
-            [pboard addTypes:[NSArray arrayWithObject:NSPasteboardTypeRTFD] owner:nil];
-            NSFileWrapper * const wrapper =
-                [[[NSFileWrapper alloc] initRegularFileWithContents:data] autorelease];
-            [wrapper setPreferredFilename:[[self identifier] displayName]];
-            NSAttributedString * const string = [NSAttributedString
-                attributedStringWithAttachment:[[[NSTextAttachment alloc]
-                                                   initWithFileWrapper:wrapper] autorelease]];
-            //	2021/07/21 cannot pass nil to -RTFDFileWrapperFromRange::documentAttributes:
-            //	for the documentAttributes: parameter
-            [pboard
-                setData:[string RTFDFromRange:NSMakeRange(0, [string length])
-                            documentAttributes:@{NSDocumentTypeDocumentAttribute: @"some doc type"}]
-                forType:NSPasteboardTypeRTFD];
-            wrote = YES;
-        }
-        if ([types containsObject:NSFileContentsPboardType])
-        {
-            if (pboard)
-            {
-                [pboard addTypes:[NSArray arrayWithObject:NSFileContentsPboardType] owner:nil];
-                [pboard setData:data forType:NSFileContentsPboardType];
-            }
-            wrote = YES;
-        }
-    }
-#endif
+
     return wrote;
 }
 
@@ -413,7 +389,9 @@ enum
 {
     [self _updateMenuItem];
     if ([self.document isCurrentSortOrder:PGSortOrderByName])
+    {
         [self.parentAdapter noteChildValueForCurrentSortOrderDidChange:self];
+    }
     [self.document noteNodeDisplayNameDidChange:self];
 }
 
@@ -422,7 +400,7 @@ enum
 - (void)noteIsViewableDidChange
 {
     BOOL const showsLoadingIndicator = !!(PGNodeLoading & _status);
-    BOOL const viewable              = showsLoadingIndicator || _resourceAdapter.adapterIsViewable;
+    BOOL const viewable = showsLoadingIndicator || _resourceAdapter.adapterIsViewable;
     if (viewable == _viewable) return;
     _viewable = viewable;
     [self.document noteNodeIsViewableDidChange:self];
@@ -434,10 +412,9 @@ enum
 {
     if (adapter == _resourceAdapter) return;
     [_resourceAdapter.activity setParentActivity:nil];
-    _resourceAdapter                  = adapter;
+    _resourceAdapter = adapter;
     PGActivity * const parentActivity = self.parentAdapter.activity;
-    _resourceAdapter.activity.parentActivity =
-        parentActivity ? parentActivity : self.document.activity;
+    _resourceAdapter.activity.parentActivity = parentActivity ? parentActivity : self.document.activity;
     [self _updateFileAttributes];
     [self noteIsViewableDidChange];
 }
@@ -455,11 +432,12 @@ enum
 - (void)_updateMenuItem
 {
     if (!_allowMenuItemUpdates) return;
-    NSMutableAttributedString * const label =
-        [[self.identifier attributedStringWithAncestory:NO] mutableCopy];
-    NSString *info            = nil;
-    NSDate *date              = nil;
+    
+    NSMutableAttributedString * const label = [[self.identifier attributedStringWithAncestory:NO] mutableCopy];
+    NSString *info = nil;
+    NSDate *date = nil;
     PGDataProvider * const dp = self.resourceAdapter.dataProvider;
+    
     switch (self.document.sortOrder)
     {
         case PGSortOrderByDateModified:
@@ -469,8 +447,7 @@ enum
             date = dp.dateCreated;
             break;
         case PGSortOrderBySize:
-            info =
-                [@(GetByteSizeForSortingOrDisplay(self.resourceAdapter)) PG_bytesAsLocalizedString];
+            info = [@(GetByteSizeForSortingOrDisplay(self.resourceAdapter)) PG_bytesAsLocalizedString];
             break;
         case PGSortOrderByKind:
             info = dp.kindString;
@@ -479,16 +456,24 @@ enum
         default:
             break;
     }
+    
     if (date && !info)
+    {
         info = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterShortStyle
                                               timeStyle:NSDateFormatterShortStyle];
+    }
+    
     if (info)
-        [label appendAttributedString:[[NSAttributedString alloc]
-                                          initWithString:[NSString stringWithFormat:@" (%@)", info]
-                                              attributes:@{
-                                                  NSForegroundColorAttributeName: NSColor.grayColor,
-                                                  NSFontAttributeName: [NSFont boldSystemFontOfSize:12]
-                                              }]];
+    {
+        NSAttributedString *string = [[NSAttributedString alloc]
+                                      initWithString:[NSString stringWithFormat:@" (%@)", info]
+                                          attributes:@{
+                                              NSForegroundColorAttributeName: NSColor.grayColor,
+                                              NSFontAttributeName: [NSFont boldSystemFontOfSize:12]
+                                    }];
+        [label appendAttributedString:string];
+    }
+        
     _menuItem.attributedTitle = label;
 }
 
@@ -508,8 +493,7 @@ enum
     // specific objects we care about. When closing huge folders of thousands of files, this makes a
     // big difference. Even now it's still the slowest part.
     [_identifier PG_removeObserver:self name:PGDisplayableIdentifierIconDidChangeNotification];
-    [_identifier PG_removeObserver:self
-                              name:PGDisplayableIdentifierDisplayNameDidChangeNotification];
+    [_identifier PG_removeObserver:self name:PGDisplayableIdentifierDisplayNameDidChangeNotification];
 }
 
 //	MARK: - NSObject(NSObject)
@@ -521,7 +505,6 @@ enum
 
 - (BOOL)isEqual:(id)anObject
 {
-#if 1
     //	2024/03/09 bugfix: the original code tested for
     //	equality by checking for same-class-type and for
     //	same-identifier, where the same-identifier test
@@ -542,13 +525,8 @@ enum
     //	quick address comparison, whereas the other
     //	tests involve more work.
     return self.parentNode == ((PGNode *)anObject).parentNode
-           &&
-           [anObject isMemberOfClass:[self class]]
-           && PGEqualObjects(self.identifier, ((PGNode *)anObject).identifier);
-#else    //	original code
-    return [anObject isMemberOfClass:[self class]]
-           && PGEqualObjects(self.identifier, ((PGNode *)anObject).identifier);
-#endif
+        && [anObject isMemberOfClass:[self class]]
+        && PGEqualObjects(self.identifier, ((PGNode *)anObject).identifier);
 }
 
 //	MARK: -

@@ -28,7 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 static PGActivity *PGApplicationActivity;
 
-#if __has_feature(objc_arc)
 
 @interface PGActivity()
 
@@ -44,18 +43,6 @@ static PGActivity *PGApplicationActivity;
 - (void)_prioritizeChildActivity:(PGActivity *)activity;
 
 @end
-
-#else
-
-@interface PGActivity(Private)
-
-- (void)_addChildActivity:(PGActivity *)activity;
-- (void)_removeChildActivity:(PGActivity *)activity;
-- (void)_prioritizeChildActivity:(PGActivity *)activity;
-
-@end
-
-#endif
 
 @implementation PGActivity
 
@@ -82,19 +69,8 @@ static PGActivity *PGApplicationActivity;
 	}
 	return self;
 }
-#if !__has_feature(objc_arc)
-- (NSObject<PGActivityOwner> *)owner
-{
-	@synchronized(self) {
-		return _owner;
-	}
-	return nil;
-}
-#endif
 
-#if __has_feature(objc_arc)
 @synthesize parentActivity = _parentActivity;
-#endif
 
 - (nullable PGActivity *)parentActivity
 {
@@ -138,11 +114,7 @@ static PGActivity *PGApplicationActivity;
 			activeChildren = [NSMutableArray arrayWithCapacity:_childActivities.count];
 			for(PGActivity *const child in _childActivities) if(child.isActive) [activeChildren addObject:child];
 		} else
-#if __has_feature(objc_arc)
 			activeChildren = [_childActivities copy];
-#else
-			activeChildren = [[_childActivities copy] autorelease];
-#endif
 	}
 	return activeChildren;
 }
@@ -153,22 +125,14 @@ static PGActivity *PGApplicationActivity;
 {
 	@synchronized(self) {
 		[self setParentActivity:nil];
-#if __has_feature(objc_arc)
 		[[_childActivities copy] makeObjectsPerformSelector:@selector(cancel:) withObject:sender];
-#else
-		[[[_childActivities copy] autorelease] makeObjectsPerformSelector:@selector(cancel:) withObject:sender];
-#endif
 	}
 	[self.owner cancelActivity:self];
 }
 - (IBAction)prioritize:(id)sender
 {
 	@synchronized(self) {
-#if __has_feature(objc_arc)
 		[self.parentActivity _prioritizeChildActivity:self];
-#else
-		[_parentActivity _prioritizeChildActivity:self];
-#endif
 	}
 }
 - (void)invalidate
@@ -202,11 +166,7 @@ static PGActivity *PGApplicationActivity;
 		NSParameterAssert(NSNotFound != i);
 		[_childActivities removeObjectAtIndex:i];
 		[_childActivities insertObject:activity atIndex:0];
-#if __has_feature(objc_arc)
 		[self.parentActivity _prioritizeChildActivity:self];
-#else
-		[_parentActivity _prioritizeChildActivity:self];
-#endif
 	}
 }
 
@@ -221,13 +181,7 @@ static PGActivity *PGApplicationActivity;
 }
 - (void)dealloc
 {
-#if __has_feature(objc_arc)
 	[_childActivities makeObjectsPerformSelector:@selector(setParentActivity:) withObject:nil];
-#else
-	[[[_childActivities copy] autorelease] makeObjectsPerformSelector:@selector(setParentActivity:) withObject:nil];
-	[_childActivities release];
-	[super dealloc];
-#endif
 }
 
 @end

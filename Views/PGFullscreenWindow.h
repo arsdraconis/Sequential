@@ -27,12 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGFullscreenWindow : PGDocumentWindow
-#if !__has_feature(objc_arc)
-{
-@private
-	NSWindow* _blackHideTheNotchWindow;	//	2023/08/14 added
-}
-#endif
 
 - (instancetype)initWithScreen:(NSScreen *)anObject NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag NS_UNAVAILABLE;

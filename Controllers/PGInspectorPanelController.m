@@ -76,7 +76,6 @@ NS_ASSUME_NONNULL_BEGIN
     [_propertiesTable setDataSource:nil];
 }
 
-
 - (void)windowDidLoad
 {
     [super windowDidLoad];
@@ -318,19 +317,6 @@ NS_ASSUME_NONNULL_BEGIN
 
         Check other properties as well.
     */
-#if 0
-	{
-	//	id value = [dict objectForKey:(NSString *)kCGImagePropertyExifComponentsConfiguration];
-	//	if(value)
-	//		NSLog(@"kCGImagePropertyExifComponentsConfiguration value = %@, %@ (%@)",
-	//				value, [value description], [[value class] description]);
-
-		id value2 = [properties objectForKey:@"Components Configuration"];
-		if(value2)
-			NSLog(@"kCGImagePropertyExifComponentsConfiguration value = '%@' (%@), dict =\n%@\nproperties =\n%@",
-					value2, [[value2 class] description], dict, properties);
-	}
-#endif
 
     NSNumber * const depth = dict[(NSString *)kCGImagePropertyDepth];
     if (depth)

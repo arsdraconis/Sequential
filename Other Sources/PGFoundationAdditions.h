@@ -24,7 +24,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <Foundation/Foundation.h>
 
-// Other Sources
 #import "PGGeometryTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -37,6 +36,7 @@ NS_INLINE BOOL PGEqualObjects(_Nullable id<NSObject> a, _Nullable id<NSObject> b
 	if(!a || !b) return NO;
 	return [a isEqual:b];
 }
+
 #ifndef NSAppKitVersionNumber10_5
 #define NSAppKitVersionNumber10_5 949
 #endif
@@ -68,10 +68,6 @@ extern OSType PGOSTypeFromString(NSString *);
 @interface NSDate(PGFoundationAdditions)
 
 - (BOOL)PG_isAfter:(NSDate *)date;
-#if !__has_feature(objc_arc)	//	deprecated and not available under ARC
-- (NSString *)PG_localizedStringWithDateStyle:(CFDateFormatterStyle)dateStyle
-									timeStyle:(CFDateFormatterStyle)timeStyle;
-#endif
 
 @end
 

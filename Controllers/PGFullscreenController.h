@@ -27,19 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGFullscreenController : PGDisplayController<NSWindowDelegate>
-#if !__has_feature(objc_arc)
-{
-	@private
-	BOOL _isExitingFullscreen;
-	NSMutableArray *_shieldWindows;
-}
-#endif
 
 - (void)prepareToExitFullscreen;
-
 - (void)displayScreenDidChange:(NSNotification *)aNotif;
-
-- (void)resizeToUseEntireScreen;	//	2023/08/14 added
+- (void)resizeToUseEntireScreen;	// 2023/08/14 added
 
 @end
 

@@ -67,21 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
     [super windowDidLoad];
     [self windowDidBecomeMain:nil];
     [(NSPanel *)self.window setBecomesKeyOnlyIfNeeded:YES];
-#if 1    //    2022/02/15
+    // 2022/02/15
     [self.window setFrameUsingName:self.windowFrameAutosaveName];
-#else
-    NSString * const savedFrame =
-        [[NSUserDefaults standardUserDefaults] objectForKey:[self windowFrameAutosaveName]];
-    if (savedFrame)
-    {
-        NSRect r         = NSRectFromString(savedFrame);
-        NSSize const min = [[self window] minSize];
-        NSSize const max = [[self window] maxSize];
-        r.size.width     = MIN(MAX(min.width, NSWidth(r)), max.width);
-        r.size.height    = MIN(MAX(min.height, NSHeight(r)), max.height);
-        [[self window] setFrame:r display:YES];
-    }
-#endif
 
     // NSLog(@"collectionBehavior %lu", self.window.collectionBehavior);
 
@@ -154,9 +141,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)toggleShownUsing:(PGFloatingPanelToggleInstruction)i
 {
-    NSAssert(PGFloatingPanelToggleInstructionHide == i && self.isShown
-                 || PGFloatingPanelToggleInstructionShowAtStatusWindowLevel == i && !self.isShown,
-             @"");
+    NSAssert(PGFloatingPanelToggleInstructionHide == i && self.isShown || PGFloatingPanelToggleInstructionShowAtStatusWindowLevel == i && !self.isShown, @"");
     if (PGFloatingPanelToggleInstructionShowAtStatusWindowLevel == i)
     {
         self.window.level = NSStatusWindowLevel;

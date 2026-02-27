@@ -60,36 +60,20 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 - (instancetype)initWithDocumentIdentifier:(PGDisplayableIdentifier *)docIdent fileIdentifier:(PGDisplayableIdentifier *)fileIdent displayName:(nullable NSString *)aString
 {
 	if((self = [super init])) {
-#if __has_feature(objc_arc)
 		_documentIdentifier = docIdent;
-#else
-		_documentIdentifier = [docIdent retain];
-#endif
 		//	TODO: check whether removeObserver: should be called in -dealloc
 		[_documentIdentifier PG_addObserver:self selector:@selector(identifierDidChange:) name:PGDisplayableIdentifierIconDidChangeNotification];
 		//	TODO: check whether removeObserver: should be called in -dealloc
 		[_documentIdentifier PG_addObserver:self selector:@selector(identifierDidChange:) name:PGDisplayableIdentifierDisplayNameDidChangeNotification];
-#if __has_feature(objc_arc)
 		_documentSubscription = [_documentIdentifier subscriptionWithDescendents:NO];
-#else
-		_documentSubscription = [[_documentIdentifier subscriptionWithDescendents:NO] retain];
-#endif
 		//	TODO: check whether removeObserver: should be called in -dealloc
 		[_documentSubscription PG_addObserver:self selector:@selector(eventDidOccur:) name:PGSubscriptionEventDidOccurNotification];
-#if __has_feature(objc_arc)
 		_fileIdentifier = fileIdent;
-#else
-		_fileIdentifier = [fileIdent retain];
-#endif
 		//	TODO: check whether removeObserver: should be called in -dealloc
 		[_fileIdentifier PG_addObserver:self selector:@selector(identifierDidChange:) name:PGDisplayableIdentifierIconDidChangeNotification];
 		//	TODO: check whether removeObserver: should be called in -dealloc
 		[_fileIdentifier PG_addObserver:self selector:@selector(identifierDidChange:) name:PGDisplayableIdentifierDisplayNameDidChangeNotification];
-#if __has_feature(objc_arc)
 		_fileSubscription = [_fileIdentifier subscriptionWithDescendents:NO];
-#else
-		_fileSubscription = [[_fileIdentifier subscriptionWithDescendents:NO] retain];
-#endif
 		//	TODO: check whether removeObserver: should be called in -dealloc
 		[_fileSubscription PG_addObserver:self selector:@selector(eventDidOccur:) name:PGSubscriptionEventDidOccurNotification];
 		if(aString) _fileIdentifier.naturalDisplayName = aString;
@@ -99,27 +83,11 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 
 //	MARK: -
 
-#if !__has_feature(objc_arc)
-- (PGDisplayableIdentifier *)documentIdentifier
-{
-	return [[_documentIdentifier retain] autorelease];
-}
-- (PGDisplayableIdentifier *)fileIdentifier
-{
-	return [[_fileIdentifier retain] autorelease];
-}
-#endif
 - (BOOL)isValid
 {
-#if __has_feature(objc_arc)
 	if(!_documentIdentifier.hasTarget || !_fileIdentifier.hasTarget) return NO;
 	if(!_documentIdentifier.isFileIdentifier || !_fileIdentifier.isFileIdentifier) return YES;
 	return [_fileIdentifier.rootIdentifier.URL.path hasPrefix:_documentIdentifier.URL.path];
-#else
-	if(![_documentIdentifier hasTarget] || ![_fileIdentifier hasTarget]) return NO;
-	if(![_documentIdentifier isFileIdentifier] || ![_fileIdentifier isFileIdentifier]) return YES;
-	return [[[[_fileIdentifier rootIdentifier] URL] path] hasPrefix:[[_documentIdentifier URL] path]];
-#endif
 }
 
 //	MARK: -
@@ -170,14 +138,6 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 - (void)dealloc
 {
 	[self PG_removeObserver];
-
-#if !__has_feature(objc_arc)
-	[_documentIdentifier release];
-	[_documentSubscription release];
-	[_fileIdentifier release];
-	[_fileSubscription release];
-	[super dealloc];
-#endif
 }
 
 @end

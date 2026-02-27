@@ -25,40 +25,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Models
 @class PGNode;
 @class PGDisplayableIdentifier;
-#if !__has_feature(objc_arc)
-@class PGSubscription;
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSString *const PGBookmarkDidUpdateNotification;
 
 @interface PGBookmark : NSObject <NSSecureCoding>	//	NSCoding
-#if !__has_feature(objc_arc)
-{
-	@private
-	PGDisplayableIdentifier *_documentIdentifier;
-	PGSubscription *_documentSubscription;
-	PGDisplayableIdentifier *_fileIdentifier;
-	PGSubscription *_fileSubscription;
-}
-#endif
 
-- (instancetype)initWithNode:(PGNode *)aNode;
-- (instancetype)initWithDocumentIdentifier:(PGDisplayableIdentifier *)docIdent
-				  fileIdentifier:(PGDisplayableIdentifier *)fileIdent
-					 displayName:(nullable NSString *)aString NS_DESIGNATED_INITIALIZER; // For backward compatibility.
-- (instancetype)init NS_UNAVAILABLE;
-
-#if __has_feature(objc_arc)
 @property (readonly, strong) PGDisplayableIdentifier *documentIdentifier;
 @property (readonly, strong) PGDisplayableIdentifier *fileIdentifier;
 @property (readonly, assign) BOOL isValid;
-#else
-@property(readonly) PGDisplayableIdentifier *documentIdentifier;
-@property(readonly) PGDisplayableIdentifier *fileIdentifier;
-@property(readonly) BOOL isValid;
-#endif
+
+- (instancetype)initWithNode:(PGNode *)aNode;
+- (instancetype)initWithDocumentIdentifier:(PGDisplayableIdentifier *)docIdent
+                  fileIdentifier:(PGDisplayableIdentifier *)fileIdent
+                     displayName:(nullable NSString *)aString NS_DESIGNATED_INITIALIZER; // For backward compatibility.
+- (instancetype)init NS_UNAVAILABLE;
 
 - (void)eventDidOccur:(NSNotification *)aNotif;
 - (void)identifierDidChange:(NSNotification *)aNotif;

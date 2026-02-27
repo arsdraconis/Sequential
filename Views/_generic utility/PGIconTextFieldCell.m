@@ -66,26 +66,12 @@ NS_ASSUME_NONNULL_BEGIN
 	[super selectWithFrame:[self titleRectForBounds:aRect] inView:aView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
-//	MARK: - NSObject
-
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-	[_icon release];
-	[super dealloc];
-}
-#endif
-
 //	MARK: - <NSCopying>
 
 - (id)copyWithZone:(nullable NSZone *)aZone
 {
 	PGIconTextFieldCell *const dupe = [super copyWithZone:aZone];
-#if __has_feature(objc_arc)
 	dupe->_icon = _icon;
-#else
-	dupe->_icon = [_icon retain];
-#endif
 	return dupe;
 }
 

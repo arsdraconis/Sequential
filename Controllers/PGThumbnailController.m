@@ -24,25 +24,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGThumbnailController.h"
 
-// Models
 #import "PGDocument.h"
 #import "PGNode.h"
 #import "PGContainerAdapter.h"
 #import "PGResourceIdentifier.h"
-
-// Views
 #import "PGClipView.h"
 #import "PGBezelPanel.h"
 #import "PGThumbnailBrowser.h"
 #import "PGThumbnailView.h"
 #import "PGThumbnailInfoView.h"
-
-// Controllers
 #import "PGDisplayController.h"
 #import "PGDocumentController.h"
 #import "PGFullSizeContentController.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
@@ -58,9 +51,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 #define PGMaxVisibleColumns (NSUInteger)3
 
 //	MARK: -
-
-#if __has_feature(objc_arc)
-
 @interface PGThumbnailController () <PGFullSizeContentDelegate>
 
 @property (nonatomic, strong) PGBezelPanel *window;
@@ -81,17 +71,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 
 @end
 
-#else
-
-@interface PGThumbnailController(Private) <PGFullSizeContentProtocol>
-
-- (void)_updateInfoWindowFrame;	//	2023/10/02
-- (void)_updateWindowFrame;
-
-@end
-
-#endif
-
 //	MARK: -
 @implementation PGThumbnailController
 
@@ -105,10 +84,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 }
 
 //	MARK: - PGThumbnailController
-
-#if !__has_feature(objc_arc)
-@synthesize displayController = _displayController;
-#endif
 - (void)setDisplayController:(nullable PGDisplayController *)aController
 {
 	if(aController == _displayController) return;
@@ -130,9 +105,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	self.document = _displayController.activeDocument;
 	[self display];
 }
-#if !__has_feature(objc_arc)
-@synthesize document = _document;
-#endif
+
 - (void)setDocument:(nullable PGDocument *)aDoc
 {
 	if(aDoc == _document) return;
@@ -170,28 +143,20 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 }
 - (void)display
 {
-#if !__has_feature(objc_arc)
-	if(_selfRetained) [self autorelease];
-	_selfRetained = NO;
-#endif
-
 	[self.displayController.window addChildWindow:_window ordered:NSWindowAbove];
 	[self _updateWindowFrame];
 
 	[_window removeChildWindow:_infoWindow];
 	[_window addChildWindow:_infoWindow ordered:NSWindowAbove];	//	2023/10/02
-//NSLog(@"[_window addChildWindow:_infoWindow]");
+//    NSLog(@"[_window addChildWindow:_infoWindow]");
 	[self _updateInfoWindowFrame];	//	2023/10/02
 }
-- (void)selectionNeedsDisplay {	//	2023/11/12
+- (void)selectionNeedsDisplay {
+    // 2023/11/12
 	[_browser selectionNeedsDisplay];
 }
 - (void)fadeOut
 {
-#if !__has_feature(objc_arc)
-	if(!_selfRetained) [self retain];
-	_selfRetained = YES;
-#endif
 	_infoView.hidden = YES;
 	[_window fadeOut];
 }
@@ -289,7 +254,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 											  frameForContentRect:r
 															scale:(CGFloat)1.0f];
 	CGFloat const infoWindowHeight = NSHeight(cf);
-#if 1	//	2023/10/14 Info window is displayed at the top of thumbnail view
+	//	2023/10/14 Info window is displayed at the top of thumbnail view
 	//	2023/10/14 when in "use entire screen" mode, the info window actually appears
 	//	below the menu bar (notch) area but why it does so is unknown: the frame rect
 	//	Y co-ord is actually correct and *should* make the Info window appear in the
@@ -297,11 +262,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	NSRect const infoWindowFrame = NSMakeRect(NSMaxX(r) - _browser.columnWidth,
 												NSMaxY(r) - infoWindowHeight,	//	Y co-ords are bottom-upwards
 												_browser.columnWidth, infoWindowHeight);
-#else	//	info window is displayed at the bottom of thumbnail view
-	NSRect const infoWindowFrame = NSMakeRect(NSMaxX(r) - _browser.columnWidth,
-												NSMinY(r),	//	Y co-ords are bottom-upwards
-												_browser.columnWidth, infoWindowHeight);
-#endif
 //NSLog(@"infoWindowFrame = (%5.2f, %5.2f) [%5.2f x %5.2f]",
 //infoWindowFrame.origin.x, infoWindowFrame.origin.y, infoWindowFrame.size.width, infoWindowFrame.size.height);
 
@@ -328,15 +288,10 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 						   titleBarHeight:(CGFloat)titleBarHeight
 #endif
 {
-#if 1	//	2021/07/21 modernized
+    // 2021/07/21 modernized
 	NSRect const newFrame = NSMakeRect(NSMinX(r), NSMinY(r),
 									   MIN(_browser.numberOfColumns, PGMaxVisibleColumns) * _browser.columnWidth,
 									   NSHeight(r));
-#else
-	NSRect const newFrame = NSMakeRect(NSMinX(r), NSMinY(r),
-		(MIN([_browser numberOfColumns], PGMaxVisibleColumns) * [_browser columnWidth]) * [_window userSpaceScaleFactor],
-									   NSHeight(r));
-#endif
 
 //NSLog(@"_updateWindowFrameWithContentRect:usingAnimator:titleBarHeight: equal-rects %u", NSEqualRects(newFrame, _window.frame));
 	if(!NSEqualRects(newFrame, _window.frame)) {
@@ -344,12 +299,8 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 		if(_browserTrackingArea) {
 //NSLog(@"-_browser removeTrackingArea:");
 			[_browser removeTrackingArea:_browserTrackingArea];
-	#if !__has_feature(objc_arc)
-			[_browserTrackingArea release];
-	#endif
 			_browserTrackingArea = nil;
 		}
-#else
 #endif
 
 		if(useAnimator)
@@ -386,14 +337,12 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 
 //NSLog(@"-_browser addTrackingArea: (%5.2f, %5.2f) [%5.2f x %5.2f]",
 //trackingRect.origin.x, trackingRect.origin.y, trackingRect.size.width, trackingRect.size.height);
-#else
 #endif
 }
 
 - (void)_updateWindowFrame
 {
-#if FULL_HEIGHT_BROWSER_IN_FULLSIZE_CONTENT_MODE
-#else
+#if !FULL_HEIGHT_BROWSER_IN_FULLSIZE_CONTENT_MODE
 	if(_parentWindowIsAnimating) return;
 #endif
 	NSWindow *const p = _displayController.window;
@@ -430,11 +379,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 - (instancetype)init
 {
 	if((self = [super init])) {
-#if __has_feature(objc_arc)
 		_window = [PGThumbnailBrowser PG_bezelPanel];
-#else
-		_window = [[PGThumbnailBrowser PG_bezelPanel] retain];
-#endif
 		_window.autorecalculatesKeyViewLoop = YES;
 		_window.releasedWhenClosed = NO;
 		_window.delegate = self;
@@ -445,11 +390,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 		_browser.delegate = self;
 		_browser.dataSource = self;
 
-#if __has_feature(objc_arc)
 		_infoWindow = [PGThumbnailInfoView PG_bezelPanel];	//	2023/10/02 added
-#else
-		_infoWindow = [[PGThumbnailInfoView PG_bezelPanel] retain];	//	2023/10/02 added
-#endif
 		_infoWindow.autorecalculatesKeyViewLoop = NO;
 		_infoWindow.releasedWhenClosed = NO;
 		_infoView = _infoWindow.contentView;	//	2023/10/02 added
@@ -460,12 +401,8 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 - (void)dealloc
 {
 	//	Instances of this class are owned by PGDisplayController.
-//NSLog(@"PGThumbnailController -dealloc %p", self);
+//    NSLog(@"PGThumbnailController -dealloc %p", self);
 	[self PG_removeObserver];
-
-#if !__has_feature(objc_arc)
-	[_infoWindow release];	//	2023/10/02 added
-#endif
 
 	//	2023/08/16 bugfix: stop thumbnail browser from accessing this
 	//	deallocated object
@@ -477,15 +414,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	//	2023/08/21 bugfix: stop displaying the thumbnail browser
 	[_window orderOut:self];
 	[_window setDelegate:nil];
-#if !__has_feature(objc_arc)
-	[_window release];
-	#if FULL_HEIGHT_BROWSER_IN_FULLSIZE_CONTENT_MODE
-	[_browserTrackingArea release];
-	#else
-	#endif
-
-	[super dealloc];
-#endif
 }
 
 //	MARK: - <NSWindowDelegate>
@@ -500,10 +428,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 }
 - (void)windowWillClose:(NSNotification *)aNotif
 {
-#if !__has_feature(objc_arc)
-	if(_selfRetained) [self autorelease];
-	_selfRetained = NO;
-#endif
 }
 
 //	MARK: - <NSTrackingArea owner>
@@ -652,20 +576,7 @@ NSLog(@"-mouseMoved:");
 }
 - (NSColor *)thumbnailView:(PGThumbnailView *)sender labelColorForItem:(id)item
 {
-#if 1
 	return ((PGNode *)item).identifier.labelColor;
-#else
-	switch([[(PGNode *)item identifier] labelColor]) {
-		case PGLabelRed: return [NSColor redColor];
-		case PGLabelOrange: return [NSColor orangeColor];
-		case PGLabelYellow: return [NSColor yellowColor];
-		case PGLabelGreen: return [NSColor greenColor];
-		case PGLabelBlue: return [NSColor blueColor];
-		case PGLabelPurple: return [NSColor purpleColor];
-		case PGLabelGray: return [NSColor grayColor];
-		default: return nil;
-	}
-#endif
 }
 - (NSRect)thumbnailView:(PGThumbnailView *)sender highlightRectForItem:(id)item
 {

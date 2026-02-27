@@ -28,17 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGInfoView : NSView<PGBezelPanelContentView> 
-#if !__has_feature(objc_arc)
-{
-	@private
-	NSString *_stringValue;
-	NSUInteger _index;
-	NSUInteger _count;
-	NSUInteger _currentFolderIndex;	//	2023/10/01 added
-	NSUInteger _currentFolderCount;	//	2023/10/01 added
-	PGRectCorner _originCorner;
-}
-#endif
 
 @property (readonly) NSAttributedString *attributedStringValue;
 @property (nonatomic, copy) NSString *stringValue;

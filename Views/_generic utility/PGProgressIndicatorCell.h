@@ -26,18 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGProgressIndicatorCell : NSCell
-#if !__has_feature(objc_arc)
-{
-	@private
-	BOOL _hidden;
-}
-
-@property(assign) BOOL hidden;
-#else
 
 @property (nonatomic, assign) BOOL hidden;
-
-#endif
 
 @end
 

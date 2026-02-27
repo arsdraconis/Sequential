@@ -33,16 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface PGContainerAdapter : PGResourceAdapter
-#if !__has_feature(objc_arc)
-{
-	@private
-	NSArray<PGNode*> *_sortedChildren;
-	NSArray<PGNode*> *_unsortedChildren;
-	PGSortOrder _unsortedOrder;
-	uint64_t _byteSizeDirectChildren, _byteSizeAllChildren;
-	NSUInteger _folderCount, _imageCount;
-}
-#endif
 
 @property (readonly) PGRecursionPolicy descendantRecursionPolicy;
 

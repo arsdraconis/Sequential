@@ -23,9 +23,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFoundationAdditions.h"
+
 #import <objc/runtime.h>
 
-// Other Sources
 #import "PGDebug.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -34,23 +34,14 @@ NSString *const PGCFBundleHelpBookNameKey = @"CFBundleHelpBookName";
 
 NSString *PGOSTypeToStringQuoted(OSType type, BOOL flag)
 {
-#if __has_feature(objc_arc)
 	return flag ? NSFileTypeForHFSTypeCode(type) :
 		(NSString *)CFBridgingRelease(UTCreateStringForOSType(type));
-#else
-	return flag ? NSFileTypeForHFSTypeCode(type) :
-		[(NSString *)UTCreateStringForOSType(type) autorelease];
-#endif
 }
 OSType PGOSTypeFromString(NSString *str)
 {
 	if(!str) return 0;
 	switch(str.length) {
-#if __has_feature(objc_arc)
 		case 4: return UTGetOSTypeFromString((__bridge CFStringRef)str);
-#else
-		case 4: return UTGetOSTypeFromString((CFStringRef)str);
-#endif
 		case 6: return NSHFSTypeCodeFromFileType(str);
 		default: return 0;
 	}
@@ -85,11 +76,7 @@ OSType PGOSTypeFromString(NSString *str)
 + (id)PG_arrayWithContentsOfArrays:(NSArray *)first, ...
 {
 	if(!first) return [self array];
-#if __has_feature(objc_arc)
 	NSMutableArray *const result = [first mutableCopy];
-#else
-	NSMutableArray *const result = [[first mutableCopy] autorelease];
-#endif
 	NSArray *array;
 	va_list list;
 	va_start(list, first);
@@ -100,11 +87,7 @@ OSType PGOSTypeFromString(NSString *str)
 
 - (NSArray *)PG_arrayWithUniqueObjects
 {
-#if __has_feature(objc_arc)
 	NSMutableArray *const array = [self mutableCopy];
-#else
-	NSMutableArray *const array = [[self mutableCopy] autorelease];
-#endif
 	NSUInteger i = 0, count;
 	for(; i < (count = array.count); i++)
 		[array removeObject:array[i] inRange:NSMakeRange(i + 1, count - i - 1)];
@@ -128,19 +111,6 @@ OSType PGOSTypeFromString(NSString *str)
 {
 	return [self earlierDate:date] != self;
 }
-#if !__has_feature(objc_arc)
-- (NSString *)PG_localizedStringWithDateStyle:(CFDateFormatterStyle)dateStyle timeStyle:(CFDateFormatterStyle)timeStyle
-{
-	static CFDateFormatterRef f = nil;
-	if(!f || CFDateFormatterGetDateStyle(f) != dateStyle || CFDateFormatterGetTimeStyle(f) != timeStyle) {
-		if(f) CFRelease(f);
-		CFLocaleRef const locale = CFLocaleCopyCurrent();
-		f = CFDateFormatterCreate(kCFAllocatorDefault, locale, dateStyle, timeStyle);
-		CFRelease(locale);
-	}
-	return [(NSString *)CFDateFormatterCreateStringWithDate(kCFAllocatorDefault, f, (CFDateRef)self) autorelease];
-}
-#endif
 
 @end
 
@@ -149,11 +119,7 @@ OSType PGOSTypeFromString(NSString *str)
 
 + (id)PG_errorWithDomain:(NSString *)domain code:(NSInteger)code localizedDescription:(nullable NSString *)desc userInfo:(nullable NSDictionary *)dict
 {
-#if __has_feature(objc_arc)
 	NSMutableDictionary *const d = dict ? [dict mutableCopy] : [NSMutableDictionary new];
-#else
-	NSMutableDictionary *const d = dict ? [[dict mutableCopy] autorelease] : [NSMutableDictionary dictionary];
-#endif
 	[d PG_setObject:desc forKey:NSLocalizedDescriptionKey];
 	return [self errorWithDomain:domain code:code userInfo:d];
 }
@@ -349,18 +315,11 @@ OSType PGOSTypeFromString(NSString *str)
 }
 - (NSString *)PG_displayName
 {
-#if 1
 	NSError* error = nil;
 	NSString* name = nil;
 	if(![[self PG_fileURL] getResourceValue:&name forKey:NSURLLocalizedNameKey error:&error] || nil != error || !name)
 		return [NSFileManager.defaultManager displayNameAtPath:self];
 	return name;
-#else
-	NSString *displayName = nil;
-	if(LSCopyDisplayNameForURL((CFURLRef)[self PG_fileURL], (CFStringRef *)&displayName) == noErr && displayName)
-		return [displayName autorelease];
-	return [[NSFileManager defaultManager] displayNameAtPath:self];
-#endif
 }
 
 //	MARK: -
@@ -416,11 +375,7 @@ OSType PGOSTypeFromString(NSString *str)
 		scheme = [scanner scanString:@"/" intoString:NULL] || [scanner scanString:@"~" intoString:NULL] ? @"file" : @"http";
 		scanner.scanLocation = 0;
 	} else {
-#if __has_feature(objc_arc)
 		NSMutableCharacterSet *const schemeCharacters = [[NSCharacterSet letterCharacterSet] mutableCopy];
-#else
-		NSMutableCharacterSet *const schemeCharacters = [[[NSCharacterSet letterCharacterSet] mutableCopy] autorelease];
-#endif
 		[schemeCharacters addCharactersInString:@"+-."];
 		if([scheme rangeOfCharacterFromSet:schemeCharacters.invertedSet].location != NSNotFound) return nil;
 		[scanner scanString:@"://" intoString:NULL];
@@ -493,11 +448,7 @@ OSType PGOSTypeFromString(NSString *str)
 			unsigned character;
 			if([hexScanner scanHexInt:&character]) {
 				[hexData appendBytes:&character length:1];
-#if __has_feature(objc_arc)
 				NSString *const hexEncodedString = [[NSString alloc] initWithData:hexData encoding:NSUTF8StringEncoding];
-#else
-				NSString *const hexEncodedString = [[[NSString alloc] initWithData:hexData encoding:NSUTF8StringEncoding] autorelease];
-#endif
 				if(hexEncodedString) {
 					[path appendString:hexEncodedString];
 					hexData.length = 0;
@@ -505,13 +456,9 @@ OSType PGOSTypeFromString(NSString *str)
 			}
 		}
 	}
-#if 1
-	//	- (nullable NSString *)stringByAddingPercentEscapesUsingEncoding:(NSStringEncoding)enc API_DEPRECATED("Use -stringByAddingPercentEncodingWithAllowedCharacters: instead, which always uses the recommended UTF-8 encoding, and which encodes for a specific URL component or subcomponent since each URL component or subcomponent has different rules for what characters are valid.");
+    // - (nullable NSString *)stringByAddingPercentEscapesUsingEncoding:(NSStringEncoding)enc API_DEPRECATED("Use -stringByAddingPercentEncodingWithAllowedCharacters: instead, which always uses the recommended UTF-8 encoding, and which encodes for a specific URL component or subcomponent since each URL component or subcomponent has different rules for what characters are valid.");
 	[URL appendString:path];
 	return [self URLWithString:[URL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]]];
-#else
-	return [self URLWithString:[URL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-#endif
 }
 
 - (NSImage *)PG_icon
@@ -527,7 +474,6 @@ OSType PGOSTypeFromString(NSString *str)
 //	MARK: -
 @implementation NSUserDefaults(PGFoundationAdditions)
 
-#if 1
 - (nullable id)PG_decodeObjectOfClass:(Class)class forKey:(NSString *)defaultName {
 	NSData *const data = [self dataForKey:defaultName];
 	if(!data)
@@ -541,13 +487,6 @@ OSType PGOSTypeFromString(NSString *str)
 
 	return decodedObj;
 }
-#else
-- (id)PG_decodedObjectForKey:(NSString *)defaultName
-{
-	NSData *const data = [self dataForKey:defaultName];
-	return (data ? [NSUnarchiver unarchiveObjectWithData:data] : nil);
-}
-#endif
 
 - (void)PG_encodeObject:(id)value forKey:(NSString *)defaultName
 {

@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if __has_feature(objc_arc)
 
 @interface PGDragHighlightView ()
 
@@ -37,7 +36,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#endif
 
 //	MARK: -
 @implementation PGDragHighlightView
@@ -51,11 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)drawRect:(NSRect)aRect
 {
 	if(!_highlightPath) {
-#if __has_feature(objc_arc)
 		_highlightPath = [NSBezierPath bezierPathWithRect:NSInsetRect(self.bounds, 2.0f, 2.0f)];
-#else
-		_highlightPath = [[NSBezierPath bezierPathWithRect:NSInsetRect([self bounds], 2.0f, 2.0f)] retain];
-#endif
 		_highlightPath.lineWidth = 4;
         _highlightPath.lineJoinStyle = NSLineJoinStyleRound;
 	}
@@ -70,23 +64,11 @@ NS_ASSUME_NONNULL_BEGIN
 	[_highlightPath stroke];
 }
 
-//	MARK: - NSObject
-
-#if !__has_feature(objc_arc)
-- (void)dealloc
-{
-	[_highlightPath release];
-	[super dealloc];
-}
-#endif
 
 //	MARK: - <PGBezelPanelContentView>
 
 - (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)scaleFactor
 {
-#if !__has_feature(objc_arc)
-	[_highlightPath release];
-#endif
 	_highlightPath = nil;
 	return aRect;
 }

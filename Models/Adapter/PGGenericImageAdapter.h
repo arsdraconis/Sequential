@@ -27,16 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PGGenericImageAdapter : PGResourceAdapter<PGResourceAdapterImageGeneration>
-#if !__has_feature(objc_arc)
-{
-	@private
-	BOOL _reading;
-	BOOL _readFailed;
-	NSDictionary *_imageProperties;
-	PGOrientation _orientation;
-	NSImageRep *_cachedRep;
-}
-#endif
 
 @end
 

@@ -24,7 +24,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGAttachments.h"
 
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -35,17 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSMutableAttributedString *)PG_attributedStringWithAttachmentCell:(NSTextAttachmentCell *)cell label:(NSString *)label
 {
-#if __has_feature(objc_arc)
 	NSMutableAttributedString *const result = [NSMutableAttributedString new];
-#else
-	NSMutableAttributedString *const result = [[[NSMutableAttributedString alloc] init] autorelease];
-#endif
 	if(cell) {
-#if __has_feature(objc_arc)
 		NSTextAttachment *const attachment = [NSTextAttachment new];
-#else
-		NSTextAttachment *const attachment = [[[NSTextAttachment alloc] init] autorelease];
-#endif
 		attachment.attachmentCell = cell;
 		[result appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
 		if(label) [result.mutableString appendString:@" "];
@@ -59,12 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 + (NSMutableAttributedString *)PG_attributedStringWithFileIcon:(nullable NSImage *)anImage name:(NSString *)fileName
 {
-#if __has_feature(objc_arc)
 	return [self PG_attributedStringWithAttachmentCell:[[PGIconAttachmentCell alloc] initImageCell:anImage]
 												 label:fileName];
-#else
-	return [self PG_attributedStringWithAttachmentCell:[[[PGIconAttachmentCell alloc] initImageCell:anImage] autorelease] label:fileName];
-#endif
 }
 
 @end
@@ -98,11 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initImageCell:(nullable NSImage *)anImage
 {
 	if(anImage) return [super initImageCell:anImage];
-#if __has_feature(objc_arc)
 	self = nil;
-#else
-	[self release];
-#endif
 	return nil;
 }
 

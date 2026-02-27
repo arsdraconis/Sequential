@@ -24,27 +24,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGWindowController.h"
 
-// Models
 #import "PGDocument.h"
 #import "PGNode.h"
 #import "PGResourceAdapter.h"
-
-// Views
-//#import "PGClipView.h"
-//#import "PGBezelPanel.h"
-
-// Controllers
 #import "PGDocumentController.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGZooming.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
-
-#if __has_feature(objc_arc)
 
 @interface PGWindowController ()
 
@@ -53,7 +42,6 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 
 @end
 
-#endif
 
 //	MARK: -
 @implementation PGWindowController

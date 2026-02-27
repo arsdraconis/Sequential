@@ -30,17 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <sys/resource.h>
 #import <tgmath.h>
 
-// Models
 #import "PGBookmark.h"
 #import "PGContainerAdapter.h"
 #import "PGDocument.h"
 #import "PGResourceAdapter.h"
 #import "PGResourceIdentifier.h"
-
-// Views
 #import "PGOrientationMenuItemCell.h"
-
-// Controllers
 #import "PGAboutBoxController.h"
 #import "PGActivityPanelController.h"
 #import "PGDisplayController.h"
@@ -49,13 +44,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGTimerPanelController.h"
 #import "PGURLAlert.h"
 #import "PGWindowController.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGDelayedPerforming.h"
 #import "PGFoundationAdditions.h"
 #import "PGKeyboardLayout.h"
-// #import "PGLegacy.h"
 #import "PGLocalizing.h"
 #import "PGZooming.h"
 
@@ -66,8 +58,7 @@ NSString * const PGAntialiasWhenUpscalingKey = @"PGAntialiasWhenUpscaling";
 NSString * const PGBackgroundColorSourceKey  = @"PGBackgroundColorSource";    //	2023/08/17
 NSString * const PGBackgroundColorKey        = @"PGBackgroundColor";
 NSString * const PGBackgroundPatternKey      = @"PGBackgroundPattern";
-NSString * const PGBackgroundColorUsedInFullScreenKey =
-    @"PGBackgroundColorUsedInFullScreen";    //	2023/08/14
+NSString * const PGBackgroundColorUsedInFullScreenKey = @"PGBackgroundColorUsedInFullScreen";    //	2023/08/14
 NSString * const PGEscapeKeyMappingKey     = @"PGEscapeKeyMapping";
 NSString * const PGDimOtherScreensKey      = @"PGDimOtherScreens";
 NSString * const PGImageScaleConstraintKey = @"PGImageScaleConstraint";
@@ -75,18 +66,13 @@ NSString * const PGImageScaleConstraintKey = @"PGImageScaleConstraint";
 //	thumbnail prefs pane
 NSString * const PGShowThumbnailImageNameKey = @"PGShowThumbnailImageName";    //	2023/10/01 added
 NSString * const PGShowThumbnailImageSizeKey = @"PGShowThumbnailImageSize";    //	2023/10/01 added
-NSString * const PGShowThumbnailContainerNameKey =
-    @"PGShowThumbnailContainerName";                                           //	2023/10/01 added
-NSString * const PGShowThumbnailContainerChildCountKey =
-    @"PGShowThumbnailContainerChildCount";                                     //	2023/10/01 added
-NSString * const PGShowThumbnailContainerChildSizeTotalKey =
-    @"PGShowThumbnailContainerChildSizeTotal";                                 //	2023/10/01 added
+NSString * const PGShowThumbnailContainerNameKey = @"PGShowThumbnailContainerName";                                           //	2023/10/01 added
+NSString * const PGShowThumbnailContainerChildCountKey = @"PGShowThumbnailContainerChildCount";                                     //	2023/10/01 added
+NSString * const PGShowThumbnailContainerChildSizeTotalKey = @"PGShowThumbnailContainerChildSizeTotal";                                 //	2023/10/01 added
 NSString * const PGThumbnailSizeFormatKey = @"PGThumbnailSizeFormat";          //	2023/10/01 added
 
-NSString * const deprecated_PGShowFileNameOnImageThumbnailKey =
-    @"PGShowFileNameOnImageThumbnail";              //	2023/10/01 deprecated/removed
-static NSString * const deprecated_PGShowCountsAndSizesOnContainerThumbnailKey =
-    @"PGShowCountsAndSizesOnContainerThumbnail";    //	2023/09/11 deprecated/removed
+NSString * const deprecated_PGShowFileNameOnImageThumbnailKey = @"PGShowFileNameOnImageThumbnail";              //	2023/10/01 deprecated/removed
+static NSString * const deprecated_PGShowCountsAndSizesOnContainerThumbnailKey = @"PGShowCountsAndSizesOnContainerThumbnail";    //	2023/09/11 deprecated/removed
 // NSString *const PGThumbnailContainerLabelTypeKey = @"PGThumbnailContainerLabelType";	// 2023/09/11
 
 //	navigation prefs pane
@@ -96,8 +82,7 @@ NSString * const PGBackwardsInitialLocationKey = @"PGBackwardsInitialLocation";
 // TODO: work out if these can be removed
 static NSString * const PGRecentItemsKey            = @"PGRecentItems2";
 static NSString * const PGRecentItemsDeprecated2Key = @"PGRecentItems";    // Deprecated after 1.3.2
-static NSString * const PGRecentItemsDeprecatedKey =
-    @"PGRecentDocuments";    // Deprecated after 1.2.2.
+static NSString * const PGRecentItemsDeprecatedKey = @"PGRecentDocuments";    // Deprecated after 1.2.2.
 static NSString * const PGFullscreenKey = @"PGFullscreen";
 
 static NSString * const PGPathFinderBundleID = @"<Path Finder Bundle ID>";    //	TODO
@@ -113,7 +98,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
 @property (nonatomic, weak) IBOutlet NSMenuItem *zoomIn;
 @property (nonatomic, weak) IBOutlet NSMenuItem *zoomOut;
 @property (nonatomic, weak) IBOutlet NSMenuItem *scaleSliderItem;
-//@property (nonatomic, weak) IBOutlet NSSlider *scaleSlider;
 
 @property (nonatomic, weak) IBOutlet NSMenuItem *pageMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenu *defaultPageMenu;    //	strong is required
@@ -145,17 +129,10 @@ static PGDocumentController *PGSharedDocumentController = nil;
 // required because both getter and setter are custom methods
 @synthesize recentDocumentIdentifiers = _recentDocumentIdentifiers;
 
-//	MARK: +PGDocumentController
-
 + (PGDocumentController *)sharedDocumentController
 {
     return PGSharedDocumentController ? PGSharedDocumentController : [self new];
 }
-
-//	MARK: +NSObject
-
-
-//	MARK: - PGDocumentController
 
 - (IBAction)orderFrontStandardAboutPanel:(id)sender
 {
@@ -881,10 +858,10 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
 
     // Sequential:
     if (@selector(switchToFileManager:) == action)
-        [anItem
-            setTitle:NSLocalizedString((self.pathFinderRunning ? @"Switch to Path Finder"
-                                                               : @"Switch to Finder"),
-                                       @"Switch to Finder or Path Finder (www.cocoatech.com). Two states of the same item.")];
+        [anItem setTitle:NSLocalizedString((self.pathFinderRunning 
+                                            ? @"Switch to Path Finder"
+                                            : @"Switch to Finder"),
+                                           @"Switch to Finder or Path Finder (www.cocoatech.com). Two states of the same item.")];
 
     // Window:
     if (@selector(activateDocument:) == action)

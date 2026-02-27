@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if __has_feature(objc_arc)
 @interface PGOrientationMenuIconCell ()
 
 @property (nonatomic, weak) NSMenuItem *item;
@@ -42,7 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#endif
 
 //	MARK: -
 @implementation PGOrientationMenuIconCell
@@ -52,12 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)addOrientationMenuIconCellToMenuItem:(NSMenuItem *)anItem
 {
 	if(!anItem.separatorItem)
-#if __has_feature(objc_arc)
-		anItem.attributedTitle = [NSAttributedString PG_attributedStringWithAttachmentCell:[[self alloc] initWithMenuItem:anItem]
-																					 label:anItem.title];
-#else
-		[anItem setAttributedTitle:[NSAttributedString PG_attributedStringWithAttachmentCell:[[[self alloc] initWithMenuItem:anItem] autorelease] label:[anItem title]]];
-#endif
+    {
+        anItem.attributedTitle = [NSAttributedString PG_attributedStringWithAttachmentCell:[[self alloc] initWithMenuItem:anItem]
+                                                                                     label:anItem.title];
+    }
 }
 
 //	MARK: - PGOrientationMenuIconCell

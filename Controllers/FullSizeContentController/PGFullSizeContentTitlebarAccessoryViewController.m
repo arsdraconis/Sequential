@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PGFullSizeContentTextFieldCell : NSTextFieldCell
 @end
 
+// MARK: -
 @implementation PGFullSizeContentTextFieldCell
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
@@ -82,23 +83,11 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @interface PGFullSizeContentTitlebarAccessoryViewController ()
 
-#if !__has_feature(objc_arc)
-{
-	NSObject<PGFullSizeContentTitlebarAccessoryViewDelegate> *_delegate;
-	IBOutlet NSButton *_toggleButton;
-}
-#endif
-
 @property (nonatomic, weak) IBOutlet NSButton *toggleButton;
 
 @end
 
 @implementation PGFullSizeContentTitlebarAccessoryViewController
-
-/* - (void)viewDidLoad {
-	[super viewDidLoad];
-	// Do view setup here.
-} */
 
 - (NSInteger)toggleButtonIntegerValue {
 	return self.toggleButton.integerValue;
