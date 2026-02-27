@@ -24,12 +24,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGTimerPanelController.h"
 
+#import "Sequential-Swift.h"
+
 // Models
 #import "PGDocument.h"
 #import "PGPrefObject.h"
-
-// Views
-#import "PGTimerButton.h"
 
 // Controllers
 #import "PGDisplayController.h"
@@ -117,7 +116,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                        repeats:YES];
     }
     _timerButton.enabled  = !!d;
-    _timerButton.iconType = run ? AEIconTypeStop : AEIconTypePlay;
+    _timerButton.buttonIcon = run ? AEIconTypeStop : AEIconTypePlay;
     [self _updateOnTimer:nil];
 }
 

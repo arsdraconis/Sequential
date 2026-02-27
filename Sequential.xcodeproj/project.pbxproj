@@ -68,7 +68,6 @@
 		0E246BBD108880F800C30936 /* PGDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E246BBC108880F800C30936 /* PGDebug.m */; };
 		0E2500C20FA4755A002CCCBA /* PGDelayedPerforming.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E2500C10FA4755A002CCCBA /* PGDelayedPerforming.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		0E255B9B0E3A9A1E00EDF04C /* PGTimerPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E255B9A0E3A9A1E00EDF04C /* PGTimerPanelController.m */; };
-		0E255BA70E3A9D2E00EDF04C /* PGTimerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E255BA60E3A9D2E00EDF04C /* PGTimerButton.m */; };
 		0E2D08790DD2B4F800EC128A /* PGRoundedBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E2D08780DD2B4F800EC128A /* PGRoundedBackgroundView.m */; };
 		0E3378FA100C83C400373E83 /* License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0E3378F9100C83C400373E83 /* License.txt */; };
 		0E4793930DF15FD90083B7CA /* PGAttachments.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E4793920DF15FD90083B7CA /* PGAttachments.m */; };
@@ -160,6 +159,8 @@
 		AB29A1202F44335A009EBE8A /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */; };
 		AB8C82652F4C183A007AC077 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */; };
 		AB8C82752F4C3A35007AC077 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82742F4C3A35007AC077 /* Notifications.m */; };
+		ABDA66612F502314005B8635 /* TimerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDA66602F502314005B8635 /* TimerButton.swift */; };
+		ABDA66702F502917005B8635 /* CocoaTypes+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDA666F2F502917005B8635 /* CocoaTypes+Extensions.swift */; };
 		B581795C121490A60041F0F4 /* PGXMLAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = B581795B121490A60041F0F4 /* PGXMLAdapter.m */; };
 		B5FE96BD11F5C9C10010BBCA /* Sequential.help in Resources */ = {isa = PBXBuildFile; fileRef = B5FE965911F5C9C10010BBCA /* Sequential.help */; };
 		F1CA6DD726BA57BB00ECE823 /* libXADMaster.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1E534FE26AD801F0057A129 /* libXADMaster.a */; };
@@ -458,8 +459,6 @@
 		0E2500C10FA4755A002CCCBA /* PGDelayedPerforming.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDelayedPerforming.m; sourceTree = "<group>"; };
 		0E255B990E3A9A1E00EDF04C /* PGTimerPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGTimerPanelController.h; sourceTree = "<group>"; };
 		0E255B9A0E3A9A1E00EDF04C /* PGTimerPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGTimerPanelController.m; sourceTree = "<group>"; };
-		0E255BA50E3A9D2E00EDF04C /* PGTimerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGTimerButton.h; sourceTree = "<group>"; };
-		0E255BA60E3A9D2E00EDF04C /* PGTimerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGTimerButton.m; sourceTree = "<group>"; };
 		0E2D08770DD2B4F800EC128A /* PGRoundedBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGRoundedBackgroundView.h; sourceTree = "<group>"; };
 		0E2D08780DD2B4F800EC128A /* PGRoundedBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGRoundedBackgroundView.m; sourceTree = "<group>"; };
 		0E3378E8100C82B700373E83 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
@@ -608,6 +607,8 @@
 		AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		AB8C82732F4C3A35007AC077 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		AB8C82742F4C3A35007AC077 /* Notifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
+		ABDA66602F502314005B8635 /* TimerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerButton.swift; sourceTree = "<group>"; };
+		ABDA666F2F502917005B8635 /* CocoaTypes+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CocoaTypes+Extensions.swift"; sourceTree = "<group>"; };
 		B573CFF3122AC22200F4B7CA /* PGNodeParenting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGNodeParenting.h; sourceTree = "<group>"; };
 		B581795A121490A60041F0F4 /* PGXMLAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGXMLAdapter.h; sourceTree = "<group>"; };
 		B581795B121490A60041F0F4 /* PGXMLAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGXMLAdapter.m; sourceTree = "<group>"; };
@@ -921,8 +922,7 @@
 				0EC33E3E0E29B0A700450CF8 /* PGProgressIndicatorCell.m */,
 				0E2D08770DD2B4F800EC128A /* PGRoundedBackgroundView.h */,
 				0E2D08780DD2B4F800EC128A /* PGRoundedBackgroundView.m */,
-				0E255BA50E3A9D2E00EDF04C /* PGTimerButton.h */,
-				0E255BA60E3A9D2E00EDF04C /* PGTimerButton.m */,
+				ABDA66602F502314005B8635 /* TimerButton.swift */,
 			);
 			path = "_generic utility";
 			sourceTree = "<group>";
@@ -1035,6 +1035,7 @@
 				AB0742782F44035700628E02 /* NSColor+Extensions.swift */,
 				AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */,
 				AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */,
+				ABDA666F2F502917005B8635 /* CocoaTypes+Extensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1368,6 +1369,7 @@
 				0EC11DF00CA02B7B003E492C /* PGZooming.m in Sources */,
 				0E92E1360E2CA88400276801 /* PGGeometry.m in Sources */,
 				0E1616940EB3C71C00589D4B /* PGGeometryTypes.m in Sources */,
+				ABDA66702F502917005B8635 /* CocoaTypes+Extensions.swift in Sources */,
 				0E246B4310887CF200C30936 /* PGFoundationAdditions.m in Sources */,
 				0E4793930DF15FD90083B7CA /* PGAttachments.m in Sources */,
 				0E246BBD108880F800C30936 /* PGDebug.m in Sources */,
@@ -1408,7 +1410,6 @@
 				0E7D74460C9ED641004AA269 /* PGDragHighlightView.m in Sources */,
 				0EF9B2550FA348F700B7E16A /* PGIconTextFieldCell.m in Sources */,
 				0E20FDBA10967449007EE24A /* PGOrientationMenuItemCell.m in Sources */,
-				0E255BA70E3A9D2E00EDF04C /* PGTimerButton.m in Sources */,
 				AB29A1202F44335A009EBE8A /* UserDefaults+Extensions.swift in Sources */,
 				0EC33E3F0E29B0A700450CF8 /* PGProgressIndicatorCell.m in Sources */,
 				AB07427B2F44084800628E02 /* AppDelegate.swift in Sources */,
@@ -1419,6 +1420,7 @@
 				0EDB9A760EA1896400B7342A /* PGColumnView.m in Sources */,
 				0EDB9BFF0EA1E27D00B7342A /* PGThumbnailView.m in Sources */,
 				4B2462E02ADAC51700BA81EF /* PGThumbnailInfoView.m in Sources */,
+				ABDA66612F502314005B8635 /* TimerButton.swift in Sources */,
 				0E1D3EC90A8091FE00C542A6 /* PGDocumentController.m in Sources */,
 				0E1D37510A7E319100C542A6 /* PGFullscreenController.m in Sources */,
 				0EA496330C6C7C9A00095184 /* PGBookmarkController.m in Sources */,

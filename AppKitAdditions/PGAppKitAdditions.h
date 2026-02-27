@@ -29,14 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, AEIconType)
-{
-    AEIconTypeNoIcon = 0,
-    AEIconTypePlay   = 1,
-    AEIconTypePause  = 2,
-    AEIconTypeStop   = 3
-};
-
 @interface NSEvent (PGAppKitAdditions)
 
 - (NSPoint)PG_locationInView:(NSView *)view;

@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 // Views
 @class PGAlertGraphic;
 
+#import "Sequential-Swift.h"
+
 // Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGBezelPanel.h"

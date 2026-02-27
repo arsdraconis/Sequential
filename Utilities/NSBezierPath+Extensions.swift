@@ -7,11 +7,20 @@
 
 import Cocoa
 
+@objc(AEIconType)
+public enum IconType: Int
+{
+    case noIcon
+    case play
+    case pause
+    case stop
+}
+
 @objc
 extension NSBezierPath
 {
     @objc(PG_drawIcon:inRect:)
-    class func drawIcon(_ icon: AEIconType, in rect: NSRect)
+    class func drawIcon(_ icon: IconType, in rect: NSRect)
     {
         let path = Self.init()
         let scale = min(rect.width, rect.height)
