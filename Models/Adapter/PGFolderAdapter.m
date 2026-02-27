@@ -124,19 +124,22 @@ IsVisibleInFinder(NSURL* pageURL) {
 	NSMutableArray *const oldPages = [self.unsortedChildren mutableCopy];
 	NSMutableArray *const newPages = [NSMutableArray array];
 	NSString *const path = URL.path;
-	for(NSString *const pathComponent in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL]) {
+	for(NSString *const pathComponent in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL])
+    {
 		NSString *const pagePath = [path stringByAppendingPathComponent:pathComponent];
 		if([PGIgnoredPaths containsObject:pagePath]) continue;
 		NSURL *const pageURL = [pagePath PG_fileURL];
-		if(!IsVisibleInFinder(pageURL))
-			continue;
+		if(!IsVisibleInFinder(pageURL)) continue;
 
 		PGDisplayableIdentifier *const pageIdent = pageURL.PG_displayableIdentifier;
 		PGNode *node = [self childForIdentifier:pageIdent];
-		if(node) {
+		if(node)
+        {
 			[oldPages removeObjectIdenticalTo:node];
 			[node noteFileEventDidOccurDirect:NO];
-		} else {
+		}
+        else
+        {
 			node = [[PGNode alloc] initWithParent:self identifier:pageIdent];
 			node.dataProvider = [PGDataProvider providerWithResourceIdentifier:pageIdent];
 		}

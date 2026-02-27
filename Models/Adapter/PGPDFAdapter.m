@@ -222,6 +222,7 @@ NS_ASSUME_NONNULL_BEGIN
     {
         _mainRep   = mainRep;
         _threadRep = threadRep;
+        _pageIndex = page;
     }
     return self;
 }

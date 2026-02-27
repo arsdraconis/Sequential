@@ -267,11 +267,14 @@ enum
     switch (o)
     {
         case PGSortOrderInnate:
-        case PGSortOrderUnspecified:
             return NSOrderedSame;
             
+        // For containers like folders, compare filenames like the Finder does.
+        // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Strings/Articles/SearchingStrings.html#//apple_ref/doc/uid/20000149-SW4
+        // Note that although the docs suggest -[NSString localizedStandardCompare:], it doesn't seem to have the same behavior under Tahoe
+        case PGSortOrderUnspecified:
         case PGSortOrderByName:
-            r = [dp1.identifier.displayableIdentifier.displayName compare:dp2.identifier.displayableIdentifier.displayName];
+            r = [dp1.identifier.displayableIdentifier.displayName localizedStandardCompare:dp2.identifier.displayableIdentifier.displayName];
             break;
             
         case PGSortOrderByDateModified:

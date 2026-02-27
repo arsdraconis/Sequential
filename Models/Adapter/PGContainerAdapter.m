@@ -171,15 +171,21 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 
 - (NSArray<PGNode*> *)sortedChildren
 {
-	if(!_sortedChildren) {
+	if(!_sortedChildren)
+    {
         BOOL isDescending = self.document.sortDescending;
 		PGSortOrder const order = self.document.sortOrder;
 		PGSortOrder const maskedUnsortedOrder = _unsortedOrder;
-		if(order == maskedUnsortedOrder || PGSortOrderInnate == maskedUnsortedOrder) {
-			if(isDescending /*== (PGSortOrderDescendingMask & _unsortedOrder)*/)
-				_sortedChildren = _unsortedChildren;
-			else _sortedChildren = [_unsortedChildren reverseObjectEnumerator].allObjects;
-		} else _sortedChildren = [_unsortedChildren sortedArrayUsingSelector:@selector(compare:)];
+		if(order == maskedUnsortedOrder || PGSortOrderInnate == maskedUnsortedOrder)
+        {
+            _sortedChildren = isDescending
+                ? [_unsortedChildren reverseObjectEnumerator].allObjects
+                : _unsortedChildren;
+		}
+        else
+        {
+            _sortedChildren = [_unsortedChildren sortedArrayUsingSelector:@selector(compare:)];
+        }
 	}
 	return _sortedChildren;
 }
@@ -190,38 +196,49 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 - (void)setUnsortedChildren:(NSArray<PGNode*> *)anArray presortedOrder:(PGSortOrder)anOrder
 {
 	if(anArray == _unsortedChildren) return;
+    
 	NSMutableArray *const removedChildren = [_unsortedChildren mutableCopy];
-	for(PGNode *const newChild in anArray) [removedChildren removeObjectIdenticalTo:newChild];
-	if(removedChildren.count) {
+	for (PGNode *const newChild in anArray)
+    {
+        [removedChildren removeObjectIdenticalTo:newChild];
+    }
+	if(removedChildren.count)
+    {
 		[self.document noteNode:self.node willRemoveNodes:removedChildren];
 		[removedChildren makeObjectsPerformSelector:@selector(detachFromTree)];
 	}
 
-	_unsortedChildren = [anArray copy];
-	_byteSizeAllChildren	=	~0ull;	//	invalidate cached value
-
-	_unsortedOrder = anOrder;
+    _byteSizeAllChildren = ~0ull; // invalidate cached value
+    _unsortedOrder = anOrder;
+    _unsortedChildren = [anArray copy];
 	_sortedChildren = nil;
+    
 	self.node.menuItem.submenu = _unsortedChildren.count ? [NSMenu new] : nil;
 	[self.document noteSortedChildrenDidChange];
 
-//NSLog(@">>> %@ >>>", self.node.identifier.displayName);
-	_byteSizeDirectChildren	=	0;
-	_folderCount			=	_imageCount	=	0;
-	for(PGNode *const child in anArray) {
-//NSLog(@"\t%@: isContainer %u", child.identifier.displayName, child.resourceAdapter.isContainer);
-        if(child.resourceAdapter.isContainer)    //    will this be TRUE for PDF files?
+//    NSLog(@">>> %@ >>>", self.node.identifier.displayName);
+	_byteSizeDirectChildren	= 0;
+	_folderCount = _imageCount = 0;
+	for(PGNode *const child in anArray)
+    {
+//        NSLog(@"\t%@: isContainer %u", child.identifier.displayName, child.resourceAdapter.isContainer);
+        if(child.resourceAdapter.isContainer)    // will this be TRUE for PDF files?
+        {
             ++_folderCount;
-		else {
+        }
+		else
+        {
 			//	2023/09/23 total now includes the non-viewable files like
 			//	text or video or line art files
 			_byteSizeDirectChildren	+=	child.dataProvider.dataByteSize;
 
 			if(child.isViewable)
-				++_imageCount;
+            {
+                ++_imageCount;
+            }
 		}
 	}
-//NSLog(@"<<< %@ <<<", self.node.identifier.displayName);
+//    NSLog(@"<<< %@ <<<", self.node.identifier.displayName);
 }
 - (void)removeChild:(PGNode *)node
 {
