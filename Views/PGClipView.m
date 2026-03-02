@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import <tgmath.h>
 #import <QuartzCore/QuartzCore.h>
 
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGDelayedPerforming.h"
 #import "PGFoundationAdditions.h"
@@ -89,6 +88,9 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 //	MARK: -
 @implementation PGClipView
 
+@synthesize documentView;    //    IBOutlet
+@synthesize acceptsFirstResponder = _acceptsFirstResponder;
+
 + (nullable id)defaultAnimationForKey:(NSString *)key {
     if ([key isEqualToString:@"backgroundColor"]) {
         // By default, animate background color changes with simple linear
@@ -99,9 +101,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
         return [super defaultAnimationForKey:key];
     }
 }
-
-@synthesize documentView;	//	IBOutlet
-@synthesize acceptsFirstResponder = _acceptsFirstResponder;
 
 - (void)setDocumentView:(nullable NSView *)aView
 {
@@ -163,8 +162,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	}
 }
 
-//	MARK: -
-
 - (NSPoint)position
 {
 	return _animationTimer ? _targetPosition : _position;
@@ -190,8 +187,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	if(![self.documentView PG_scalesContentWithFrameSizeInClipView:self]) return diff;
 	return NSMakeSize(diff.width * 2.0f / NSWidth(r), diff.height * 2.0f / NSHeight(r));
 }
-
-//	MARK: -
 
 - (BOOL)scrollTo:(NSPoint)aPoint animation:(PGAnimationType)type
 {
@@ -257,8 +252,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	_lastAnimationTime = 0.0f;
 	self.scrolling = NO;
 }
-
-//	MARK: -
 
 - (NSRect)documentFrameWithBorder:(BOOL)flag
 {
@@ -327,8 +320,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	if(mask & PGMaxYEdgeMask && _position.y < MIN(NSMaxY(l), NSMaxY(s))) return NO; // Don't use NSIntersectionRect() because it returns NSZeroRect if the width or height is zero.
 	return YES;
 }
-
-//	MARK: -
 
 - (BOOL)handleMouseDown:(NSEvent *)firstEvent
 {
@@ -479,8 +470,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	[self scrollTo:position animation:PGPreferAnimation];
 }
 
-//	MARK: -
-
 - (void)viewFrameDidChange:(nullable NSNotification *)aNotif
 {
 	_documentViewIsResizing++;
@@ -534,7 +523,7 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	[self.delegate clipViewGestureDidEnd:self];
 }
 
-//	MARK: - NSView
+//	MARK: NSView
 
 - (instancetype)initWithFrame:(NSRect)aRect
 {
@@ -546,8 +535,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	}
 	return self;
 }
-
-//	MARK: -
 
 - (BOOL)isOpaque
 {
@@ -603,14 +590,12 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	if(![self _setPosition:PGOffsetPointByXY(_position, 0.0f, heightDiff) scrollEnclosingClipViews:NO markForRedisplay:YES]) [self PG_postNotificationName:PGClipViewBoundsDidChangeNotification];
 }
 
-//	MARK: - NSView(PGClipViewAdditions)
+//	MARK: NSView(PGClipViewAdditions)
 
 - (PGClipView *)PG_clipView
 {
 	return self;
 }
-
-//	MARK: -
 
 - (void)PG_scrollRectToVisible:(NSRect)aRect forView:(NSView *)view type:(PGScrollToRectType)type
 {
@@ -651,21 +636,19 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	if(clipView == self || !_scrollCount) [super PG_viewDidScrollInClipView:clipView];
 }
 
-//	MARK: -
-
 - (NSView *)PG_deepestViewAtPoint:(NSPoint)aPoint
 {
 	return [super hitTest:aPoint];
 }
 
-//	MARK: - NSView(PGZooming)
+//	MARK: NSView(PGZooming)
 
 - (NSSize)PG_zoomedBoundsSize
 {
 	return PGInsetSize([super PG_zoomedBoundsSize], PGInvertInset(self.boundsInset));
 }
 
-//	MARK: - NSResponder
+//	MARK: NSResponder
 
 - (BOOL)acceptsFirstMouse:(nullable NSEvent *)anEvent
 {
@@ -691,8 +674,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 	} else [self scrollBy:NSMakeSize(x * PGMouseWheelScrollFactor, y * PGMouseWheelScrollFactor) animation:PGNoAnimation];
 }
 
-//	MARK: -
-
 // Private, invoked by guestures on new laptop trackpads.
 - (void)beginGestureWithEvent:(NSEvent *)anEvent
 {
@@ -714,8 +695,6 @@ static inline NSPoint PGPointInRect(NSPoint aPoint, NSRect aRect)
 {
 	[self.delegate clipViewGestureDidEnd:self];
 }
-
-//	MARK: -
 
 static
 BOOL
@@ -890,7 +869,7 @@ PerformMenuItemActionWithMatchingKeyEquivalent(NSEvent *event, NSMenu *menu) {
 	[self moveToEndOfDocument:sender];
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (void)dealloc
 {
@@ -900,6 +879,7 @@ PerformMenuItemActionWithMatchingKeyEquivalent(NSEvent *event, NSMenu *menu) {
 
 @end
 
+// MARK: -
 @implementation NSObject(PGClipViewDelegate)
 
 - (BOOL)clipView:(PGClipView *)sender handleMouseEvent:(NSEvent *)anEvent first:(BOOL)flag
@@ -924,6 +904,7 @@ PerformMenuItemActionWithMatchingKeyEquivalent(NSEvent *event, NSMenu *menu) {
 
 @end
 
+// MARK: -
 @implementation NSView(PGClipViewAdditions)
 
 - (PGClipView *)PG_enclosingClipView

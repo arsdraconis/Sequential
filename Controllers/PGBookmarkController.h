@@ -31,7 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PGBookmarkController : NSObject
 
-@property (nonatomic, assign) BOOL deletesBookmarks; // If YES, the "Resume" menu becomes a "Delete" menu.
+/// If YES, the "Resume" menu becomes a "Delete" menu.
+@property (nonatomic, assign) BOOL deletesBookmarks;
 
 + (PGBookmarkController*)sharedBookmarkController;
 

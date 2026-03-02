@@ -24,13 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGBookmark.h"
 
-// Models
 #import "PGDocument.h"
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
 #import "PGSubscription.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -57,6 +54,7 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 {
 	return [self initWithDocumentIdentifier:aNode.document.rootIdentifier fileIdentifier:aNode.identifier displayName:nil];
 }
+
 - (instancetype)initWithDocumentIdentifier:(PGDisplayableIdentifier *)docIdent fileIdentifier:(PGDisplayableIdentifier *)fileIdent displayName:(nullable NSString *)aString
 {
 	if((self = [super init])) {
@@ -81,7 +79,10 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 	return self;
 }
 
-//	MARK: -
+- (void)dealloc
+{
+    [self PG_removeObserver];
+}
 
 - (BOOL)isValid
 {
@@ -89,8 +90,6 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 	if(!_documentIdentifier.isFileIdentifier || !_fileIdentifier.isFileIdentifier) return YES;
 	return [_fileIdentifier.rootIdentifier.URL.path hasPrefix:_documentIdentifier.URL.path];
 }
-
-//	MARK: -
 
 - (void)eventDidOccur:(NSNotification *)aNotif
 {
@@ -104,7 +103,7 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 	[self PG_postNotificationName:PGBookmarkDidUpdateNotification];
 }
 
-//	MARK: - <NSCoding>
+//	MARK: <NSCoding>
 
 - (nullable instancetype)initWithCoder:(NSCoder *)aCoder
 {
@@ -122,7 +121,7 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 	[aCoder encodeObject:_fileIdentifier.naturalDisplayName forKey:@"BackupDisplayName"];
 }
 
-//	MARK: - <NSObject>
+//	MARK: <NSObject>
 
 - (NSUInteger)hash
 {
@@ -131,13 +130,6 @@ NSString *const PGBookmarkDidUpdateNotification = @"PGBookmarkDidUpdate";
 - (BOOL)isEqual:(id)anObject
 {
 	return [anObject isMemberOfClass:[self class]] && PGEqualObjects(self.documentIdentifier, [anObject documentIdentifier]) && PGEqualObjects(self.fileIdentifier, [anObject fileIdentifier]);
-}
-
-//	MARK: - NSObject
-
-- (void)dealloc
-{
-	[self PG_removeObserver];
 }
 
 @end

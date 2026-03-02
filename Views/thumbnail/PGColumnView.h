@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PGColumnView : NSView <PGClipViewDelegate>
 
 @property (readonly) NSUInteger numberOfColumns;
-@property (readonly) NSArray *views;    // was copy, now strong (to silence a static analyzer warning)
+@property (readonly) NSArray *views;
 @property (readonly) id lastView;
 @property (nonatomic, assign) CGFloat columnWidth;
 

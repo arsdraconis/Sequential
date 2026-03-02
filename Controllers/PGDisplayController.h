@@ -33,17 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PGDisplayControllerActiveNodeDidChangeNotification;
-extern NSString *const PGDisplayControllerActiveNodeWasReadNotification;
-extern NSString *const PGDisplayControllerTimerDidChangeNotification;
-
-@interface PGDisplayController : NSWindowController <NSWindowDelegate, NSMenuItemValidation,
-	PGClipViewDelegate, PGDocumentWindowDelegate>
+@interface PGDisplayController : NSWindowController <NSWindowDelegate, NSMenuItemValidation, PGClipViewDelegate, PGDocumentWindowDelegate>
 
 @property (readonly, nullable) PGDocument *activeDocument;
 @property (readonly) PGNode *activeNode;
 @property (readonly, nullable) NSWindow *windowForSheet;
-@property (nonatomic, copy) NSSet *selectedNodes;    // 2023/10/02 was readonly
+@property (nonatomic, copy) NSSet *selectedNodes;
 @property (readonly, nullable) PGNode *selectedNode;
 @property (readonly, weak) PGClipView *clipView;
 @property (readonly) PGPageLocation initialLocation;
@@ -109,14 +104,16 @@ extern NSString *const PGDisplayControllerTimerDidChangeNotification;
 - (IBAction)reload:(nullable id)sender;
 - (IBAction)decrypt:(nullable id)sender;
 
-- (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag; // Returns YES if the window was closed.
+/// Returns YES if the window was closed.
+- (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag;
 - (void)activateDocument:(PGDocument *)document;
 
 - (void)setActiveNode:(PGNode *)aNode forward:(BOOL)flag;
 - (BOOL)tryToSetActiveNode:(PGNode *)aNode forward:(BOOL)flag;
 - (BOOL)tryToGoForward:(BOOL)forward allowAlerts:(BOOL)flag;
 - (void)loopForward:(BOOL)flag;
-- (void)prepareToLoop; // Call this before sending -tryToLoop….
+/// Call this before sending -tryToLoop….
+- (void)prepareToLoop;
 - (BOOL)tryToLoopForward:(BOOL)loopForward toNode:(PGNode *)node pageForward:(BOOL)pageForward allowAlerts:(BOOL)flag;
 - (void)activateNode:(PGNode *)node;
 

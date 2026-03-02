@@ -24,7 +24,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGIconTextFieldCell.h"
 
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -36,8 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 //	MARK: -
 @implementation PGIconTextFieldCell
-
-//	MARK: - NSCell
 
 - (NSRect)titleRectForBounds:(NSRect)aRect
 {
@@ -65,8 +62,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	[super selectWithFrame:[self titleRectForBounds:aRect] inView:aView editor:textObj delegate:anObject start:selStart length:selLength];
 }
-
-//	MARK: - <NSCopying>
 
 - (id)copyWithZone:(nullable NSZone *)aZone
 {

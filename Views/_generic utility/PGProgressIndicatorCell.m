@@ -32,8 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation PGProgressIndicatorCell
 
-//	MARK: - NSCell
-
 - (void)drawWithFrame:(NSRect)aRect inView:(NSView *)aView
 {
 	if(self.hidden) return;

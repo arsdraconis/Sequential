@@ -24,6 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGBookmarkController.h"
 
+#import "Notifications.h"
+
 #import "PGResourceIdentifier.h"
 #import "PGBookmark.h"
 #import "PGDocumentController.h"
@@ -32,14 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-//	2023/08/12 the paused document data blob is too large for NSUserDefaults in macOS 12 Monterey:
-//	"Sequential [User Defaults] CFPrefsPlistSource (Domain: com.SequentialX.Sequential,
-//	User: kCFPreferencesCurrentUser, ByHost: No, Container: (null), Contents Need Refresh: Yes):
-//	Attempting to store >= 4194304 bytes of data in CFPreferences/NSUserDefaults on this platform
-//	is invalid. This is a bug in Sequential or a library it uses."
+// 2023/08/12 the paused document data blob is too large for NSUserDefaults in macOS 12 Monterey:
+// "Sequential [User Defaults] CFPrefsPlistSource (Domain: com.SequentialX.Sequential,
+// User: kCFPreferencesCurrentUser, ByHost: No, Container: (null), Contents Need Refresh: Yes):
+// Attempting to store >= 4194304 bytes of data in CFPreferences/NSUserDefaults on this platform
+// is invalid. This is a bug in Sequential or a library it uses."
 //
-//	Solution: store this data in a separate file in the Application Support folder instead of in
-//	the app's UserDefaults object.
+// Solution: store this data in a separate file in the Application Support folder instead of in
+// the app's UserDefaults object.
 static NSString *const PGPausedDocumentsFileName       = @"PausedDocuments.plist";
 //static NSString *const PGPausedDocumentsKey            = @"PGPausedDocuments4"; // file-ref is NSURL (not AliasHandle)
 #if 0
@@ -86,6 +88,7 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 	return [parentFolder URLByAppendingPathComponent:PGPausedDocumentsFileName isDirectory:NO];
 }
 
+// MARK: -
 @interface PGBookmarkController()
 
 @property (nonatomic, weak) IBOutlet NSMenuItem *bookmarkItem;
@@ -94,7 +97,8 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 @property (nonatomic, strong) NSMutableArray<PGBookmark*> *bookmarks;
 
 - (void)_updateMenuItemForBookmark:(PGBookmark *)aBookmark;
-- (void)_removeBookmarkAtIndex:(NSUInteger)index; // Removes without updating.
+/// Removes without updating.
+- (void)_removeBookmarkAtIndex:(NSUInteger)index;
 - (void)_saveBookmarks;
 
 @end
@@ -102,9 +106,76 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 //	MARK: -
 @implementation PGBookmarkController
 
+- (instancetype)init
+{
+    if((self = [super init])) {
+        if(!sharedBookmarkController) {
+            sharedBookmarkController = self;
+        }
+
+        // 2023/08/12 now saved to a separate file instead of NSUserDefaults (because it generates too-much-data warnings)
+        NSURL* url = GetBookmarksFileURL(NO);
+//        NSLog(@"%@ url = %@", PGPausedDocumentsFileName, url);
+        NSError* error = nil;
+        NSData* bookmarksData = [NSData dataWithContentsOfURL:url options:0 error:&error];
+
+        BOOL bookmarksDataIsFromPGPausedDocumentsKey = nil != bookmarksData;
+
+        // 2023/08/12 transfer list of paused documents from UserDefaults to separate file
+        if(!bookmarksDataIsFromPGPausedDocumentsKey)
+        {
+            bookmarksData = [NSUserDefaults.standardUserDefaults objectForKey:@"PGPausedDocuments4"];
+            if(nil != bookmarksData)
+            {
+                [NSUserDefaults.standardUserDefaults removeObjectForKey:@"PGPausedDocuments4"];
+            }
+        }
+        else
+        {
+            // if these deprecated entries still exist then purge them
+            [NSUserDefaults.standardUserDefaults removeObjectForKey:@"PGPausedDocuments4"];
+            [NSUserDefaults.standardUserDefaults removeObjectForKey:@"PGPausedDocuments3"];
+        }
+
+        // 2021/07/21 modernized
+        if(bookmarksData)
+        {
+            NSError* error = nil;
+            NSSet* classes = [NSSet setWithArray:@[[NSMutableArray class], [PGBookmark class]]];
+            _bookmarks = [NSKeyedUnarchiver unarchivedObjectOfClasses:classes
+                                                             fromData:bookmarksData
+                                                                error:&error];
+        }
+        if(!_bookmarks)
+        {
+            _bookmarks = [NSMutableArray new];
+        }
+
+        NSParameterAssert([_bookmarks isKindOfClass:[NSMutableArray class]]);
+        if(!bookmarksDataIsFromPGPausedDocumentsKey)
+        {
+            [self _saveBookmarks];
+        }
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [self PG_removeObserver];
+}
+
 + (PGBookmarkController*)sharedBookmarkController
 {
-	return sharedBookmarkController ? sharedBookmarkController : [self new];
+    return sharedBookmarkController ? sharedBookmarkController : [self new];
+}
+
+- (void)awakeFromNib
+{
+    for(PGBookmark *const bookmark in _bookmarks)
+    {
+        [self addMenuItemForBookmark:bookmark];
+    }
 }
 
 - (IBAction)open:(id)sender
@@ -128,14 +199,11 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 	else [self _updateMenuItemForBookmark:bookmark];
 }
 
-//	MARK: -
 - (void)setDeletesBookmarks:(BOOL)flag
 {
 	_deletesBookmarks = flag;
 	_bookmarkItem.title = flag ? NSLocalizedString(@"Delete", @"The title of the bookmarks menu. Two states.") : NSLocalizedString(@"Resume", @"The title of the bookmarks menu. Two states.");
 }
-
-//	MARK: -
 
 - (void)addBookmark:(PGBookmark *)aBookmark
 {
@@ -145,6 +213,7 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 	[self addMenuItemForBookmark:aBookmark];
 	[self _saveBookmarks];
 }
+
 - (void)removeBookmark:(PGBookmark *)aBookmark
 {
 	if(!aBookmark) return;
@@ -171,8 +240,6 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 	return nil;
 }
 
-//	MARK: -
-
 - (void)bookmarkDidUpdate:(NSNotification *)aNotif
 {
 	NSParameterAssert(aNotif);
@@ -180,7 +247,7 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
 	[self _saveBookmarks];
 }
 
-//	MARK: - PGBookmarkController(Private)
+//	MARK: PGBookmarkController(Private)
 
 - (void)_updateMenuItemForBookmark:(PGBookmark *)aBookmark
 {
@@ -221,72 +288,6 @@ GetBookmarksFileURL(BOOL createParentFolderIfNonExistant) {
     NSURL*	url = GetBookmarksFileURL(YES);
 //    NSLog(@"%@ url = %@", PGPausedDocumentsFileName, url);
     (void) [archivedBookmarks writeToURL:url options:NSDataWritingAtomic error:&error];
-}
-
-//	MARK: - NSObject
-
-- (instancetype)init
-{
-	if((self = [super init])) {
-		if(!sharedBookmarkController) {
-			sharedBookmarkController = self;
-		}
-
-        // 2023/08/12 now saved to a separate file instead of NSUserDefaults (because it generates too-much-data warnings)
-        NSURL*		url = GetBookmarksFileURL(NO);
-//        NSLog(@"%@ url = %@", PGPausedDocumentsFileName, url);
-        NSError*	error = nil;
-        NSData*		bookmarksData = [NSData dataWithContentsOfURL:url options:0 error:&error];
-
-		BOOL bookmarksDataIsFromPGPausedDocumentsKey = nil != bookmarksData;
-
-		//	2023/08/12 transfer list of paused documents from UserDefaults to separate file
-		if(!bookmarksDataIsFromPGPausedDocumentsKey) {
-			bookmarksData	=	[NSUserDefaults.standardUserDefaults objectForKey:@"PGPausedDocuments4"];
-			if(nil != bookmarksData)
-				[NSUserDefaults.standardUserDefaults removeObjectForKey:@"PGPausedDocuments4"];
-		} else {
-			//	if these deprecated entries still exist then purge them
-			[NSUserDefaults.standardUserDefaults removeObjectForKey:@"PGPausedDocuments4"];
-			[NSUserDefaults.standardUserDefaults removeObjectForKey:@"PGPausedDocuments3"];
-		}
-
-        // 2021/07/21 modernized
-		if(bookmarksData)
-        {
-			NSError* error = nil;
-			NSSet* classes = [NSSet setWithArray:@[[NSMutableArray class], [PGBookmark class]]];
-		//	NSSet* classes = [NSSet setWithArray:@[[NSData class], [NSMutableArray class], [PGBookmark class]]];
-			_bookmarks = [NSKeyedUnarchiver unarchivedObjectOfClasses:classes
-															 fromData:bookmarksData
-																error:&error];
-		}
-		if(!_bookmarks)
-        {
-            _bookmarks = [NSMutableArray new];
-        }
-
-		NSParameterAssert([_bookmarks isKindOfClass:[NSMutableArray class]]);
-		if(!bookmarksDataIsFromPGPausedDocumentsKey)
-        {
-            [self _saveBookmarks];
-        }
-	}
-	return self;
-}
-- (void)dealloc
-{
-	[self PG_removeObserver];
-}
-
-//	MARK: - NSObject(NSNibAwaking)
-
-- (void)awakeFromNib
-{
-	for(PGBookmark *const bookmark in _bookmarks)
-    {
-        [self addMenuItemForBookmark:bookmark];
-    }
 }
 
 @end

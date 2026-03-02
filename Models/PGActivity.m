@@ -32,7 +32,6 @@ static PGActivity *PGApplicationActivity;
 @interface PGActivity()
 
 @property(atomic, weak) NSObject<PGActivityOwner> *owner;
-//@property(atomic, weak) PGActivity *parentActivity;
 @property(nonatomic, strong) NSMutableArray *childActivities;
 @property(nonatomic, strong) NSString *activityDescription;
 @property(nonatomic, assign) CGFloat progress;
@@ -46,21 +45,30 @@ static PGActivity *PGApplicationActivity;
 
 @implementation PGActivity
 
-//	MARK: +PGActivity
+- (instancetype)init
+{
+    if((self = [super init])) {
+        _childActivities = [NSMutableArray new];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [_childActivities makeObjectsPerformSelector:@selector(setParentActivity:) withObject:nil];
+}
 
 + (id)applicationActivity
 {
 	return PGApplicationActivity;
 }
 
-//	MARK: +NSObject
-
 + (void)initialize
 {
 	if(!PGApplicationActivity) PGApplicationActivity = [self new];
 }
 
-//	MARK: - PGActivity
+//	MARK: PGActivity
 
 - (instancetype)initWithOwner:(NSObject<PGActivityOwner> *)owner
 {
@@ -119,7 +127,7 @@ static PGActivity *PGApplicationActivity;
 	return activeChildren;
 }
 
-//	MARK: -
+//	MARK: Actions
 
 - (IBAction)cancel:(id)sender
 {
@@ -143,7 +151,7 @@ static PGActivity *PGApplicationActivity;
 	}
 }
 
-//	MARK: - PGActivity(Private)
+//	MARK: PGActivity(Private)
 
 - (void)_addChildActivity:(PGActivity *)activity
 {
@@ -168,20 +176,6 @@ static PGActivity *PGApplicationActivity;
 		[_childActivities insertObject:activity atIndex:0];
 		[self.parentActivity _prioritizeChildActivity:self];
 	}
-}
-
-//	MARK: - NSObject
-
-- (instancetype)init
-{
-	if((self = [super init])) {
-		_childActivities = [NSMutableArray new];
-	}
-	return self;
-}
-- (void)dealloc
-{
-	[_childActivities makeObjectsPerformSelector:@selector(setParentActivity:) withObject:nil];
 }
 
 @end

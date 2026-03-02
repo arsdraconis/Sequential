@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <unistd.h>
 #import <tgmath.h>
-#import <QuartzCore/QuartzCore.h>	//	2024/08/14 added for -invertColors:
+#import <QuartzCore/QuartzCore.h>
 #import <CoreImage/CoreImage.h>
 
 #import "PGDocument.h"
@@ -69,10 +69,6 @@ SetDesktopImage(NSScreen *screen, NSURL *URL) {
 }
 
 //	MARK: -
-NSString *const PGDisplayControllerActiveNodeDidChangeNotification = @"PGDisplayControllerActiveNodeDidChange";
-NSString *const PGDisplayControllerActiveNodeWasReadNotification = @"PGDisplayControllerActiveNodeWasRead";
-NSString *const PGDisplayControllerTimerDidChangeNotification = @"PGDisplayControllerTimerDidChange";
-
 #define PGWindowMinSize ((NSSize){350.0f, 200.0f})
 
 typedef NS_OPTIONS(NSUInteger, PGZoomDirection) {
@@ -97,9 +93,10 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 
 
 //	MARK: -
-
 @interface IntegerNumberFormatter : NSNumberFormatter
+
 @property (assign, nonatomic) NSInteger maxValue;
+
 @end
 
 @implementation IntegerNumberFormatter
@@ -141,24 +138,25 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 @property (nonatomic, weak) IBOutlet NSTextField *errorMessage;
 
 @property (nonatomic, weak) IBOutlet NSButton *reloadButton;
-//	the original code -retain'd passwordView but there appears to be no
-//	valid reason for doing this because the view should not be released
-//	while this instance is alive; for the ARC version, passwordView is
-//	weak-referenced until it is proven that it needs a strong-reference
+// the original code -retain'd passwordView but there appears to be no
+// valid reason for doing this because the view should not be released
+// while this instance is alive; for the ARC version, passwordView is
+// weak-referenced until it is proven that it needs a strong-reference
 @property (nonatomic, weak) IBOutlet NSView *passwordView;
 @property (nonatomic, weak) IBOutlet NSTextField *passwordLabel;
 @property (nonatomic, weak) IBOutlet NSTextField *passwordField;
 
-//	no need for separate NSView subclass - instead, re-use PGFindView
-@property (nonatomic, weak) IBOutlet PGFindView *goToPageView; // 2024/08/16
-@property (nonatomic, weak) IBOutlet NSTextField *pageNumberField; // 2024/08/16
-@property (nonatomic, weak) IBOutlet NSTextField *maxPageNumberField; // 2024/08/16
+@property (nonatomic, strong) PGBezelPanel *goToPagePanel;
+// no need for separate NSView subclass - instead, re-use PGFindView
+@property (nonatomic, weak) IBOutlet PGFindView *goToPageView;
+@property (nonatomic, weak) IBOutlet NSTextField *pageNumberField;
+@property (nonatomic, weak) IBOutlet NSTextField *maxPageNumberField;
 
-//	PGDocument *_activeDocument;
+// PGDocument *_activeDocument;
 @property (nonatomic, strong) PGNode *activeNode;
 @property (nonatomic, strong, nullable) PGImageView *imageView;
-//	PGPageLocation _initialLocation;
-//	BOOL _reading;
+// PGPageLocation _initialLocation;
+// BOOL _reading;
 @property (nonatomic, assign) NSUInteger displayImageIndex;
 
 @property (nonatomic, strong) PGBezelPanel *graphicPanel;
@@ -169,8 +167,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 
 @property (nonatomic, strong) PGBezelPanel *findPanel;
 @property (nonatomic, strong) PGFindlessTextView *findFieldEditor;
-
-@property (nonatomic, strong) PGBezelPanel *goToPagePanel; // 2024/08/16
 
 @property (nonatomic, strong, nullable) NSDate *nextTimerFireDate;
 @property (nonatomic, strong, nullable) NSTimer *timer;
@@ -197,27 +193,23 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 
 
 //	MARK: -
-
 @implementation PGDisplayController
-
-+ (NSArray *)pasteboardTypes
-{
-	return [NSArray PG_arrayWithContentsOfArrays:[PGNode pasteboardTypes], [PGImageView pasteboardTypes], nil];
-}
-
-//	MARK: - NSObject
 
 + (void)initialize
 {
-	[NSApp registerServicesMenuSendTypes:[self pasteboardTypes] returnTypes:@[]];
+    [NSApp registerServicesMenuSendTypes:[self pasteboardTypes] returnTypes:@[]];
 }
 - (NSUserDefaultsController *)userDefaults
 {
-	return [NSUserDefaultsController sharedUserDefaultsController];
+    return [NSUserDefaultsController sharedUserDefaultsController];
 }
 
-//	MARK: - PGDisplayController IBAction
++ (NSArray *)pasteboardTypes
+{
+    return [NSArray PG_arrayWithContentsOfArrays:[PGNode pasteboardTypes], [PGImageView pasteboardTypes], nil];
+}
 
+//	MARK: PGDisplayController IBAction
 - (IBAction)reveal:(id)sender
 {
 	if(self.activeDocument.online) {
@@ -293,8 +285,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	if(!movedAnything) NSBeep();	//	2021/07/21 this might be too early (block not completed yet)
 }
 
-//	MARK: -
-
 - (IBAction)copy:(nullable id)sender
 {
 	if(![self writeSelectionToPasteboard:[NSPasteboard generalPasteboard] types:[[self class] pasteboardTypes]]) NSBeep();
@@ -324,8 +314,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 {
 	[self setFindPanelShown:NO];
 }
-
-//	MARK: -
 
 - (IBAction)toggleFullscreen:(nullable id)sender
 {
@@ -449,8 +437,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 #endif
 }
 
-//	MARK: -
-
 - (IBAction)changeImageScaleMode:(nullable id)sender
 {
 	//	see -documentImageScaleDidChange:
@@ -480,8 +466,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[[PGDocumentController sharedDocumentController].scaleMenu update];
 }
 
-//	MARK: -
-
 - (IBAction)previousPage:(nullable id)sender
 {
 	[self tryToGoForward:NO allowAlerts:YES];
@@ -499,8 +483,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 {
 	[self setActiveNode:[self.activeDocument.node.resourceAdapter sortedViewableNodeFirst:NO] forward:NO];
 }
-
-//	MARK: -
 
 - (IBAction)firstOfPreviousFolder:(nullable id)sender
 {
@@ -533,8 +515,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[self setActiveNode:[self.activeNode.resourceAdapter sortedViewableNodeInFolderFirst:NO] forward:NO];
 }
 
-//	MARK: - Go To Page Number
-
+//	MARK: Go To Page Number
 - (void)pageNumberFieldDidChange:(NSNotification *)notification {
 	NSTextField *tf = (NSTextField *)notification.object;
 //NSLog(@"-pageNumberFieldDidChange: \"%@\"", tf.stringValue);
@@ -611,8 +592,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	}
 }
 
-//	MARK: -
-
 - (IBAction)jumpToPage:(nullable id)sender
 {
 	PGNode *node = [((NSMenuItem *)sender).representedObject nonretainedObjectValue];
@@ -620,8 +599,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	if(self.activeNode == node || !node) return;
 	[self setActiveNode:node forward:YES];
 }
-
-//	MARK: -
 
 - (IBAction)pauseDocument:(nullable id)sender
 {
@@ -632,8 +609,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[self pauseDocument:sender];
 	[self.activeDocument close];
 }
-
-//	MARK: -
 
 - (IBAction)reload:(nullable id)sender
 {
@@ -651,7 +626,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[activeNode becomeViewed];
 }
 
-//	MARK: - public API (properties)
+//	MARK: public API (properties)
 
 - (nullable NSWindow *)windowForSheet
 {
@@ -755,17 +730,17 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 - (void)setInFullSizeContentModeForNonFullScreenMode:(BOOL)fullSizeContentMode {
 	_inFullSizeContentModeForNonFullScreenMode = fullSizeContentMode;
 
-	//	this setting is transferred twice:
-	//	(1) from the old non-fullscreen controller to the fullscreen controller with
-	//		PGDocumentController.sharedDocumentController.fullscreen being true, and
-	//	(2) from the fullscreen controller to the new non-fullscreen controller with
-	//		PGDocumentController.sharedDocumentController.fullscreen being false
-	//	the fullSizeContentController is only altered on the second transfer, ie, (2)
+	// this setting is transferred twice:
+	// (1) from the old non-fullscreen controller to the fullscreen controller with
+	//     PGDocumentController.sharedDocumentController.fullscreen being true, and
+	// (2) from the fullscreen controller to the new non-fullscreen controller with
+	//     PGDocumentController.sharedDocumentController.fullscreen being false
+	// the fullSizeContentController is only altered on the second transfer, ie, (2)
 	if(fullSizeContentMode && !PGDocumentController.sharedDocumentController.fullscreen)
 		[_fullSizeContentController toggleFullSizeContentWithAnimation:NO];
 }
 
-//	MARK: - public API (methods)
+//	MARK: public API (methods)
 
 - (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag
 {
@@ -868,8 +843,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[self.window makeKeyAndOrderFront:self];
 }
 
-//	MARK: -
-
 - (void)setActiveNode:(PGNode *)aNode forward:(BOOL)flag
 {
 	if(![self _setActiveNode:aNode]) return;
@@ -920,8 +893,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[self setActiveNode:node forward:YES];
 }
 
-//	MARK: -
-
 - (void)showLoadingIndicator
 {
 	if(_loadingGraphic) return;
@@ -952,8 +923,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 {
 	self.timerRunning = [self tryToGoForward:YES allowAlerts:YES];
 }
-
-//	MARK: -
 
 - (void)zoomBy:(CGFloat)factor animate:(BOOL)flag
 {
@@ -999,14 +968,12 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	return didAnything;
 }
 
-//	MARK: - notification handlers
+//	MARK: notification handlers
 
 - (void)clipViewFrameDidChange:(NSNotification *)aNotif
 {
 	[self _updateImageViewSizeAllowAnimation:NO];
 }
-
-//	MARK: -
 
 - (void)nodeLoadingDidProgress:(NSNotification *)aNotif
 {
@@ -1031,7 +998,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 			[_clipView scrollToLocation:_initialLocation animation:PGNoAnimation];
 		[self.window makeFirstResponder:_clipView];
 	} else if(PGEqualObjects(error.domain, PGNodeErrorDomain)) switch(error.code) {
-		case PGGenericError:
+		case PGNodeErrorGeneric:
 			SetControlAttributedStringValue(_errorLabel,
 				[_activeNode.resourceAdapter.dataProvider attributedString]);
 			_errorMessage.stringValue = error.localizedDescription;
@@ -1039,7 +1006,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 			[_reloadButton setEnabled:YES];
 			_clipView.documentView = _errorView;
 			break;
-		case PGPasswordError:
+		case PGNodeErrorPasswordProtected:
 			SetControlAttributedStringValue(_passwordLabel,
 				[_activeNode.resourceAdapter.dataProvider attributedString]);
 			_passwordField.stringValue = @"";
@@ -1050,8 +1017,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[self _readFinished];
 	[_thumbnailController clipViewBoundsDidChange:nil];
 }
-
-//	MARK: -
 
 - (void)documentWillRemoveNodes:(NSNotification *)aNotif
 {
@@ -1093,8 +1058,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	PGOrientation const o = [self.activeNode.resourceAdapter orientationWithBase:YES];
 	[_imageView setImageRep:_imageView.rep orientation:o size:[self _sizeForImageRep:_imageView.rep orientation:o]];
 }
-
-//	MARK: -
 
 - (void)documentShowsInfoDidChange:(nullable NSNotification *)aNotif
 {
@@ -1154,11 +1117,8 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	self.timerRunning = self.timerRunning;
 }
 
-//	MARK: -
-
 - (void)thumbnailControllerContentInsetDidChange:(nullable NSNotification *)aNotif
 {
-//	NSDisableScreenUpdates();	2021/07/21 deprecated
 	PGInset inset = PGZeroInset;
 	NSSize minSize = PGWindowMinSize;
 	if(_thumbnailController) {
@@ -1181,7 +1141,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 		[w setFrame:currentFrame display:YES];
 	}
 	w.minSize = minSize;
-//	NSEnableScreenUpdates();	2021/07/21 deprecated
 }
 
 - (void)prefControllerBackgroundPatternColorDidChange:(nullable NSNotification *)aNotif;
@@ -1195,7 +1154,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 		[self _setClipViewBackground];	//	updates only when in fullscreen mode
 }
 
-//	MARK: - PGDisplayController(Private)
+//	MARK: PGDisplayController(Private)
 
 //	ensures that whether in macOS-fullscreen or Sequential-fullscreen,
 //	the app behaves the same
@@ -1205,8 +1164,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 }
 
 - (BOOL)_usePreferredBackgroundColorWhenFullScreen {
-	return [NSUserDefaults.standardUserDefaults
-			boolForKey:PGBackgroundColorUsedInFullScreenKey];
+	return [NSUserDefaults.standardUserDefaults fullscreenBackgroundType] == PGFullScreenBackgroundTypeCustomColor;
 }
 
 - (NSColor *)_clipViewBackgroundColorWhenFullScreen:(BOOL)fullscreen {
@@ -1431,8 +1389,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[_thumbnailController display];
 }
 
-//	MARK: -
-
 - (void)windowDidLoad
 {
 	[super windowDidLoad];
@@ -1512,14 +1468,14 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[self.activeDocument close];
 }
 
-//	MARK: - NSResponder
+//	MARK: NSResponder
 
 - (nullable id)validRequestorForSendType:(nullable NSString *)sendType returnType:(nullable NSString *)returnType
 {
 	return !returnType.length && [self writeSelectionToPasteboard:nil types:@[sendType]] ? self : [super validRequestorForSendType:sendType returnType:returnType];
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (instancetype)init
 {
@@ -1553,7 +1509,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	[_timer invalidate];
 }
 
-//	MARK: - NSObject(NSKeyValueObserving)
+//	MARK: NSObject(NSKeyValueObserving)
 
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary *)change context:(nullable void *)context
 {
@@ -1583,7 +1539,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
     }
 }
 
-//	MARK: - NSObject(NSMenuValidation)
+//	MARK: NSObject(NSMenuValidation)
 
 #define PGFuzzyEqualityToCellState(a, b) ({ double __a = (double)(a); double __b = (double)(b); (fabs(__a - __b) < 0.001f ? NSControlStateValueOn : (fabs(round(__a) - round(__b)) < 0.1f ? NSControlStateValueMixed : NSControlStateValueOff)); })
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem
@@ -1764,7 +1720,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
     return [self respondsToSelector:anItem.action];
 }
 
-//	MARK: - NSObject(NSServicesRequests)
+//	MARK: NSObject(NSServicesRequests)
 
 - (BOOL)writeSelectionToPasteboard:(nullable NSPasteboard *)pboard types:(NSArray *)types
 {
@@ -1775,7 +1731,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	return wrote;
 }
 
-//	MARK: - <NSWindowDelegate>
+//	MARK: <NSWindowDelegate>
 
 - (BOOL)window:(NSWindow *)window shouldPopUpDocumentPathMenu:(NSMenu *)menu
 {
@@ -1808,8 +1764,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 	}
 	return _findFieldEditor;
 }
-
-//	MARK: -
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
@@ -1861,15 +1815,6 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 {
 	[_findPanel setIgnoresMouseEvents:NO];
 }
-/*
-- (void)windowWillStartLiveResize:(NSNotification *)notification {
-NSLog(@"-windowWillStartLiveResize: duration %5.2f", NSAnimationContext.currentContext.duration);
-}
-- (void)windowDidEndLiveResize:(NSNotification *)notification {
-NSLog(@"-windowDidEndLiveResize:");
-} */
-
-//	MARK: -
 
 /* - (NSApplicationPresentationOptions)window:(NSWindow *)window
 	  willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions
@@ -1894,14 +1839,14 @@ GetNotchHeight(NSScreen* screen) {
 		return 0;
 }
 
-//	Transitioning to fullscreen via the "Tile Window to Left/Right of Screen" always
-//	causes the -window:startCustomAnimationToEnterFullScreenWithDuration: method to
-//	NOT be called so any member variable changes and method calls it makes are NOT
-//	performed. Such code has been moved to the -windowWillEnterFullScreen: method.
+// Transitioning to fullscreen via the "Tile Window to Left/Right of Screen" always
+// causes the -window:startCustomAnimationToEnterFullScreenWithDuration: method to
+// NOT be called so any member variable changes and method calls it makes are NOT
+// performed. Such code has been moved to the -windowWillEnterFullScreen: method.
 
-//	Using this delegate method causes the statement:
-//		window.styleMask = window.styleMask | NSWindowStyleMaskFullScreen;
-//	to work.
+// Using this delegate method causes the statement:
+//     window.styleMask = window.styleMask | NSWindowStyleMaskFullScreen;
+// to work.
 - (void)window:(NSWindow *)window startCustomAnimationToEnterFullScreenWithDuration:(NSTimeInterval)duration
 {
 //	NSScreen *screen = [[NSScreen screens] objectAtIndex:0];
@@ -1916,14 +1861,14 @@ GetNotchHeight(NSScreen* screen) {
 //	NSInteger previousWindowLevel = [window level];
 //	[window setLevel:NSStatusWindowLevel];	<== this causes flashing
 
-	//	if the window is in fullsize content mode then the animation to
-	//	go fullscreen will not occur so first get out of fullsize content
-	//	mode and then add NSWindowStyleMaskFullScreen to the styleMask
+	// if the window is in fullsize content mode then the animation to
+	// go fullscreen will not occur so first get out of fullsize content
+	// mode and then add NSWindowStyleMaskFullScreen to the styleMask
 //	if(_inFullSizeContentModeForNonFullScreenMode)
 //		[_fullSizeContentController toggleFullSizeContentWithAnimation:YES];
 
-	//	if -toggleFullSizeContent was called, window.styleMask was changed
-	//	so it must be reloaded here:
+	// if -toggleFullSizeContent was called, window.styleMask was changed
+	// so it must be reloaded here:
 	window.styleMask = window.styleMask | NSWindowStyleMaskFullScreen;
 
 	// If our window animation takes the same amount of time as the system's animation,
@@ -2015,8 +1960,6 @@ GetNotchHeight(NSScreen* screen) {
 	}];
 }
 
-//	MARK: -
-
 - (void)windowWillEnterFullScreen:(NSNotification *)notification {
 	NSWindow *window = self.window;
 
@@ -2070,7 +2013,7 @@ GetNotchHeight(NSScreen* screen) {
 	[self updateViewMenuItems_];
 }
 
-//	MARK: - <PGClipViewDelegate>
+//	MARK: PGClipViewDelegate
 
 - (BOOL)clipView:(PGClipView *)sender handleMouseEvent:(NSEvent *)anEvent first:(BOOL)flag
 {

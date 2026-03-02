@@ -53,39 +53,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-//	general prefs pane
-NSString * const PGAntialiasWhenUpscalingKey = @"PGAntialiasWhenUpscaling";
-NSString * const PGBackgroundColorSourceKey  = @"PGBackgroundColorSource";    //	2023/08/17
-NSString * const PGBackgroundColorKey        = @"PGBackgroundColor";
-NSString * const PGBackgroundPatternKey      = @"PGBackgroundPattern";
-NSString * const PGBackgroundColorUsedInFullScreenKey = @"PGBackgroundColorUsedInFullScreen";    //	2023/08/14
-NSString * const PGEscapeKeyMappingKey     = @"PGEscapeKeyMapping";
-NSString * const PGDimOtherScreensKey      = @"PGDimOtherScreens";
-NSString * const PGImageScaleConstraintKey = @"PGImageScaleConstraint";
 
-//	thumbnail prefs pane
-NSString * const PGShowThumbnailImageNameKey = @"PGShowThumbnailImageName";    //	2023/10/01 added
-NSString * const PGShowThumbnailImageSizeKey = @"PGShowThumbnailImageSize";    //	2023/10/01 added
-NSString * const PGShowThumbnailContainerNameKey = @"PGShowThumbnailContainerName";                                           //	2023/10/01 added
-NSString * const PGShowThumbnailContainerChildCountKey = @"PGShowThumbnailContainerChildCount";                                     //	2023/10/01 added
-NSString * const PGShowThumbnailContainerChildSizeTotalKey = @"PGShowThumbnailContainerChildSizeTotal";                                 //	2023/10/01 added
-NSString * const PGThumbnailSizeFormatKey = @"PGThumbnailSizeFormat";          //	2023/10/01 added
-
-NSString * const deprecated_PGShowFileNameOnImageThumbnailKey = @"PGShowFileNameOnImageThumbnail";              //	2023/10/01 deprecated/removed
-static NSString * const deprecated_PGShowCountsAndSizesOnContainerThumbnailKey = @"PGShowCountsAndSizesOnContainerThumbnail";    //	2023/09/11 deprecated/removed
-// NSString *const PGThumbnailContainerLabelTypeKey = @"PGThumbnailContainerLabelType";	// 2023/09/11
-
-//	navigation prefs pane
-NSString * const PGMouseClickActionKey         = @"PGMouseClickAction";
-NSString * const PGBackwardsInitialLocationKey = @"PGBackwardsInitialLocation";
-
-// TODO: work out if these can be removed
-static NSString * const PGRecentItemsKey            = @"PGRecentItems2";
-static NSString * const PGRecentItemsDeprecated2Key = @"PGRecentItems";    // Deprecated after 1.3.2
-static NSString * const PGRecentItemsDeprecatedKey = @"PGRecentDocuments";    // Deprecated after 1.2.2.
-static NSString * const PGFullscreenKey = @"PGFullscreen";
-
-static NSString * const PGPathFinderBundleID = @"<Path Finder Bundle ID>";    //	TODO
+static NSString * const PGPathFinderBundleID = @"<Path Finder Bundle ID>"; // TODO
 // static NSString *const PGPathFinderApplicationName = @"Path Finder";
 
 static PGDocumentController *PGSharedDocumentController = nil;
@@ -156,8 +125,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
     }
 }
 
-//	MARK: -
-
 - (IBAction)open:(id)sender
 {
     [NSApp activateIgnoringOtherApps:YES];
@@ -210,8 +177,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
     }
 }
 
-//	MARK: -
-
 - (IBAction)toggleInspector:(id)sender
 {
     [_inspectorPanel toggleShown];
@@ -245,16 +210,12 @@ static PGDocumentController *PGSharedDocumentController = nil;
     [doc.displayController activateDocument:doc];
 }
 
-//	MARK: -
-
 - (IBAction)showKeyboardShortcuts:(id)sender
 {
     [[NSHelpManager sharedHelpManager]
         openHelpAnchor:@"shortcuts"
                 inBook:[[NSBundle mainBundle] objectForInfoDictionaryKey:PGCFBundleHelpBookNameKey]];
 }
-
-//	MARK: -
 
 - (BOOL)performEscapeKeyAction
 {
@@ -284,8 +245,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
 {
     return [_toggleFullscreen PG_performAction];
 }
-
-//	MARK: -
 
 - (NSArray<PGDisplayableIdentifier *> *)recentDocumentIdentifiers
 {
@@ -381,8 +340,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
     return NO;
 }
 
-//	MARK: -
-
 - (void)addDocument:(PGDocument *)document
 {
     NSParameterAssert([_documents indexOfObjectIdenticalTo:document] == NSNotFound);
@@ -453,8 +410,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
     return -1 == i ? nil : [_windowsMenu itemAtIndex:i];
 }
 
-//	MARK: -
-
 - (nullable id)openDocumentWithContentsOfIdentifier:(PGResourceIdentifier *)ident display:(BOOL)flag
 {
     if (!ident) return nil;
@@ -488,8 +443,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
     [self _changeRecentDocumentIdentifiersWithDocument:document prepend:NO];
 }
 
-//	MARK: -
-
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event
           withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
@@ -500,8 +453,6 @@ static PGDocumentController *PGSharedDocumentController = nil;
         [self openDocumentWithContentsOfURL:url display:YES];
     }
 }
-
-//	MARK: -
 
 - (void)recentDocumentIdentifierDidChange:(nullable NSNotification *)aNotif
 {
@@ -557,7 +508,7 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
     return result;
 }
 
-//	MARK: - PGDocumentController(Private)
+//	MARK: PGDocumentController(Private)
 
 - (void)_awakeAfterLocalizing
 {
@@ -766,7 +717,7 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
     self.recentDocumentIdentifiers = identifiers;
 }
 
-//	MARK: - NSResponder
+//	MARK: NSResponder
 
 - (BOOL)performKeyEquivalent:(NSEvent *)anEvent
 {
@@ -786,7 +737,7 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
     return NO;
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (instancetype)init
 {
@@ -850,7 +801,7 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
     [self PG_removeObserver];
 }
 
-//	MARK: - NSObject(NSMenuValidation)
+//	MARK: NSObject(NSMenuValidation)
 
 - (BOOL)validateMenuItem:(NSMenuItem *)anItem
 {
@@ -879,7 +830,7 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
     return [self respondsToSelector:anItem.action];
 }
 
-//	MARK: - NSObject(NSNibAwaking)
+//	MARK: NSObject(NSNibAwaking)
 
 - (void)awakeFromNib
 {
@@ -906,7 +857,7 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
                   inModes:@[(NSString *)kCFRunLoopCommonModes]];
 }
 
-//	MARK: - <NSMenuDelegate>
+//	MARK: <NSMenuDelegate>
 
 - (void)menuNeedsUpdate:(NSMenu *)recentDocumentsMenu
 {
@@ -947,17 +898,53 @@ static BeforeState HandlePostEnterFullScreen(PGFloatingPanelController *panel, B
 @end
 
 //	MARK: -
-@interface PGApplication : NSApplication
-@end
-@interface PGWindow : NSWindow
-@end
 @interface PGView : NSView
-@end
-@interface PGMenuItem : NSMenuItem
 @end
 
 static BOOL (*PGNSWindowValidateMenuItem)(id, SEL, NSMenuItem *);
 static void (*PGNSMenuItemSetEnabled)(id, SEL, BOOL);
+
+@interface PGWindow : NSWindow
+@end
+
+@implementation PGWindow
+
+- (BOOL)validateMenuItem:(NSMenuItem *)anItem
+{
+    if (@selector(PG_grow:) == anItem.action)
+    {
+        return self.styleMask & NSWindowStyleMaskResizable &&
+               [self standardWindowButton:NSWindowZoomButton].enabled;
+    }
+    return PGNSWindowValidateMenuItem(self, _cmd, anItem);
+}
+
+@end
+
+static void EnableViews(NSView *view, BOOL enabled, BOOL recursive)
+{
+    if ([view respondsToSelector:@selector(setEnabled:)]) { ((NSControl *)view).enabled = enabled; }
+
+    if (!recursive) return;
+
+    for (NSView * const subview in view.subviews) { EnableViews(subview, enabled, recursive); }
+}
+
+@interface PGMenuItem : NSMenuItem
+@end
+
+@implementation PGMenuItem
+
+- (void)setEnabled:(BOOL)flag
+{
+    PGNSMenuItemSetEnabled(self, _cmd, flag);
+    EnableViews(self.view, flag, YES);
+}
+
+@end
+
+@interface PGApplication : NSApplication
+@end
 
 @implementation PGApplication
 
@@ -987,37 +974,5 @@ static void (*PGNSMenuItemSetEnabled)(id, SEL, BOOL);
 
 @end
 
-@implementation PGWindow
-
-- (BOOL)validateMenuItem:(NSMenuItem *)anItem
-{
-    if (@selector(PG_grow:) == anItem.action)
-    {
-        return self.styleMask & NSWindowStyleMaskResizable &&
-               [self standardWindowButton:NSWindowZoomButton].enabled;
-    }
-    return PGNSWindowValidateMenuItem(self, _cmd, anItem);
-}
-
-@end
-
-static void EnableViews(NSView *view, BOOL enabled, BOOL recursive)
-{
-    if ([view respondsToSelector:@selector(setEnabled:)]) { ((NSControl *)view).enabled = enabled; }
-
-    if (!recursive) return;
-
-    for (NSView * const subview in view.subviews) { EnableViews(subview, enabled, recursive); }
-}
-
-@implementation PGMenuItem
-
-- (void)setEnabled:(BOOL)flag
-{
-    PGNSMenuItemSetEnabled(self, _cmd, flag);
-    EnableViews(self.view, flag, YES);
-}
-
-@end
 
 NS_ASSUME_NONNULL_END

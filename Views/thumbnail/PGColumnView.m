@@ -45,6 +45,28 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGColumnView
 
+- (instancetype)initWithFrame:(NSRect)aRect
+{
+    if((self = [super initWithFrame:aRect])) {
+        _clipView = [[PGClipView alloc] initWithFrame:self.bounds];
+        [_clipView setBackgroundColor:nil];
+        [_clipView setShowsBorder:NO];
+        _clipView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        [self addSubview:_clipView];
+        _view = [[NSView alloc] initWithFrame:NSZeroRect];
+        _clipView.documentView = _view;
+        _clipViews = [NSMutableArray new];
+        _views = [NSMutableArray new];
+        _columnWidth = 128.0f + 12.0f;
+    }
+    return self;
+}
+
+- (instancetype)init
+{
+    return [self initWithFrame:NSZeroRect];
+}
+
 - (NSUInteger)numberOfColumns
 {
 	return _views.count;
@@ -59,19 +81,16 @@ NS_ASSUME_NONNULL_BEGIN
 	[self layout];
 }
 
-//	MARK: -
-
 - (id)viewAtIndex:(NSUInteger)index
 {
 	return _views[index];
 }
 
-//	MARK: -
-
 - (void)addColumnWithView:(NSView *)aView
 {
 	[self insertColumnWithView:aView atIndex:_views.count];
 }
+
 - (void)insertColumnWithView:(NSView *)aView atIndex:(NSUInteger)index
 {
 	NSParameterAssert(aView);
@@ -105,8 +124,6 @@ NS_ASSUME_NONNULL_BEGIN
 	return;
 }
 
-//	MARK: -
-
 - (void)scrollToTopOfColumnWithView:(NSView *)aView
 {
 	[_clipViews[[_views indexOfObjectIdenticalTo:aView]]  scrollToEdge:PGMaxYEdgeMask animation:PGAllowAnimation];
@@ -115,8 +132,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	[_clipView scrollToEdge:PGMaxXEdgeMask animation:flag ? PGPreferAnimation : PGNoAnimation];
 }
-
-//	MARK: -
 
 - (void)layout
 {
@@ -129,36 +144,11 @@ NS_ASSUME_NONNULL_BEGIN
 	[self setNeedsDisplay:YES];
 }
 
-//	MARK: - NSView
-
-- (instancetype)initWithFrame:(NSRect)aRect
-{
-	if((self = [super initWithFrame:aRect])) {
-		_clipView = [[PGClipView alloc] initWithFrame:self.bounds];
-		[_clipView setBackgroundColor:nil];
-		[_clipView setShowsBorder:NO];
-		_clipView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-		[self addSubview:_clipView];
-		_view = [[NSView alloc] initWithFrame:NSZeroRect];
-		_clipView.documentView = _view;
-		_clipViews = [NSMutableArray new];
-		_views = [NSMutableArray new];
-		_columnWidth = 128.0f + 12.0f;
-	}
-	return self;
-}
 - (void)setFrameSize:(NSSize)aSize
 {
-	if(NSEqualSizes(self.frame.size, aSize)) return;
-	[super setFrameSize:aSize];
-	[self layout];
-}
-
-//	MARK: - NSObject
-
-- (instancetype)init
-{
-	return [self initWithFrame:NSZeroRect];
+    if(NSEqualSizes(self.frame.size, aSize)) return;
+    [super setFrameSize:aSize];
+    [self layout];
 }
 
 //	MARK: - <PGClipViewDelegate>

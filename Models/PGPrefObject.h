@@ -50,7 +50,6 @@ extern NSString * const PGPrefObjectAnimateKey;
 
 + (id)globalPrefObject;
 
-
 - (void)setImageScaleFactor:(CGFloat)factor animate:(BOOL)flag;
 - (BOOL)isCurrentSortOrder:(PGSortOrder)order;    // Ignores sort options.
 

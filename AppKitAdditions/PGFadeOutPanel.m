@@ -41,6 +41,11 @@ NSTimeInterval const PGFadeOutPanelDuration = 0.20;
 //	MARK: -
 @implementation PGFadeOutPanel
 
+- (void)dealloc
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+}
+
 - (BOOL)isFadingOut
 {
     return _frameCount != 0;
@@ -99,13 +104,6 @@ NSTimeInterval const PGFadeOutPanelDuration = 0.20;
     [self.parentWindow removeChildWindow:self];
     [super close];
     [self cancelFadeOut];
-}
-
-//	MARK: - NSObject
-
-- (void)dealloc
-{
-    [NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
 
 @end

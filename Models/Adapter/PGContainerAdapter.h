@@ -30,18 +30,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-
 @interface PGContainerAdapter : PGResourceAdapter
 
 @property (readonly) PGRecursionPolicy descendantRecursionPolicy;
-
 @property (readonly) NSArray<PGNode*> *sortedChildren;
 @property (readonly) NSArray<PGNode*> *unsortedChildren;
+@property (readonly) uint64_t byteSizeOfAllChildren;
+
 - (void)setUnsortedChildren:(NSArray<PGNode*> *)anArray presortedOrder:(PGSortOrder)order;
 - (void)removeChild:(PGNode *)child;
-
-@property (readonly) uint64_t byteSizeOfAllChildren;
 
 - (nullable PGNode *)childForIdentifier:(PGResourceIdentifier *)anIdent;
 - (NSUInteger)viewableIndexOfChild:(PGNode *)aNode;

@@ -24,15 +24,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGHTMLAdapter.h"
 
-// Models
+#import <WebKit/WebKit.h>
+
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
-
-// Controllers
 #import "PGDocumentController.h"
-
-// Other Sources
-#import <WebKit/WebKit.h>	//	#import "PGWebKitAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

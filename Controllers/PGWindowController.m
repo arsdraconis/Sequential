@@ -46,14 +46,12 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 //	MARK: -
 @implementation PGWindowController
 
-//	MARK: - PGDisplayController
+//	MARK: PGDisplayController
 
 - (BOOL)canShowInfo
 {
 	return self.activeNode != self.activeDocument.node;
 }
-
-//	MARK: -
 
 - (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag
 {
@@ -74,8 +72,6 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 	[self.window makeKeyAndOrderFront:self];
 }
 
-//	MARK: -
-
 - (void)nodeReadyForViewing:(nullable NSNotification *)aNotif
 {
 	[super nodeReadyForViewing:aNotif];
@@ -92,7 +88,7 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 	_shouldZoomOnNextImageLoad = NO;
 }
 
-//	MARK: - NSWindowController
+//	MARK: NSWindowController
 
 - (void)windowDidLoad
 {
@@ -109,21 +105,18 @@ static NSString *const PGMainWindowFrameKey = @"PGMainWindowFrame";
 	_shouldSaveFrame = YES;
 }
 
-//	MARK: - <NSWindowDelegate>
+//	MARK: <NSWindowDelegate>
 
 - (void)windowDidResize:(NSNotification *)aNotif
 {
 	if(!_shouldSaveFrame || self.window != aNotif.object)
 		return;
 
-	NSWindowPersistableFrameDescriptor	desc = self.window.stringWithSavedFrame;
-//NSLog(@"desc.length %lu", (unsigned long) desc.length);
+	NSWindowPersistableFrameDescriptor desc = self.window.stringWithSavedFrame;
+//    NSLog(@"desc.length %lu", (unsigned long) desc.length);
     // TODO: Let state restoration handle window positions
-	[NSUserDefaults.standardUserDefaults setObject:desc
-											forKey:PGMainWindowFrameKey];
+	[NSUserDefaults.standardUserDefaults setObject:desc forKey:PGMainWindowFrameKey];
 }
-
-//	MARK: -
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)window defaultFrame:(NSRect)newFrame
 {

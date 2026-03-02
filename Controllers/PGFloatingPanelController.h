@@ -42,9 +42,9 @@ typedef NS_ENUM(NSInteger, PGFloatingPanelToggleInstruction)
 - (void)toggleShown;
 - (void)toggleShownUsing:(PGFloatingPanelToggleInstruction)i;
 
-//	this was -(BOOL)setDisplayController: but that signature is non-standard
-//	(because it returns a BOOL), and produces an error when compiling under
-//	ARC, so use a similarly-named method:
+// this was -(BOOL)setDisplayController: but that signature is non-standard
+// (because it returns a BOOL), and produces an error when compiling under
+// ARC, so use a similarly-named method:
 - (BOOL)setDisplayControllerReturningWasChanged:(nullable PGDisplayController *)controller;
 
 @end

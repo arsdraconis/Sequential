@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithScreen:(NSScreen *)anObject NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag NS_UNAVAILABLE;
 - (void)moveToScreen:(NSScreen *)anObject;
-- (void)resizeToUseEntireScreen;	//	2023/08/14 added
+- (void)resizeToUseEntireScreen;
 
 @end
 

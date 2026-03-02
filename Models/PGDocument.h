@@ -38,16 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const PGDocumentWillRemoveNodesNotification;
-extern NSString * const PGDocumentSortedNodesDidChangeNotification;
-extern NSString * const PGDocumentNodeIsViewableDidChangeNotification;
-extern NSString * const PGDocumentNodeThumbnailDidChangeNotification;
-extern NSString * const PGDocumentNodeDisplayNameDidChangeNotification;
-
-extern NSString * const PGDocumentNodeKey;
-extern NSString * const PGDocumentRemovedChildrenKey;
-extern NSString * const PGDocumentUpdateRecursivelyKey;
-
 @interface PGDocument : PGPrefObject <PGActivityOwner, PGNodeParenting>
 
 @property (readonly) PGDisplayableIdentifier *rootIdentifier;

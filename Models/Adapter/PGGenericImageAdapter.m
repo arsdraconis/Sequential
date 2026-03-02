@@ -24,15 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGGenericImageAdapter.h"
 
-// Models
 #import "PGDocument.h"
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
-
-// Controllers
 #import "PGThumbnailController.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGGeometry.h"
 

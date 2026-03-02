@@ -37,6 +37,7 @@ NSString *PGOSTypeToStringQuoted(OSType type, BOOL flag)
 	return flag ? NSFileTypeForHFSTypeCode(type) :
 		(NSString *)CFBridgingRelease(UTCreateStringForOSType(type));
 }
+
 OSType PGOSTypeFromString(NSString *str)
 {
 	if(!str) return 0;
@@ -63,6 +64,7 @@ OSType PGOSTypeFromString(NSString *str)
 	[transform translateXBy:-NSMidX(*rectPtr) yBy:-NSMidY(*rectPtr)];
 	return transform;
 }
+
 + (id)PG_counterflipWithRect:(inout NSRectPointer)rectPtr
 {
 	return [NSGraphicsContext currentContext].flipped ? [self PG_transformWithRect:rectPtr orientation:PGFlippedVert] : [self transform];
@@ -180,8 +182,6 @@ OSType PGOSTypeFromString(NSString *str)
 													userInfo:aDict];
 }
 
-//	MARK: -
-
 - (void)PG_addObserver:(id)observer selector:(SEL)aSelector name:(NSString *)aName
 {
 	[(NSNotificationCenter *)[NSNotificationCenter defaultCenter] addObserver:observer selector:aSelector name:aName object:self];
@@ -195,14 +195,10 @@ OSType PGOSTypeFromString(NSString *str)
 	[(NSNotificationCenter *)[NSNotificationCenter defaultCenter] removeObserver:observer name:aName object:self];
 }
 
-//	MARK: -
-
 - (NSArray *)PG_asArray
 {
 	return @[self];
 }
-
-//	MARK: -
 
 + (nullable void *)PG_useInstance:(BOOL)instance implementationFromClass:(Class)class forSelector:(SEL)aSel
 {
@@ -302,8 +298,6 @@ OSType PGOSTypeFromString(NSString *str)
 	return result;
 }
 
-//	MARK: -
-
 - (NSString *)PG_firstPathComponent
 {
 	for(NSString *const component in self.pathComponents) if(!PGEqualObjects(component, @"/")) return component;
@@ -321,8 +315,6 @@ OSType PGOSTypeFromString(NSString *str)
 		return [NSFileManager.defaultManager displayNameAtPath:self];
 	return name;
 }
-
-//	MARK: -
 
 - (NSArray *)PG_searchTerms
 {

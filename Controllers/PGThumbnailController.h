@@ -31,15 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PGThumbnailControllerContentInsetDidChangeNotification;
-
-@interface PGThumbnailController : NSObject <NSWindowDelegate,
-    PGThumbnailBrowserDataSource, PGThumbnailBrowserDelegate, PGThumbnailViewDataSource>
+@interface PGThumbnailController : NSObject <NSWindowDelegate, PGThumbnailBrowserDataSource, PGThumbnailBrowserDelegate, PGThumbnailViewDataSource>
 
 @property (nonatomic, weak, nullable) PGDisplayController *displayController;
 @property (nonatomic, weak, nullable) PGDocument *document;
 @property (readonly) PGInset contentInset;
-@property (nonatomic, copy) NSSet *selectedNodes;    //    2023/10/02 was readonly
+@property (nonatomic, copy) NSSet *selectedNodes;
 
 + (BOOL)canShowThumbnailsForDocument:(PGDocument *)aDoc;
 + (BOOL)shouldShowThumbnailsForDocument:(PGDocument *)aDoc;

@@ -22,27 +22,22 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
+// TODO: Recent?
+// recent XADMaster sources have EOF and sign comparison issues
+// just disable the warnings
+#pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wnewline-eof"
+    #pragma clang diagnostic ignored "-Wsign-compare"
+    #import "PGArchiveAdapter.h"
+#pragma clang diagnostic pop
 
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
-#pragma clang diagnostic push
-	//	recent XADMaster sources have EOF and sign comparison issues
-	//	just disable the warnings
-	#pragma clang diagnostic ignored "-Wnewline-eof"
-	#pragma clang diagnostic ignored "-Wsign-compare"
-	#import "PGArchiveAdapter.h"
-#pragma clang diagnostic pop
-
-// Models
 #import "PGDocument.h"
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
 #import "PGDataProvider.h"
-
-// Controllers
 #import "PGDocumentController.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -55,7 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 // MARK: -
-
 @interface PGArchiveDataProvider : PGDataProvider
 {
 	@private
@@ -85,7 +79,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 // MARK: -
-
 static
 BOOL
 PG_entryIsInvisibleForName(NSString* name) {
@@ -109,8 +102,6 @@ StringAtDepth(NSInteger depth) {
 } */
 
 //	MARK: -
-
-
 @interface PGArchiveAdapter()
 
 @property (nonatomic, strong) XADArchive *archive;
@@ -324,7 +315,7 @@ StringAtDepth(NSInteger depth) {
 - (void)archiveNeedsPassword:(XADArchive *)archive
 {
 	_needsPassword = YES;
-	[self _threaded_setError:[NSError errorWithDomain:PGNodeErrorDomain code:PGPasswordError userInfo:nil] forNode:_currentSubnode];
+	[self _threaded_setError:[NSError errorWithDomain:PGNodeErrorDomain code:PGNodeErrorPasswordProtected userInfo:nil] forNode:_currentSubnode];
 }
 -(NSStringEncoding)archive:(XADArchive *)archive encodingForData:(NSData *)data guess:(NSStringEncoding)guess confidence:(float)confidence
 {
@@ -372,7 +363,7 @@ StringAtDepth(NSInteger depth) {
 //				if(!_needsPassword) [self archiveNeedsPassword:_archive];
 //				break;
 //			default:
-//				[self _threaded_setError:[NSError PG_errorWithDomain:PGNodeErrorDomain code:PGGenericError localizedDescription:[NSString stringWithFormat:NSLocalizedString(@"The error “%@” occurred while parsing the archive.", @"XADMaster error reporting. %@ is replaced with the XADMaster error."), [_archive describeLastError]] userInfo:nil] forNode:_currentSubnode];
+//				[self _threaded_setError:[NSError PG_errorWithDomain:PGNodeErrorDomain code:PGNodeErrorGeneric localizedDescription:[NSString stringWithFormat:NSLocalizedString(@"The error “%@” occurred while parsing the archive.", @"XADMaster error reporting. %@ is replaced with the XADMaster error."), [_archive describeLastError]] userInfo:nil] forNode:_currentSubnode];
 //				break;
 //		}
 //		_currentSubnode = nil;
@@ -384,8 +375,8 @@ StringAtDepth(NSInteger depth) {
 
 @end
 
-//	MARK: -
 
+//	MARK: -
 @implementation PGDataProvider(PGArchiveDataProvider)
 
 - (nullable XADArchive *)archive
@@ -399,8 +390,8 @@ StringAtDepth(NSInteger depth) {
 
 @end
 
-//	MARK: -
 
+//	MARK: -
 @implementation PGArchiveDataProvider
 
 - (instancetype)initWithArchive:(XADArchive *)archive entry:(int)entry;
@@ -544,8 +535,8 @@ StringAtDepth(NSInteger depth) {
 
 @end
 
-//	MARK: -
 
+//	MARK: -
 @implementation XADArchive(PGAdditions)
 
 - (NSString *)PG_commonRootPath

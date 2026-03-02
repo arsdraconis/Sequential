@@ -30,8 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation NSAttributedString(PGAdditions)
 
-//	MARK: NSAttributedString(PGAdditions)
-
 + (NSMutableAttributedString *)PG_attributedStringWithAttachmentCell:(NSTextAttachmentCell *)cell label:(NSString *)label
 {
 	NSMutableAttributedString *const result = [NSMutableAttributedString new];
@@ -48,6 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 				   range:NSMakeRange(0, result.length)];
 	return result;
 }
+
 + (NSMutableAttributedString *)PG_attributedStringWithFileIcon:(nullable NSImage *)anImage name:(NSString *)fileName
 {
 	return [self PG_attributedStringWithAttachmentCell:[[PGIconAttachmentCell alloc] initImageCell:anImage]
@@ -59,8 +58,6 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGIconAttachmentCell
 
-//	MARK: NSTextAttachmentCell
-
 - (void)drawWithFrame:(NSRect)aRect inView:(nullable NSView *)aView
 {
 	[NSGraphicsContext saveGraphicsState];
@@ -71,16 +68,16 @@ NS_ASSUME_NONNULL_BEGIN
 	[self.image drawInRect:r fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0f];
 	[NSGraphicsContext restoreGraphicsState];
 }
+
 - (NSSize)cellSize
 {
 	return NSMakeSize(16.0f, 16.0f);
 }
+
 - (NSPoint)cellBaselineOffset
 {
 	return NSMakePoint(0.0f, -3.0f);
 }
-
-//	MARK: - NSCell
 
 - (instancetype)initImageCell:(nullable NSImage *)anImage
 {

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-//	<https://stackoverflow.com/questions/12322714/changing-color-of-nswindow-title-text>
+// <https://stackoverflow.com/questions/12322714/changing-color-of-nswindow-title-text>
 static
 NSView*
 FindViewInSubview(NSArray<__kindof NSView *> *subviews,
@@ -29,7 +29,7 @@ FindViewInSubview(NSArray<__kindof NSView *> *subviews,
 	return nil;
 }
 
-//	<https://stackoverflow.com/questions/12322714/changing-color-of-nswindow-title-text>
+// <https://stackoverflow.com/questions/12322714/changing-color-of-nswindow-title-text>
 static
 NSTextField*
 FindTitleTextFieldInTitleBar(NSWindow *const window) {
@@ -157,8 +157,7 @@ InformPossiblePGFullSizeContentProtocolAdopter(id object,
 @property (nonatomic, strong, nullable) NSTrackingArea *lhsTrackingArea;
 @property (nonatomic, strong, nullable) NSTrackingArea *midTrackingArea;
 @property (nonatomic, strong, nullable) NSTrackingArea *rhsTrackingArea;
-@property (nonatomic, weak) PGFullSizeContentTitlebarAccessoryViewController
-							*fullSizeContentTitlebarAccessoryViewController;
+@property (nonatomic, weak) PGFullSizeContentTitlebarAccessoryViewController *fullSizeContentTitlebarAccessoryViewController;
 
 @end
 
@@ -223,21 +222,21 @@ InformPossiblePGFullSizeContentProtocolAdopter(id object,
 	NSWindow *w = self.window;
 	NSView *rhs = self.fullSizeContentTitlebarAccessoryViewController.view;
 	NSTextField *titleTextField = FindTitleTextFieldInTitleBar(w);
-	//	There appears to be a bug in macOS which causes the text-field to
-	//	not be found (*) and when this happens, the full-size-content mode
-	//	goes "wonky": the contents of the window don't resize correctly;
-	//	this bug manifests when the window is resized to a height which
-	//	matches the height of the visible area of the screen that the
-	//	window is on (a horizontal dock must be hidden for this to occur);
-	//	it sometimes occurs at smaller window height values;
-	//	the only way to make the window work properly again is for the
-	//	user to resize the window manually - when that is done, the window
-	//	behaves properly again.
-	//	The code below mitigates this problem by checking whether
-	//	titleTextField is non-nil.
+	// There appears to be a bug in macOS which causes the text-field to
+	// not be found (*) and when this happens, the full-size-content mode
+	// goes "wonky": the contents of the window don't resize correctly;
+	// this bug manifests when the window is resized to a height which
+	// matches the height of the visible area of the screen that the
+	// window is on (a horizontal dock must be hidden for this to occur);
+	// it sometimes occurs at smaller window height values;
+	// the only way to make the window work properly again is for the
+	// user to resize the window manually - when that is done, the window
+	// behaves properly again.
+	// The code below mitigates this problem by checking whether
+	// titleTextField is non-nil.
 	//
-	//	(*) the NSTextField object is not in the view hierarachy so the
-	//		FindTitleTextFieldInTitleBar() function returns a nil value.
+	// (*) the NSTextField object is not in the view hierarachy so the
+	// 	FindTitleTextFieldInTitleBar() function returns a nil value.
 //	NSAssert(titleTextField, @"");
 /* {
 NSLog(@"titleTextField = %@, superview %@, superview.children.count %lu",
@@ -360,22 +359,21 @@ GetTitleBarHeightFor(NSWindow *w) {
 	} else
 		w.titlebarAppearsTransparent = !isFullSizeContentView;
 
-//	w.titleVisibility = isFullSizeContentView ? NSWindowTitleVisible :
-//						NSWindowTitleHidden;
+//    w.titleVisibility = isFullSizeContentView ? NSWindowTitleVisible : NSWindowTitleHidden;
 
 	if(isFullSizeContentView) {
-		//	When the styleMask is altered, AppKit tries to animate the window
-		//	to a larger size which is then reduced back to the final size
-		//	specified by the frame variable in the -[NSWindow setFrame:display:]
-		//	call below. That larger size causes problems with the title bar's
-		//	title text field getting messed up. The simplest way to work-around
-		//	this problem is to reduce the frame height by 1 point before altering
-		//	the styleMask. However, because this frame height change causes a
-		//	weird stuttering during the frame's animation, this height change is
-		//	only done when the window's height is close to the height of the
-		//	screen's visible area.
+		// When the styleMask is altered, AppKit tries to animate the window
+		// to a larger size which is then reduced back to the final size
+		// specified by the frame variable in the -[NSWindow setFrame:display:]
+		// call below. That larger size causes problems with the title bar's
+		// title text field getting messed up. The simplest way to work-around
+		// this problem is to reduce the frame height by 1 point before altering
+		// the styleMask. However, because this frame height change causes a
+		// weird stuttering during the frame's animation, this height change is
+		// only done when the window's height is close to the height of the
+		// screen's visible area.
 		if(w.screen.visibleFrame.size.height - frame.size.height < 4.0f) {
-			//	do NOT animate this call, ie, don't use [w.animator setFrame:...]
+			// do NOT animate this call, ie, don't use [w.animator setFrame:...]
 			[w setFrame:NSMakeRect(frame.origin.x, frame.origin.y,
 									frame.size.width, frame.size.height - 1.0f)
 				display:NO];
@@ -393,13 +391,13 @@ GetTitleBarHeightFor(NSWindow *w) {
 
 	[self _updateTrackingAreas:!isFullSizeContentView];
 
-	//	When the window's styleMask is changed, the frame's size is altered
-	//	by NSWindow. Since the point of all of this is to *just* make the
-	//	titlebar disappear but not change the window's size or location,
-	//	reverse the changes to the frame by restoring its value.
-	//	However, when the title bar is close to the top of the screen (just
-	//	under the menu bar), the animation during -setFrame: looks odd so
-	//	detect that situation and if so, perform a non-animated -setFrame:.
+	// When the window's styleMask is changed, the frame's size is altered
+	// by NSWindow. Since the point of all of this is to *just* make the
+	// titlebar disappear but not change the window's size or location,
+	// reverse the changes to the frame by restoring its value.
+	// However, when the title bar is close to the top of the screen (just
+	// under the menu bar), the animation during -setFrame: looks odd so
+	// detect that situation and if so, perform a non-animated -setFrame:.
 //NSLog(@"-_toggleFullSizeContentWithAnimation: -setFrame:display:");
 	if(!animate || (isFullSizeContentView &&
 		NSMaxY(w.screen.visibleFrame) - NSMaxY(frame) < GetTitleBarHeightFor(w))) {

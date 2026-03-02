@@ -70,14 +70,14 @@ NS_ASSUME_NONNULL_BEGIN
     // 2022/02/15
     [self.window setFrameUsingName:self.windowFrameAutosaveName];
 
-    // NSLog(@"collectionBehavior %lu", self.window.collectionBehavior);
+//     NSLog(@"collectionBehavior %lu", self.window.collectionBehavior);
 
-    //    Do not do this; it causes the floating windows to not transition to macOS
-    //    fullscreen mode correctly - probably one of the settings is incorrect;
-    //    because the default behavior works correctly anyway, there's no need for this.
-    //    It looks like Preview.app hides its Info window before entering fullscreen
-    //    mode and then shows the Info window once the transition to fullscreen mode
-    //    has been completed. That's now what this app does too.
+    // Do not do this; it causes the floating windows to not transition to macOS
+    // fullscreen mode correctly - probably one of the settings is incorrect;
+    // because the default behavior works correctly anyway, there's no need for this.
+    // It looks like Preview.app hides its Info window before entering fullscreen
+    // mode and then shows the Info window once the transition to fullscreen mode
+    // has been completed. That's now what this app does too.
     /*    NSWindowCollectionBehavior cb = NSWindowCollectionBehaviorMoveToActiveSpace |
             NSWindowCollectionBehaviorStationary | NSWindowCollectionBehaviorIgnoresCycle |
             NSWindowCollectionBehaviorFullScreenAuxiliary |

@@ -27,7 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "Sequential-Swift.h"
 
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGBezelPanel.h"
 

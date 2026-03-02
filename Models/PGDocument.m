@@ -24,33 +24,25 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDocument.h"
 
-// Models
 #import "PGBookmark.h"
 #import "PGGenericImageAdapter.h"
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
 #import "PGSubscription.h"
-
-// Views
 #import "PGImageView.h"
-
-// Controllers
 #import "PGBookmarkController.h"
 #import "PGDisplayController.h"
 #import "PGDocumentController.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 #import "PGGeometry.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-NSString * const PGDocumentWillRemoveNodesNotification      = @"PGDocumentWillRemoveNodes";
+NSString * const PGDocumentWillRemoveNodesNotification = @"PGDocumentWillRemoveNodes";
 NSString * const PGDocumentSortedNodesDidChangeNotification = @"PGDocumentSortedNodesDidChange";
 NSString * const PGDocumentNodeIsViewableDidChangeNotification = @"PGDocumentNodeIsViewableDidChange";
 NSString * const PGDocumentNodeThumbnailDidChangeNotification = @"PGDocumentNodeThumbnailDidChange";
-NSString * const PGDocumentNodeDisplayNameDidChangeNotification =
-    @"PGDocumentNodeDisplayNameDidChange";
+NSString * const PGDocumentNodeDisplayNameDidChangeNotification = @"PGDocumentNodeDisplayNameDidChange";
 
 NSString * const PGDocumentNodeKey              = @"PGDocumentNode";
 NSString * const PGDocumentRemovedChildrenKey   = @"PGDocumentRemovedChildren";
@@ -63,7 +55,6 @@ NSString * const PGDocumentUpdateRecursivelyKey = @"PGDocumentUpdateRecursively"
 #define PGDocumentMaxCachedNodes 128
 
 // MARK: -
-
 @interface PGDocument ()
 
 @property (nonatomic, strong) PGSubscription *subscription;

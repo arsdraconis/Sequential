@@ -90,7 +90,7 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 	self.needsDisplay = YES;
 }
 
-//	MARK: - NSView
+//	MARK: NSView
 
 - (BOOL)isFlipped
 {
@@ -119,7 +119,7 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 														NSHeight(b) - PGTextTotalVertPadding)];
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (void)dealloc
 {
@@ -127,7 +127,7 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
 	[sud removeObserver:self forKeyPath:PGThumbnailSizeFormatKey];
 }
 
-//	MARK: - NSObject(NSKeyValueObserving)
+//	MARK: NSObject(NSKeyValueObserving)
 
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath
 					  ofObject:(nullable id)object
@@ -147,7 +147,7 @@ StringForDisplay(NSUInteger imageCount, uint64_t byteSizeTotal) {
     }
 }
 
-//	MARK: - <PGBezelPanelContentView>
+//	MARK: <PGBezelPanelContentView>
 
 - (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)scaleFactor
 {

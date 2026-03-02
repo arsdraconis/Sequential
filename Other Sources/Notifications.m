@@ -32,7 +32,23 @@ NSString * const PGPrefObjectTimerIntervalDidChangeNotification =
 NSString * const PGPrefObjectBaseOrientationDidChangeNotification =
     @"PGPrefObjectBaseOrientationDidChange";
 
+// Can be removed once consolidated in Swift
 NSString * const PGPrefObjectAnimateKey = @"PGPrefObjectAnimate";
+NSString * const PGAntialiasWhenUpscalingKey = @"PGAntialiasWhenUpscaling";
+NSString * const PGImageScaleConstraintKey = @"PGImageScaleConstraint";
+NSString * const PGShowThumbnailImageNameKey = @"PGShowThumbnailImageName";
+NSString * const PGShowThumbnailImageSizeKey = @"PGShowThumbnailImageSize";
+NSString * const PGShowThumbnailContainerNameKey = @"PGShowThumbnailContainerName";
+NSString * const PGShowThumbnailContainerChildCountKey = @"PGShowThumbnailContainerChildCount";
+NSString * const PGShowThumbnailContainerChildSizeTotalKey = @"PGShowThumbnailContainerChildSizeTotal";
+NSString * const PGThumbnailSizeFormatKey = @"PGThumbnailSizeFormat";
+
+NSString *const PGDisplayControllerActiveNodeDidChangeNotification = @"PGDisplayControllerActiveNodeDidChange";
+NSString *const PGDisplayControllerActiveNodeWasReadNotification = @"PGDisplayControllerActiveNodeWasRead";
+NSString *const PGDisplayControllerTimerDidChangeNotification = @"PGDisplayControllerTimerDidChange";
+
+NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThumbnailControllerContentInsetDidChange";
+
 
 
 NS_ASSUME_NONNULL_END

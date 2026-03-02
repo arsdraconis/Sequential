@@ -27,7 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
-// Models
 #import "PGResourceDataProvider.h"
 #import "PGResourceIdentifier.h"
 
@@ -217,8 +216,6 @@ NS_ASSUME_NONNULL_BEGIN
     }
     return nil;
 }
-
-//	MARK: - <NSCopying>
 
 - (id)copyWithZone:(nullable NSZone *)zone
 {

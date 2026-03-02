@@ -45,7 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)deselectItem:(id)item;
 - (void)toggleSelectionOfItem:(nullable id)item;
 - (void)moveUp:(BOOL)up byExtendingSelection:(BOOL)ext;
-//- (void)selectAll;	//	2023/09/18
 - (BOOL)selectActiveNodeIfDisplayedInThisView;
 
 - (NSUInteger)indexOfItemAtPoint:(NSPoint)p;
@@ -53,10 +52,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)reloadData;
 - (void)sizeToFit;
-//- (void)scrollToSelectionAnchor;	2023/08/17 removed (method is now private)
 
-//	invalidates selected items (forces a screen update)
-- (void)selectionNeedsDisplay;	//	2023/11/23
+/// Invalidates selected items (forces a screen update).
+- (void)selectionNeedsDisplay;
 
 - (void)windowDidChangeKey:(NSNotification *)aNotif;
 - (void)systemColorsDidChange:(NSNotification *)aNotif;
@@ -66,22 +64,23 @@ NS_ASSUME_NONNULL_BEGIN
 // MARK: -
 @protocol PGThumbnailViewDataSource <NSObject>
 
-@required	//@optional
+@required
 - (nullable NSArray *)itemsForThumbnailView:(PGThumbnailView *)sender;
 - (NSImage *)thumbnailView:(PGThumbnailView *)sender thumbnailForItem:(id)item;
 - (BOOL)thumbnailView:(PGThumbnailView *)sender canSelectItem:(id)item;
 - (BOOL)thumbnailView:(PGThumbnailView *)sender isContainerItem:(id)item;
-- (OSType)thumbnailView:(PGThumbnailView *)sender typeCodeForItem:(id)item;	//	2023/10/22
-- (NSURL *)thumbnailView:(PGThumbnailView *)sender urlForItem:(id)item;	//	2023/10/14
+- (OSType)thumbnailView:(PGThumbnailView *)sender typeCodeForItem:(id)item;
+- (NSURL *)thumbnailView:(PGThumbnailView *)sender urlForItem:(id)item;
 - (NSString *)thumbnailView:(PGThumbnailView *)sender labelForItem:(id)item;
 - (NSColor *)thumbnailView:(PGThumbnailView *)sender labelColorForItem:(id)item;
-- (NSRect)thumbnailView:(PGThumbnailView *)sender highlightRectForItem:(id)item; // A rect within {{0, 0}, {1, 1}}.
+/// A rect within {{0, 0}, {1, 1}}.
+- (NSRect)thumbnailView:(PGThumbnailView *)sender highlightRectForItem:(id)item;
 - (BOOL)thumbnailView:(PGThumbnailView *)sender hasRealThumbnailForItem:(id)item;
 
-//	can return NSNotFound if item is not a container/folder:
+// can return NSNotFound if item is not a container/folder:
 //- (NSInteger)thumbnailView:(PGThumbnailView *)sender directChildrenCountForItem:(id)item;
-//	packs 2 half-NSUInteger values into a single NSUInteger
-//	upper half is folder count; lower half is image count
+// packs 2 half-NSUInteger values into a single NSUInteger
+// upper half is folder count; lower half is image count
 //- (NSUInteger)thumbnailView:(PGThumbnailView *)sender folderAndImageDirectChildrenCountForItem:(id)item;
 - (uint64_t)thumbnailView:(PGThumbnailView *)sender byteSizeAndFolderAndImageCountOfDirectChildrenForItem:(id)item;
 - (uint64_t)thumbnailView:(PGThumbnailView *)sender byteSizeOfAllChildrenForItem:(id)item;
@@ -97,7 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 - (void)thumbnailViewSelectionDidChange:(PGThumbnailView *)sender;
-- (void)thumbnailView:(PGThumbnailView *)sender selectAllDirectChildrenOf:(id)item;	//	2023/09/18
+- (void)thumbnailView:(PGThumbnailView *)sender selectAllDirectChildrenOf:(id)item;
 
 @end
 

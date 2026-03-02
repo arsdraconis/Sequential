@@ -22,7 +22,6 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-// Models
 #import "PGActivity.h"
 #import "PGDataProvider.h"
 #import "PGNode.h"
@@ -37,6 +36,7 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
     PGRecursePolicyNoFurther  = 2,
 };
 
+// MARK: -
 @protocol PGResourceAdapterImageGeneratorCompletion <NSObject> // 2023/10/21
 
 @required
@@ -44,8 +44,8 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
 
 @end
 
-@interface PGResourceAdapter : NSObject
-    <PGActivityOwner, PGResourceAdapting, PGResourceAdapterImageGeneratorCompletion>
+// MARK: -
+@interface PGResourceAdapter : NSObject <PGActivityOwner, PGResourceAdapting, PGResourceAdapterImageGeneratorCompletion>
 
 @property (readonly) PGNode *node;
 @property (readonly) __kindof PGDataProvider *dataProvider;
@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
 @property (readonly) BOOL shouldRecursivelyCreateChildren;
 
 @property (readonly) NSData *data;
-@property (readonly) uint64_t dataByteSize;    //	2023/09/17
+@property (readonly) uint64_t dataByteSize;    // 2023/09/17
 @property (readonly) BOOL canGetData;
 @property (readonly) BOOL hasNodesWithData;
 
@@ -92,6 +92,7 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
 
 @property (readonly) NSUInteger viewableNodeIndex;
 @property (readonly) NSUInteger viewableNodeCount;
+
 - (BOOL)hasViewableNodeCountGreaterThan:(NSUInteger)anInt;
 
 + (NSDictionary *)typesDictionary;
@@ -142,6 +143,7 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
 
 @end
 
+// MARK: -
 // Private API for use by sub-classes only; clients of PGResourceAdapter
 // should not call these; they are used to send the results of the image
 // generation to the PGResourceAdapter instance for later use when
@@ -158,6 +160,7 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
 
 @end
 
+// MARK: -
 // 2023/10/21
 /// Sub-classes of PGResourceAdapter must implement this protocol
 @protocol PGResourceAdapterImageGeneration <NSObject>
@@ -173,6 +176,7 @@ typedef NS_ENUM(NSInteger, PGRecursionPolicy) {
 
 @end
 
+// MARK: -
 @interface PGDataProvider (PGResourceAdapterLoading)
 
 - (NSArray *)adapterClassesForNode:(PGNode *)node;

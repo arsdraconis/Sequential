@@ -45,17 +45,6 @@ NSString * const PGBezelPanelFrameDidChangeNotification    = @"PGBezelPanelFrame
 //	MARK: -
 @implementation PGBezelPanel
 
-//	MARK: NSObject
-
-+ (BOOL)instancesRespondToSelector:(SEL)aSelector
-{
-    if (@selector(cancelOperation:) == aSelector) return NO;
-    if (@selector(performClose:) == aSelector) return NO;
-    return [super instancesRespondToSelector:aSelector];
-}
-
-//	MARK: Instance Methods
-
 - (instancetype)initWithContentView:(NSView *)aView
 {
     if ((self = [super initWithContentRect:(NSRect){NSZeroPoint, aView.frame.size}
@@ -65,12 +54,25 @@ NSString * const PGBezelPanelFrameDidChangeNotification    = @"PGBezelPanelFrame
     {
         [self setOpaque:NO];
         self.backgroundColor = NSColor.clearColor;
-        //	[self useOptimizedDrawing:YES];	2021/07/21 deprecated
         self.hidesOnDeactivate = NO;
         self.contentView       = aView;
     }
     return self;
 }
+
+- (void)dealloc
+{
+    [self PG_removeObserver];
+}
+
++ (BOOL)instancesRespondToSelector:(SEL)aSelector
+{
+    if (@selector(cancelOperation:) == aSelector) return NO;
+    if (@selector(performClose:) == aSelector) return NO;
+    return [super instancesRespondToSelector:aSelector];
+}
+
+//	MARK: Instance Methods
 
 - (void)displayOverWindow:(NSWindow *)aWindow
 {
@@ -184,13 +186,6 @@ NSString * const PGBezelPanelFrameDidChangeNotification    = @"PGBezelPanelFrame
     [self.parentWindow PG_addObserver:self
                              selector:@selector(windowDidResize:)
                                  name:NSWindowDidResizeNotification];
-}
-
-//	MARK: NSObject
-
-- (void)dealloc
-{
-    [self PG_removeObserver];
 }
 
 @end

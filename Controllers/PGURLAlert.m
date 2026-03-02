@@ -24,7 +24,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGURLAlert.h"
 
-// Other Sources
 #import "PGFoundationAdditions.h"
 #import "PGZooming.h"
 
@@ -41,8 +40,6 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGURLAlert
 
-//	MARK: - PGURLAlert
-
 - (IBAction)ok:(id)sender
 {
 	[NSApp stopModalWithCode:NSAlertFirstButtonReturn];
@@ -53,7 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 //	MARK: -
-
 - (nullable NSURL *)runModal
 {
 	BOOL const canceled = [NSApp runModalForWindow:self.window] == NSAlertSecondButtonReturn;
@@ -62,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 	return [NSURL PG_URLWithString:_URLField.stringValue];
 }
 
-//	MARK: - NSWindowController
+//	MARK: NSWindowController
 
 - (void)enableOKButton
 {
@@ -72,25 +68,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)windowDidLoad
 {
 	[super windowDidLoad];
-	[self enableOKButton];	//	[self controlTextDidChange:nil];	2021/07/21
+	[self enableOKButton];
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (instancetype)init
 {
 	return [self initWithWindowNibName:@"PGURL"];
 }
 
-//	MARK: - NSObject(NSControlSubclassNotifications)
-// MARK: - <NSControlTextEditingDelegate>
-
 - (void)controlTextDidChange:(NSNotification *)aNotification
 {
 	[self enableOKButton];	//	[OKButton setEnabled:[NSURL PG_URLWithString:[URLField stringValue]] != nil];	2021/07/21
 }
-
-//	MARK: - <NSWindowDelegate>
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)window defaultFrame:(NSRect)defaultFrame
 {

@@ -42,11 +42,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-//	should match #define in PGDisplayController.m
-	//	does not work well so disabled until it's fixed
+// should match #define in PGDisplayController.m
+// does not work well so disabled until it's fixed
 #define FULL_HEIGHT_BROWSER_IN_FULLSIZE_CONTENT_MODE	false
-
-NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThumbnailControllerContentInsetDidChange";
 
 #define PGMaxVisibleColumns (NSUInteger)3
 
@@ -56,8 +54,8 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 @property (nonatomic, strong) PGBezelPanel *window;
 @property (nonatomic, weak) PGThumbnailBrowser *browser;
 
-@property (nonatomic, strong) PGBezelPanel *infoWindow;	//	2023/10/02 added
-@property (nonatomic, weak) NSView *infoView;	//	2023/10/02 added [PGThumbnailInfoView]
+@property (nonatomic, strong) PGBezelPanel *infoWindow;
+@property (nonatomic, weak) NSView *infoView;
 
 #if FULL_HEIGHT_BROWSER_IN_FULLSIZE_CONTENT_MODE
 @property (nonatomic, strong) NSTrackingArea *browserTrackingArea;
@@ -83,7 +81,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	return aDoc.showsThumbnails && [self canShowThumbnailsForDocument:aDoc];
 }
 
-//	MARK: - PGThumbnailController
+//	MARK: PGThumbnailController
 - (void)setDisplayController:(nullable PGDisplayController *)aController
 {
 	if(aController == _displayController) return;
@@ -136,8 +134,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	_browser.selection = selectedNodes;
 }
 
-//	MARK: -
-
 - (void)selectAll {
 	[_browser selectAll];
 }
@@ -160,8 +156,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	_infoView.hidden = YES;
 	[_window fadeOut];
 }
-
-//	MARK: -
 
 - (void)displayControllerActiveNodeDidChange:(nullable NSNotification *)aNotif
 {
@@ -220,8 +214,6 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	[_window setIgnoresMouseEvents:NO];
 }
 
-//	MARK: -
-
 - (void)documentNodeThumbnailDidChange:(NSNotification *)aNotif
 {
 	[_browser redisplayItem:aNotif.userInfo[PGDocumentNodeKey] recursively:[aNotif.userInfo[PGDocumentUpdateRecursivelyKey] boolValue]];
@@ -239,7 +231,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	[_browser redisplayItem:aNotif.userInfo[PGDocumentNodeKey] recursively:NO];
 }
 
-//	MARK: - PGThumbnailController(Private)
+//	MARK: PGThumbnailController(Private)
 
 //	ensures that whether in macOS-fullscreen or Sequential-fullscreen,
 //	the app behaves the same
@@ -374,7 +366,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	[self PG_postNotificationName:PGThumbnailControllerContentInsetDidChangeNotification];
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (instancetype)init
 {
@@ -416,7 +408,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 	[_window setDelegate:nil];
 }
 
-//	MARK: - <NSWindowDelegate>
+//	MARK: <NSWindowDelegate>
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotif
 {
@@ -430,7 +422,7 @@ NSString *const PGThumbnailControllerContentInsetDidChangeNotification = @"PGThu
 {
 }
 
-//	MARK: - <NSTrackingArea owner>
+//	MARK: <NSTrackingArea owner>
 
 #if FULL_HEIGHT_BROWSER_IN_FULLSIZE_CONTENT_MODE
 - (void)mouseEntered:(NSEvent *)event {
@@ -451,7 +443,7 @@ NSLog(@"-mouseMoved:");
 }
 #endif
 
-//	MARK: - <PGFullSizeContentProtocol>
+//	MARK: <PGFullSizeContentProtocol>
 
 - (void)fullSizeContentController:(PGFullSizeContentController *)controller
 			   willStartAnimating:(NSWindow *)window {
@@ -473,7 +465,7 @@ NSLog(@"-mouseMoved:");
 #endif
 }
 
-//	MARK: - <PGThumbnailBrowserDataSource>
+//	MARK: <PGThumbnailBrowserDataSource>
 
 - (nullable id)thumbnailBrowser:(PGThumbnailBrowser *)sender parentOfItem:(id)item
 {
@@ -485,7 +477,7 @@ NSLog(@"-mouseMoved:");
 	return [item resourceAdapter].isContainer;
 }
 
-//	MARK: - <PGThumbnailBrowserDelegate>
+//	MARK: <PGThumbnailBrowserDelegate>
 
 - (void)thumbnailBrowserSelectionDidChange:(PGThumbnailBrowser *)sender
 {
@@ -531,7 +523,7 @@ NSLog(@"-mouseMoved:");
 		[self _updateWindowFrame];
 }
 
-//	MARK: - <PGThumbnailViewDataSource>
+//	MARK: <PGThumbnailViewDataSource>
 
 - (nullable NSArray *)itemsForThumbnailView:(PGThumbnailView *)sender
 {
@@ -557,7 +549,7 @@ NSLog(@"-mouseMoved:");
 }
 - (BOOL)thumbnailView:(PGThumbnailView *)sender canSelectItem:(id)item;
 {
-	//	2024/03/01 folders containing just folders should be selectable
+	// 2024/03/01 folders containing just folders should be selectable
 	return [self thumbnailView:sender isContainerItem:item] ||
 			[[item resourceAdapter] hasViewableNodeCountGreaterThan:0];
 //	return [[item resourceAdapter] hasViewableNodeCountGreaterThan:0];
@@ -597,16 +589,6 @@ NSLog(@"-mouseMoved:");
 {
 	return [item resourceAdapter].hasRealThumbnail;
 }
-
-/* - (NSInteger)thumbnailView:(PGThumbnailView *)sender directChildrenCountForItem:(id)item
-{
-	return [item resourceAdapter].childCount;
-}
-
-- (NSUInteger)thumbnailView:(PGThumbnailView *)sender folderAndImageDirectChildrenCountForItem:(id)item
-{
-	return [item resourceAdapter].folderAndImageCount;
-} */
 
 - (uint64_t)thumbnailView:(PGThumbnailView *)sender byteSizeAndFolderAndImageCountOfDirectChildrenForItem:(id)item {
 	return [item resourceAdapter].byteSizeAndFolderAndImageCount;

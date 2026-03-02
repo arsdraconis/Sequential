@@ -60,6 +60,11 @@ static NSUInteger PGSimultaneousConnections = 0;
 // MARK: -
 @implementation PGURLLoad
 
+- (void)dealloc
+{
+    [self _stop];
+}
+
 //	MARK: +PGURLLoad
 
 + (NSString *)userAgent
@@ -72,7 +77,7 @@ static NSUInteger PGSimultaneousConnections = 0;
 	PGUserAgent = [aString copy];
 }
 
-//	MARK: - PGURLLoad
+//	MARK: PGURLLoad
 
 - (instancetype)initWithRequest:(NSURLRequest *)aRequest parent:(id<PGActivityOwner>)parent delegate:(NSObject<PGURLLoadDelegate> *)delegate
 {
@@ -87,8 +92,6 @@ static NSUInteger PGSimultaneousConnections = 0;
 	}
 	return self;
 }
-
-//	MARK: -
 
 - (nullable NSObject<PGURLLoadDelegate> *)delegate
 {
@@ -107,8 +110,6 @@ static NSUInteger PGSimultaneousConnections = 0;
 	return _data;
 }
 
-//	MARK: -
-
 - (void)cancelAndNotify:(BOOL)notify
 {
 	if(self.loaded) return;
@@ -116,12 +117,8 @@ static NSUInteger PGSimultaneousConnections = 0;
 	_data = nil;
 	if(notify) [self.delegate loadDidCancel:self];
 }
-/* - (BOOL)loaded
-{
-	return _loaded;
-} */
 
-//	MARK: - PGURLLoad(Private)
+//	MARK: PGURLLoad(Private)
 
 - (BOOL)_start
 {
@@ -149,14 +146,7 @@ static NSUInteger PGSimultaneousConnections = 0;
 	[[PGActivity applicationActivity] PG_startNextURLLoad];
 }
 
-//	MARK: - NSObject
-
-- (void)dealloc
-{
-	[self _stop];
-}
-
-//	MARK: - NSObject(NSURLConnectionDelegate)
+//	MARK: NSObject(NSURLConnectionDelegate)
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
@@ -185,7 +175,7 @@ static NSUInteger PGSimultaneousConnections = 0;
 	[self.delegate loadDidSucceed:self];
 }
 
-//	MARK: - <PGActivityOwner>
+//	MARK: <PGActivityOwner>
 
 - (NSString *)descriptionForActivity:(PGActivity *)activity
 {

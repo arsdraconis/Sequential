@@ -45,8 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 extern void Unpack_ByteSize_FolderImageCounts(uint64_t packed, uint64_t* byteSize,
 												  NSUInteger* folders, NSUInteger* images);
 
-//	MARK: -
-
 extern NSInteger GetThumbnailSizeFormat(void);
 
 //	extern
@@ -74,7 +72,7 @@ GetThumbnailSizeFormat(void) {
 #define PGInnerTotalWidth (PGThumbnailSize + PGThumbnailMarginWidth * 2.0f)
 #define PGOuterTotalWidth (PGInnerTotalWidth + 2.0f)
 
-typedef NS_ENUM(unsigned int, PGBackgroundType) {
+typedef NS_ENUM(NSInteger, PGBackgroundType) {
 	PGBackground_NotSelected,
 
 	PGBackground_Selected_Active_MainWindow,
@@ -120,6 +118,7 @@ static NSColor * _Nullable PGBackgroundColors[PGBackgroundCount];
 //	#define SELECTION_IVAR_SPECIAL_CFMUTABLESET		//	impl [3]
 	#define SELECTION_IVAR_SPECIAL_NSMUTABLESET		//	impl [4]
 
+// MARK: -
 @interface PGThumbnailView ()
 	#if defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 /*	The compiler will not accept this declaration:
@@ -981,7 +980,7 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	return self;
 }
 
-//	MARK: - private selection methods
+//	MARK: private selection methods
 
 - (void)_invalidateItem:(id)item {
 	NSUInteger const i = [_items indexOfObjectIdenticalTo:item];
@@ -1181,7 +1180,7 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	}
 }
 
-//	MARK: - public selection methods
+//	MARK: public selection methods
 
 #if defined(SELECTION_IVAR_ORIGINAL_NSMUTABLESET)	//	[1]
 //@synthesize selection = _selection;
@@ -1336,6 +1335,7 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	}
 	return mustSelectActiveNode;
 }
+
 /* - (void)selectAll {
 	//	2023/09/18 option-clicking selects the item's direct children;
 	//	this method implements the select-all-direct-children
@@ -1346,7 +1346,7 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	[self _selectItemsFrom:count to:0];
 } */
 
-//	MARK: - PGThumbnailView
+//	MARK: PGThumbnailView
 
 - (void)setThumbnailOrientation:(PGOrientation)orientation
 {
@@ -1363,8 +1363,6 @@ SetEqualsSet(NSSet *const nsSet1, NSSet *const nsSet2) {
 	NSRect frame = NSMakeRect(PGThumbnailMarginWidth, index * PGThumbnailTotalHeight + PGThumbnailMarginHeight, PGThumbnailSize, PGThumbnailSize);
 	return flag ? NSInsetRect(frame, -PGThumbnailMarginWidth, -PGThumbnailMarginHeight) : frame;
 }
-
-//	MARK: -
 
 - (void)reloadData
 {
@@ -1409,11 +1407,9 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 	[self PG_scrollRectToVisible:[self frameOfItemAtIndex:i withMargin:YES] type:scrollToRect];
 }
 
-- (void)selectionNeedsDisplay {	//	2023/11/23
+- (void)selectionNeedsDisplay {
 	[self _invalidateItems:[self _immutableSelection]];
 }
-
-//	MARK: -
 
 - (void)windowDidChangeKey:(NSNotification *)aNotif
 {
@@ -1428,7 +1424,7 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 	[self setNeedsDisplay:YES];
 }
 
-//	MARK: - PGThumbnailView(Private)
+//	MARK: PGThumbnailView(Private)
 
 - (void)_validateSelection
 {
@@ -1463,7 +1459,7 @@ NSLog(@"n2 %@/%@", n2.parentNode.identifier.displayName, n2.identifier.displayNa
 		}
 }
 
-//	MARK: - private drawing
+//	MARK: private drawing
 
 - (NSColor *)_backgroundColorWithType:(PGBackgroundType)type
 {
@@ -1555,8 +1551,6 @@ NSLog(@"view %p [%@], has window: %p [%@] \"%@\", is key %c, is 1st responder %c
 //	return [tvw isKeyWindow] && [tvw firstResponder] == self;
 	return dcw.mainWindow;
 }
-
-//	MARK: - NSView
 
 - (BOOL)isFlipped
 {
@@ -1890,8 +1884,6 @@ NSLog(@"%@", logStr);
 	[nilShadow set];
 }
 
-//	MARK: -
-
 - (void)setFrameSize:(NSSize)oldSize
 {
 	[self sizeToFit];
@@ -1904,14 +1896,14 @@ NSLog(@"%@", logStr);
 	[aWindow PG_addObserver:self selector:@selector(windowDidChangeKey:) name:NSWindowDidResignKeyNotification];
 }
 
-//	MARK: - NSView(PGClipViewAdditions)
+//	MARK: NSView(PGClipViewAdditions)
 
 - (BOOL)PG_acceptsClicksInClipView:(PGClipView *)sender
 {
 	return NO;
 }
 
-//	MARK: - NSResponder
+//	MARK: NSResponder
 
 - (IBAction)moveUp:(nullable id)sender
 {
@@ -1939,8 +1931,6 @@ NSLog(@"%@", logStr);
 	[self _selectItemsFrom:count to:0];
 }
 
-//	MARK: -
-
 - (BOOL)acceptsFirstResponder
 {
 	return YES;
@@ -1956,8 +1946,6 @@ NSLog(@"%@", logStr);
 	return [super resignFirstResponder];
 }
 
-//	MARK: -
-
 - (void)mouseDown:(NSEvent *)anEvent
 {
 	NSPoint const p = [anEvent PG_locationInView:self];
@@ -1965,18 +1953,18 @@ NSLog(@"%@", logStr);
 	BOOL const validItemHit = i < _items.count;
 	id const item = ([self mouse:p inRect:self.bounds] && validItemHit) ? _items[i] : nil;
 
-	//	2023/09/06 shift-clicking now extends the selection;
-	//	cmd-clicking still adds/removes a single item to/from the selection
+	// 2023/09/06 shift-clicking now extends the selection;
+	// cmd-clicking still adds/removes a single item to/from the selection
 	if(anEvent.modifierFlags & NSEventModifierFlagCommand) [self toggleSelectionOfItem:item];
 	else if(validItemHit && _selectionAnchor && (anEvent.modifierFlags & NSEventModifierFlagShift)) {
 		NSUInteger const si = [_items indexOfObjectIdenticalTo:_selectionAnchor];
 		[self _selectItemsFrom:si to:i];
 	} else if(validItemHit && _selectionAnchor && (anEvent.modifierFlags & NSEventModifierFlagOption)) {
-		//	2023/09/18 option-clicking selects the item's direct children
+		// 2023/09/18 option-clicking selects the item's direct children
 		[self _selectAllDirectChildrenOf:item];
 	} else [self selectItem:item byExtendingSelection:NO];
-//	if([anEvent modifierFlags] & (NSEventModifierFlagShift | NSEventModifierFlagCommand)) [self toggleSelectionOfItem:item];
-//	else [self selectItem:item byExtendingSelection:NO];
+// if([anEvent modifierFlags] & (NSEventModifierFlagShift | NSEventModifierFlagCommand)) [self toggleSelectionOfItem:item];
+// else [self selectItem:item byExtendingSelection:NO];
 }
 - (void)keyDown:(NSEvent *)anEvent
 {
@@ -1984,7 +1972,7 @@ NSLog(@"%@", logStr);
 	if(![NSApp.mainMenu performKeyEquivalent:anEvent]) [self interpretKeyEvents:@[anEvent]];
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (void)dealloc
 {
@@ -2004,9 +1992,7 @@ NSLog(@"%@", logStr);
 #endif
 }
 
-//	MARK: - NSObject(NSKeyValueObserving)
-
-//	2022/10/15
+//	MARK: NSObject(NSKeyValueObserving)
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath
 					  ofObject:(nullable id)object
 						change:(nullable NSDictionary *)change

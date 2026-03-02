@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
-//	MARK: - PGActivityPanelController(Private)
+//	MARK: PGActivityPanelController(Private)
 
 - (void)_update
 {
@@ -69,14 +69,14 @@ NS_ASSUME_NONNULL_BEGIN
 	_cancelButton.enabled = _activityOutline.selectedRowIndexes.count > 0;
 }
 
-//	MARK: - NSObject(NSOutlineViewNotifications)
+//	MARK: NSObject(NSOutlineViewNotifications)
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
 	[self _enableCancelButton];	//	[_cancelButton setEnabled:[[_activityOutline selectedRowIndexes] count] > 0];
 }
 
-//	MARK: - PGFloatingPanelController
+//	MARK: PGFloatingPanelController
 
 - (NSString *)nibName
 {
@@ -93,7 +93,7 @@ NS_ASSUME_NONNULL_BEGIN
 	_updateTimer = nil;
 }
 
-//	MARK: - NSWindowController
+//	MARK: NSWindowController
 
 - (void)windowDidLoad
 {
@@ -102,14 +102,14 @@ NS_ASSUME_NONNULL_BEGIN
 	[self _enableCancelButton];	//	[self outlineViewSelectionDidChange:nil];
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (void)dealloc
 {
 	[self windowWillClose];
 }
 
-//	MARK: - id<NSOutlineViewDataSource>
+//	MARK: id<NSOutlineViewDataSource>
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(nullable id)item
 {
@@ -147,7 +147,7 @@ NS_ASSUME_NONNULL_BEGIN
 	return nil;
 }
 
-//	MARK: - id<NSOutlineViewDelegate>
+//	MARK: id<NSOutlineViewDelegate>
 
 // View Based OutlineView: See the delegate method -tableView:viewForTableColumn:row: in NSTableView.
 - (nullable NSView *)outlineView:(NSOutlineView *)outlineView

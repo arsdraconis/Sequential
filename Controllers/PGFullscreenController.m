@@ -42,7 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL isExitingFullscreen;
 @property (nonatomic, strong, nullable) NSMutableArray *shieldWindows;
 
-- (void)_setMenuBarHidden:(BOOL)hidden delayed:(BOOL)delayed; // Delaying prevents the menu bar from messing up when the application unhides on Leopard.
+/// Delaying prevents the menu bar from messing up when the application unhides on Leopard.
+- (void)_setMenuBarHidden:(BOOL)hidden delayed:(BOOL)delayed;
 - (void)_hideMenuBar;
 - (void)_showMenuBar;
 
@@ -73,12 +74,12 @@ NS_ASSUME_NONNULL_BEGIN
 	[self _setMenuBarHidden:[NSScreen PG_mainScreen] == screen delayed:YES];
 }
 
-- (void)resizeToUseEntireScreen	//	2023/08/14 added
+- (void)resizeToUseEntireScreen
 {
 	[(PGFullscreenWindow *)self.window resizeToUseEntireScreen];
 }
 
-//	MARK: - PGFullscreenController(Private)
+//	MARK: PGFullscreenController(Private)
 
 - (void)_setMenuBarHidden:(BOOL)hidden delayed:(BOOL)delayed
 {
@@ -88,6 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
 	else if(hidden) [self _hideMenuBar];
 	else [self _showMenuBar];
 }
+
 - (void)_hideMenuBar
 {
 	//	There is no NSApplication option to hide the menu bar using animation
@@ -100,6 +102,7 @@ NS_ASSUME_NONNULL_BEGIN
 	SetSystemUIMode(kUIModeAllSuppressed, kUIOptionAnimateMenuBar);
 #endif
 }
+
 - (void)_showMenuBar
 {
 #ifndef __CARBON__
@@ -109,7 +112,7 @@ NS_ASSUME_NONNULL_BEGIN
 #endif
 }
 
-//	MARK: - PGDisplayController
+//	MARK: PGDisplayController
 
 - (BOOL)setActiveDocument:(nullable PGDocument *)document closeIfAppropriate:(BOOL)flag
 {
@@ -126,7 +129,7 @@ NS_ASSUME_NONNULL_BEGIN
 	return nil;
 }
 
-//	MARK: - PGDisplayController(PGThumbnailControllerCallbacks)
+//	MARK: PGDisplayController(PGThumbnailControllerCallbacks)
 
 - (void)thumbnailPanelDidBecomeKey:(NSNotification *)aNotif
 {
@@ -137,7 +140,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[self windowDidResignKey:aNotif];
 }
 
-//	MARK: - NSWindowController
+//	MARK: NSWindowController
 
 - (BOOL)shouldCascadeWindows
 {
@@ -162,7 +165,7 @@ NS_ASSUME_NONNULL_BEGIN
 	if(!_isExitingFullscreen) for(PGDocument *const doc in [PGDocumentController sharedDocumentController].documents) [doc close];
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (instancetype)init
 {
@@ -182,7 +185,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[_shieldWindows makeObjectsPerformSelector:@selector(close)];
 }
 
-//	MARK: - <NSWindowDelegate>
+//	MARK: <NSWindowDelegate>
 
 - (void)windowDidBecomeMain:(NSNotification *)aNotif
 {
@@ -232,7 +235,7 @@ NS_ASSUME_NONNULL_BEGIN
 	_shieldWindows = nil;
 }
 
-//	MARK: - <PGDocumentWindowDelegate>
+//	MARK: <PGDocumentWindowDelegate>
 
 - (NSDragOperation)window:(PGDocumentWindow *)window dragOperationForInfo:(id<NSDraggingInfo>)info
 {
@@ -257,7 +260,7 @@ NS_ASSUME_NONNULL_BEGIN
 	return NO;
 }
 
-//	MARK: - <PGFullscreenWindowDelegate>
+//	MARK: <PGFullscreenWindowDelegate>
 
 - (void)closeWindowContent:(PGFullscreenWindow *)sender
 {

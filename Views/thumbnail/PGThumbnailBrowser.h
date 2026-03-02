@@ -38,14 +38,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSSet *selection;
 
 - (void)redisplayItem:(id)item recursively:(BOOL)flag;
-- (void)selectionNeedsDisplay;  // 2023/11/23
+- (void)selectionNeedsDisplay;
 
 - (void)selectAll;
 
 @end
 
 //	MARK: -
-
 @protocol PGThumbnailBrowserDataSource <NSObject>
 
 @optional
@@ -55,7 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 //	MARK: -
-
 @protocol PGThumbnailBrowserDelegate <NSObject>
 
 @optional

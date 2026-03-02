@@ -45,8 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGOrientationMenuIconCell
 
-//	MARK: +PGOrientationMenuIconCell
-
 + (void)addOrientationMenuIconCellToMenuItem:(NSMenuItem *)anItem
 {
 	if(!anItem.separatorItem)
@@ -56,8 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
-//	MARK: - PGOrientationMenuIconCell
-
 - (instancetype)initWithMenuItem:(NSMenuItem *)anItem
 {
 	if((self = [super init])) {
@@ -65,6 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 	}
 	return self;
 }
+
 - (NSImage *)iconForOrientation:(inout PGOrientation *)orientation highlighted:(BOOL)flag
 {
 	switch(*orientation) {
@@ -77,8 +74,6 @@ NS_ASSUME_NONNULL_BEGIN
 		default: return [NSImage imageNamed:flag ? @"Silhouette-White" : @"Silhouette-Black"];
 	}
 }
-
-//	MARK: - NSTextAttachmentCell
 
 - (void)drawWithFrame:(NSRect)aRect inView:(nullable NSView *)aView
 {

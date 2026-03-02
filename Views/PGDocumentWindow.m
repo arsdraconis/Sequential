@@ -37,8 +37,6 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGDocumentWindow
 
-//	MARK: - <NSDraggingDestination>
-
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
 {
 	NSDragOperation const op = [(id<PGDocumentWindowDelegate>)self.delegate window:self dragOperationForInfo:sender];
@@ -62,8 +60,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	[self draggingExited:nil];
 }
-
-//	MARK: - NSWindow
 
 - (void)close
 {

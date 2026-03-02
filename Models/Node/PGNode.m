@@ -24,17 +24,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGNode.h"
 
-// Models
 #import "PGBookmark.h"
 #import "PGContainerAdapter.h"
 #import "PGDocument.h"
 #import "PGResourceAdapter.h"
 #import "PGResourceIdentifier.h"
-
-// Controllers
 #import "PGDisplayController.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGFoundationAdditions.h"
 
@@ -60,22 +55,22 @@ NSString * const PGImageRepKey = @"PGImageRep";
 
 NSString * const PGNodeErrorDomain = @"PGNodeError";
 
-enum
+typedef NS_OPTIONS(NSUInteger, PGNodeStatus)
 {
-    PGNodeNothing          = 0,
-    PGNodeLoading          = 1 << 0,
-    PGNodeReading          = 1 << 1,
-    PGNodeLoadingOrReading = PGNodeLoading | PGNodeReading
-};    // PGNodeStatus.
+    PGNodeStatusIdle    = 0,
+    PGNodeStatusLoading = 1 << 0,
+    PGNodeStatusReading = 1 << 1,
+    PGNodeStatusLoadingOrReadingMask = PGNodeStatusLoading | PGNodeStatusReading
+};
 
+// MARK: -
 @interface PGNode ()
 
 @property (nonatomic, weak) id<PGNodeParenting> parent;
 @property (nonatomic, strong) PGDisplayableIdentifier *identifier;
-//@property (nonatomic, strong) PGDataProvider *dataProvider;
 @property (nonatomic, strong, nullable) NSMutableArray<PGResourceAdapter *> *potentialAdapters;
 @property (nonatomic, strong) PGResourceAdapter *resourceAdapter;
-@property (nonatomic, assign) PGNodeStatus status;
+@property (nonatomic, assign) NSUInteger status;
 
 @property (nonatomic, assign) BOOL viewable;
 @property (nonatomic, strong) NSMenuItem *menuItem;
@@ -91,15 +86,6 @@ enum
 @end
 
 @implementation PGNode
-
-//	MARK: +PGNode
-
-+ (NSArray *)pasteboardTypes
-{
-    return @[NSPasteboardTypeString, NSPasteboardTypeRTFD, NSFileContentsPboardType];
-}
-
-//	MARK: +NSObject
 
 + (void)initialize
 {
@@ -131,7 +117,23 @@ enum
     return self;
 }
 
+- (void)dealloc
+{
+    [_resourceAdapter.activity setParentActivity:nil];
+
+    // Using our generic -PG_removeObserver is about twice as slow as removing the observer for the
+    // specific objects we care about. When closing huge folders of thousands of files, this makes a
+    // big difference. Even now it's still the slowest part.
+    [_identifier PG_removeObserver:self name:PGDisplayableIdentifierIconDidChangeNotification];
+    [_identifier PG_removeObserver:self name:PGDisplayableIdentifierDisplayNameDidChangeNotification];
+}
+
 //	MARK: -
+
++ (NSArray *)pasteboardTypes
+{
+    return @[NSPasteboardTypeString, NSPasteboardTypeRTFD, NSFileContentsPboardType];
+}
 
 - (void)setDataProvider:(PGDataProvider *)dp
 {
@@ -143,7 +145,7 @@ enum
 
 - (void)reload
 {
-    _status |= PGNodeLoading;
+    _status |= PGNodeStatusLoading;
     _potentialAdapters = [[_dataProvider adaptersForNode:self] mutableCopy];
     [self _setResourceAdapter:_potentialAdapters.lastObject];
     if (_potentialAdapters.count) [_potentialAdapters removeLastObject];
@@ -152,7 +154,7 @@ enum
 
 - (void)loadFinishedForAdapter:(PGResourceAdapter *)adapter
 {
-    NSParameterAssert(PGNodeLoading & _status);
+    NSParameterAssert(PGNodeStatusLoading & _status);
     NSParameterAssert(adapter == _resourceAdapter);
     
     [self _stopLoading];
@@ -161,7 +163,7 @@ enum
 
 - (void)fallbackFromFailedAdapter:(PGResourceAdapter *)adapter
 {
-    NSParameterAssert(PGNodeLoading & _status);
+    NSParameterAssert(PGNodeStatusLoading & _status);
     NSParameterAssert(adapter == _resourceAdapter);
     
     [self _setResourceAdapter:_potentialAdapters.lastObject];
@@ -174,7 +176,7 @@ enum
 
 - (nullable NSImage *)thumbnail
 {
-    return PGNodeLoading & _status ? nil : self.resourceAdapter.thumbnail;
+    return PGNodeStatusLoading & _status ? nil : self.resourceAdapter.thumbnail;
 }
 
 - (BOOL)isViewable
@@ -202,35 +204,35 @@ enum
 - (void)becomeViewed
 {
     [self.resourceAdapter.activity prioritize:self];
-    if (PGNodeReading & _status) return;
-    _status |= PGNodeReading;
+    if (PGNodeStatusReading & _status) return;
+    _status |= PGNodeStatusReading;
     [self readIfNecessary];
 }
 
 - (void)readIfNecessary
 {
-    if ((PGNodeLoadingOrReading & _status) == PGNodeReading) [_resourceAdapter read];
+    if ((PGNodeStatusLoadingOrReadingMask & _status) == PGNodeStatusReading) [_resourceAdapter read];
 }
 
 - (void)setIsReading:(BOOL)reading
 {    //	2023/10/21
-    NSParameterAssert((PGNodeLoadingOrReading & _status) == PGNodeNothing
-                      || (PGNodeLoadingOrReading & _status) == PGNodeReading);
+    NSParameterAssert((PGNodeStatusLoadingOrReadingMask & _status) == PGNodeStatusIdle
+                      || (PGNodeStatusLoadingOrReadingMask & _status) == PGNodeStatusReading);
     
     if (reading)
     {
-        _status |= PGNodeReading;
+        _status |= PGNodeStatusReading;
     }
     else
     {
-        _status &= ~PGNodeReading;
+        _status &= ~PGNodeStatusReading;
     }
 }
 
 - (void)readFinishedWithImageRep:(nullable NSImageRep *)aRep
 {
-    NSParameterAssert((PGNodeLoadingOrReading & _status) == PGNodeReading);
-    _status &= ~PGNodeReading;
+    NSParameterAssert((PGNodeStatusLoadingOrReadingMask & _status) == PGNodeStatusReading);
+    _status &= ~PGNodeStatusReading;
     [self PG_postNotificationName:PGNodeReadyForViewingNotification
                          userInfo:@{PGImageRepKey: aRep}];
 }
@@ -402,7 +404,7 @@ enum
 
 - (void)noteIsViewableDidChange
 {
-    BOOL const showsLoadingIndicator = !!(PGNodeLoading & _status);
+    BOOL const showsLoadingIndicator = !!(PGNodeStatusLoading & _status);
     BOOL const viewable = showsLoadingIndicator || _resourceAdapter.adapterIsViewable;
     if (viewable == _viewable) return;
     _viewable = viewable;
@@ -425,7 +427,7 @@ enum
 - (void)_stopLoading
 {
     _potentialAdapters = nil;
-    _status &= ~PGNodeLoading;
+    _status &= ~PGNodeStatusLoading;
     [self noteIsViewableDidChange];
     [self.document noteNodeThumbnailDidChange:self recursively:NO];
 }
@@ -484,19 +486,6 @@ enum
 {
     [self.parentAdapter noteChildValueForCurrentSortOrderDidChange:self];
     [self _updateMenuItem];
-}
-
-//	MARK: - NSObject
-
-- (void)dealloc
-{
-    [_resourceAdapter.activity setParentActivity:nil];
-
-    // Using our generic -PG_removeObserver is about twice as slow as removing the observer for the
-    // specific objects we care about. When closing huge folders of thousands of files, this makes a
-    // big difference. Even now it's still the slowest part.
-    [_identifier PG_removeObserver:self name:PGDisplayableIdentifierIconDidChangeNotification];
-    [_identifier PG_removeObserver:self name:PGDisplayableIdentifierDisplayNameDidChangeNotification];
 }
 
 //	MARK: - NSObject(NSObject)

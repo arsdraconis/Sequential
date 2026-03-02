@@ -53,23 +53,13 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGInfoView
 
-- (NSAttributedString *)attributedStringValue
-{
-	NSMutableParagraphStyle *const style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-	style.alignment = NSTextAlignmentCenter;
-	style.lineBreakMode = NSLineBreakByTruncatingMiddle;
-	return [[NSAttributedString alloc] initWithString:self.stringValue attributes:@{
-		NSFontAttributeName: [NSFont labelFontOfSize:0.0f],
-		NSForegroundColorAttributeName: NSColor.whiteColor,
-		NSParagraphStyleAttributeName: style}];
-}
-
 @synthesize stringValue = _stringValue;
 
 - (NSString *)stringValue
 {
 	return _stringValue ? _stringValue : [NSString string];
 }
+
 - (void)setStringValue:(NSString *)aString
 {
 	NSString *const string = aString ? aString : @"";
@@ -78,12 +68,25 @@ NS_ASSUME_NONNULL_BEGIN
 	[self setNeedsDisplay:YES];
 	[self PG_postNotificationName:PGBezelPanelFrameShouldChangeNotification];
 }
+
+- (NSAttributedString *)attributedStringValue
+{
+    NSMutableParagraphStyle *const style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    style.alignment = NSTextAlignmentCenter;
+    style.lineBreakMode = NSLineBreakByTruncatingMiddle;
+    return [[NSAttributedString alloc] initWithString:self.stringValue attributes:@{
+        NSFontAttributeName: [NSFont labelFontOfSize:0.0f],
+        NSForegroundColorAttributeName: NSColor.whiteColor,
+        NSParagraphStyleAttributeName: style}];
+}
+
 - (void)setIndex:(NSUInteger)anInt
 {
 	if(anInt == _index) return;
 	_index = anInt;
 	[self setNeedsDisplay:YES];
 }
+
 - (void)setCount:(NSUInteger)anInt
 {
 	if(anInt == _count) return;
@@ -111,7 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
 	return PGGraphicalProgressBarStyle && self.count > 1;
 }
 
-//	MARK: - NSView
+//	MARK: NSView
 
 - (BOOL)isFlipped
 {
@@ -245,7 +248,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
         
         
-//	MARK: - <PGBezelPanelContentView>
+//	MARK: <PGBezelPanelContentView>
 
 - (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)scaleFactor
 {

@@ -23,19 +23,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
-
 #import "PGFolderAdapter.h"
+
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import <sys/event.h>
 
-// Models
 #import "PGDocument.h"
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
 #import "PGResourceDataProvider.h"
 #import "PGDataProvider.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -48,14 +45,18 @@ static NSArray *PGIgnoredPaths = nil;
 //	MARK: -
 @implementation PGDiskFolderDataProvider
 
-//	MARK: PGDataProvider
 - (nullable NSString *)UTIType
 {
-	if (@available(macOS 11.0, *))
-		return UTTypeFolder.identifier;
-	else
-		return (NSString *)kUTTypeFolder;
+    if (@available(macOS 11.0, *))
+    {
+        return UTTypeFolder.identifier;
+    }
+    else
+    {
+        return (NSString *)kUTTypeFolder;
+    }
 }
+
 - (OSType)typeCode
 {
 	return 'fold';
@@ -65,8 +66,6 @@ static NSArray *PGIgnoredPaths = nil;
 
 //	MARK: -
 @implementation PGFolderAdapter
-
-//	MARK: +NSObject
 
 + (void)initialize
 {

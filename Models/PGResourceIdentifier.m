@@ -86,10 +86,6 @@ NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification = @"PGDi
 {
 	return [[(URL.isFileURL ? [PGAliasIdentifier class] : [PGURLIdentifier class]) alloc] initWithURL:URL];
 }
-/* + (id)resourceIdentifierWithAliasData:(const uint8_t *)data length:(NSUInteger)length
-{
-	return [[[PGAliasIdentifier alloc] initWithAliasData:data length:length] autorelease];
-} */
 
 //	MARK: - PGResourceIdentifier
 
@@ -148,6 +144,7 @@ NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification = @"PGDi
 {
 	return nil;
 }
+
 - (BOOL)getRef:(out FSRef *)outRef byFollowingAliases:(BOOL)flag
 {
 	return NO;
@@ -217,10 +214,6 @@ NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification = @"PGDi
 {
 	return [[PGDisplayableIdentifier alloc] initWithIdentifier:[super resourceIdentifierWithURL:URL]];
 }
-/* + (id)resourceIdentifierWithAliasData:(const uint8_t *)data length:(NSUInteger)length
-{
-	return [[[self alloc] _initWithIdentifier:[super resourceIdentifierWithAliasData:data length:length]] autorelease];
-} */
 
 //	MARK: - PGDisplayableIdentifier
 
@@ -380,10 +373,6 @@ NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification = @"PGDi
 {
 	return [_identifier URLByFollowingAliases:flag];
 }
-/* - (BOOL)getRef:(out FSRef *)outRef byFollowingAliases:(BOOL)flag
-{
-	return [_identifier getRef:outRef byFollowingAliases:flag];
-} */
 
 //	MARK: -
 
@@ -440,7 +429,6 @@ NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification = @"PGDi
 @end
 
 //	MARK: -
-
 @interface PGAliasIdentifier ()
 
 @property (nonatomic, strong) NSData *bookmark;
@@ -498,7 +486,6 @@ NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification = @"PGDi
 
 - (BOOL)hasTarget
 {
-//	return [self getRef:NULL byFollowingAliases:NO validate:YES];
 	NSError* error = nil;
 	return [self.URL checkResourceIsReachableAndReturnError:&error];
 }
@@ -543,10 +530,6 @@ NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification = @"PGDi
 
 	return url;
 }
-/* - (BOOL)getRef:(out FSRef *)outRef byFollowingAliases:(BOOL)flag
-{
-	return [self getRef:outRef byFollowingAliases:flag validate:YES];
-} */
 
 
 //	MARK: - <NSSecureCoding>	//	NSCoding

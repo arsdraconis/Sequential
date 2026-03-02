@@ -142,8 +142,8 @@ extern OSType PGOSTypeFromString(NSString *);
 @interface NSURL(PGFoundationAdditions)
 
 + (nullable NSURL *)PG_URLWithString:(NSString *)aString;
-
-- (NSImage *)PG_icon; // Returns the URL image for non-file URLs.
+/// Returns the URL image for non-file URLs.
+- (NSImage *)PG_icon;
 
 @end
 
@@ -151,8 +151,6 @@ extern OSType PGOSTypeFromString(NSString *);
 
 - (nullable id)PG_decodeObjectOfClass:(Class)class forKey:(NSString *)defaultName;
 - (void)PG_encodeObject:(id)value forKey:(NSString *)defaultName;
-//- (id)PG_decodedObjectForKey:(NSString *)defaultName;
-//- (void)PG_encodeObject:(id)value forKey:(NSString *)defaultName;
 
 @end
 

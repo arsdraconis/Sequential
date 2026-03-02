@@ -78,14 +78,12 @@ NS_ASSUME_NONNULL_BEGIN
     [self _updateOnTimer:nil];
 }
 
-//	MARK: -
-
 - (void)displayControllerTimerDidChange:(NSNotification *)aNotif
 {
     [self _update];
 }
 
-//	MARK: PGTimerPanelController(Private)
+// MARK: PGTimerPanelController(Private)
 
 - (PGPrefObject *)_currentPrefObject
 {
@@ -136,7 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
-//	MARK: PGFloatingPanelController
+// MARK: PGFloatingPanelController
 
 - (void)setShown:(BOOL)flag
 {

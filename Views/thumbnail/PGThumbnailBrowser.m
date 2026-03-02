@@ -24,10 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGThumbnailBrowser.h"
 
-// Other Sources
 #import "PGFoundationAdditions.h"
 
-#if !defined(NDEBUG) && 0	//	used to fix the incorrect -[PGNode isEqual:] bug
+// used to fix the incorrect -[PGNode isEqual:] bug
+#if !defined(NDEBUG) && 0
 	#import "PGNode.h"
 	#import "PGResourceIdentifier.h"
 #endif
@@ -87,14 +87,14 @@ NS_ASSUME_NONNULL_BEGIN
 	while((obj = [self.dataSource thumbnailBrowser:self parentOfItem:obj]))
 		[path insertObject:obj atIndex:0];
 
-	//	2023/09/25 special case: if the selection is a single container
-	//	then the thumbnail view showing the container's contents is removed
-	//	from the array of views displayed, which does not match the
-	//	behavior of clicking on a single container (which displays the
-	//	container's contents in a thumbnail view), so handle this special
-	//	case by appending the container to the path, which will trigger
-	//	the correct display in the following code; the code to restore
-	//	the selection below also needs to handle this special case.
+	// 2023/09/25 special case: if the selection is a single container
+	// then the thumbnail view showing the container's contents is removed
+	// from the array of views displayed, which does not match the
+	// behavior of clicking on a single container (which displays the
+	// container's contents in a thumbnail view), so handle this special
+	// case by appending the container to the path, which will trigger
+	// the correct display in the following code; the code to restore
+	// the selection below also needs to handle this special case.
 	BOOL singleContainerIsSelected = NO;
 	if(1 == aSet.count) {
 		obj = [aSet anyObject];
@@ -142,11 +142,11 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 	[self.delegate thumbnailBrowserSelectionDidChange:self];
 }
 
-//	2023/09/24 select all siblings of the currently selected node(s)
-//	or all children if the selected node is a container
+// 2023/09/24 select all siblings of the currently selected node(s)
+// or all children if the selected node is a container
 - (void)selectAll {
-	//	if the last thumbnail view has selected nodes
-	//	then select all viewable siblings in that thumbnail view
+	// if the last thumbnail view has selected nodes
+	// then select all viewable siblings in that thumbnail view
 	PGThumbnailView *const lastView = self.views.lastObject;
 	NSSet *const selection = lastView.selection;
 	if(selection.count) {
@@ -154,19 +154,17 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 		return;
 	}
 
-	//	if the last thumbnail view has no selection then get its rep-obj
-	//	and select of its direct children (which are viewable)
+	// if the last thumbnail view has no selection then get its rep-obj
+	// and select of its direct children (which are viewable)
 	id const item = lastView.representedObject;
 	if(item) {
-		//	if views.count is N then last thumbnail view is at index N-1
-		//	and its rep-obj is displayed in the thumbnail view at index N-2
+		// if views.count is N then last thumbnail view is at index N-1
+		// and its rep-obj is displayed in the thumbnail view at index N-2
 		NSParameterAssert([[self views] indexOfObject:lastView] == [[self views] count] - 1);
 		PGThumbnailView *thumbnailView = self.views[self.views.count - 2];
 		[self thumbnailView:thumbnailView selectAllDirectChildrenOf:item];
 	}
 }
-
-//	MARK: -
 
 - (void)redisplayItem:(id)item recursively:(BOOL)flag
 {
@@ -186,13 +184,13 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 		[view selectionNeedsDisplay];
 }
 
-//	MARK: - PGThumbnailBrowser(Private)
+//	MARK: PGThumbnailBrowser(Private)
 
 - (void)_addColumnWithItem:(nullable id)item
 {
 	if(item && dataSource && ![dataSource thumbnailBrowser:self itemCanHaveChildren:item]) return;
 	PGThumbnailView *const thumbnailView = [PGThumbnailView new];
-//NSLog(@"PGThumbnailView %p . dataSource := %p %@", thumbnailView, [self dataSource], [[self dataSource] description]);
+//    NSLog(@"PGThumbnailView %p . dataSource := %p %@", thumbnailView, [self dataSource], [[self dataSource] description]);
 	thumbnailView.dataSource = self.dataSource;
 	thumbnailView.delegate = self;
 	thumbnailView.representedObject = item;
@@ -202,7 +200,7 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 	[self addColumnWithView:thumbnailView];
 }
 
-//	MARK: - PGColumnView
+//	MARK: PGColumnView
 
 - (void)insertColumnWithView:(NSView *)aView atIndex:(NSUInteger)index
 {
@@ -217,7 +215,7 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 	if(!_updateCount) [self.delegate thumbnailBrowser:self numberOfColumnsDidChangeFrom:columns];
 }
 
-//	MARK: - NSResponder
+//	MARK: NSResponder
 
 - (IBAction)moveLeft:(nullable id)sender
 {
@@ -236,7 +234,7 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 	if(items.count && !view.selection.count) [view selectItem:items[0] byExtendingSelection:NO];
 }
 
-//	MARK: - <PGThumbnailViewDelegate>
+//	MARK: <PGThumbnailViewDelegate>
 
 - (void)thumbnailViewSelectionDidChange:(PGThumbnailView *)sender
 {
@@ -297,6 +295,7 @@ NSLog(@"path[%lu].selection := %@", i, [[(PGNode*)item identifier] displayName])
 
 @end
 
+// MARK: -
 @implementation NSObject(PGThumbnailBrowserDelegate)
 
 - (void)thumbnailBrowserSelectionDidChange:(PGThumbnailBrowser *)sender {}

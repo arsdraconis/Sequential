@@ -24,14 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGXMLAdapter.h"
 
-// Models
 #import "PGResourceIdentifier.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
 
 @interface PGXMLAdapter ()
 
@@ -39,18 +35,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-
+// MARK: -
 @implementation PGXMLAdapter
-
-//	MARK: - PGXMLAdapter
 
 - (NSXMLDocument *)XMLDocument
 {
 	if(!_XMLDocument) _XMLDocument = [[NSXMLDocument alloc] initWithData:self.data options:NSXMLNodeOptionsNone error:NULL];
 	return _XMLDocument;
 }
-
-//	MARK: - PGContainerAdapter
 
 - (PGRecursionPolicy)descendantRecursionPolicy
 {
@@ -60,7 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 //	MARK: -
-
 @interface PGMediaRSSAdapter()
 
 - (BOOL)_createChildren;
@@ -68,8 +59,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @implementation PGMediaRSSAdapter
-
-//	MARK: - PGMediaRSSAdapter(Private)
 
 - (BOOL)_createChildren
 {
@@ -98,8 +87,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 	return YES;
 }
-
-//	MARK: - PGResourceAdapter
 
 - (void)load
 {

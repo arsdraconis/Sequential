@@ -16,8 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
 	if(self.drawsBackground) {
-		//	when in full-size content mode, clip the drawing to just the text
-		//	itself (with a small margin) and not the entire cellFrame
+		// when in full-size content mode, clip the drawing to just the text
+		// itself (with a small margin) and not the entire cellFrame
 		NSSize size = self.attributedStringValue.size;
 //NSLog(@"-drawInteriorWithFrame: size = (%5.2f, %5.2f) cellFrame.size = (%5.2f, %5.2f)",
 //size.width, size.height, cellFrame.size.width, cellFrame.size.height);
@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PGFullSizeContentButtonCell : NSButtonCell
 @end
 
+// MARK: -
 @implementation PGFullSizeContentButtonCell
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
@@ -75,18 +76,21 @@ NS_ASSUME_NONNULL_BEGIN
 //	viewMouseLocation.x, viewMouseLocation.y, cellFrame.origin.x, cellFrame.origin.y,
 //	cellFrame.size.width, cellFrame.size.height);
 	if(NSPointInRect(viewMouseLocation, cellFrame))
-		[super drawInteriorWithFrame:cellFrame inView:controlView];
+    {
+        [super drawInteriorWithFrame:cellFrame inView:controlView];
+    }
 }
 
 @end
 
-//	MARK: -
+// MARK: -
 @interface PGFullSizeContentTitlebarAccessoryViewController ()
 
 @property (nonatomic, weak) IBOutlet NSButton *toggleButton;
 
 @end
 
+// MARK: -
 @implementation PGFullSizeContentTitlebarAccessoryViewController
 
 - (NSInteger)toggleButtonIntegerValue {

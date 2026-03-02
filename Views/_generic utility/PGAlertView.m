@@ -26,10 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "Sequential-Swift.h"
 
-// Views
 #import "PGBezelPanel.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGDelayedPerforming.h"
 #import "PGFoundationAdditions.h"
@@ -52,7 +49,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 // MARK: -
-
 @interface PGCannotGoRightGraphic : PGAlertGraphic
 @end
 @interface PGCannotGoLeftGraphic : PGCannotGoRightGraphic
@@ -107,8 +103,6 @@ NS_ASSUME_NONNULL_BEGIN
 	[self _updateCurrentGraphic];
 }
 
-//	MARK: -
-
 - (void)animateOneFrame:(PGAlertView *)anAlertView
 {
 	NSParameterAssert(_currentGraphic);
@@ -116,7 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[_currentGraphic animateOneFrame:self];
 }
 
-//	MARK: - PGAlertView(Private)
+//	MARK: PGAlertView(Private)
 
 - (void)_updateCurrentGraphic
 {
@@ -140,7 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[_graphicStack removeAllObjects];
 }
 
-//	MARK: - NSView
+//	MARK: NSView
 
 - (instancetype)initWithFrame:(NSRect)aRect
 {
@@ -166,7 +160,7 @@ NS_ASSUME_NONNULL_BEGIN
 	else [self prepareForWindowClosing];	//	[self windowWillClose:nil];	2021/07/21
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (void)dealloc
 {
@@ -175,7 +169,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[_frameTimer invalidate];
 }
 
-//	MARK: - <NSWindowDelegate>
+//	MARK: <NSWindowDelegate>
 
 - (void)windowWillClose:(NSNotification *)aNotif
 {
@@ -185,7 +179,7 @@ NS_ASSUME_NONNULL_BEGIN
 //	[_graphicStack removeAllObjects];	//	2021/07/21
 }
 
-//	MARK: - <PGBezelPanelContentView>
+//	MARK: <PGBezelPanelContentView>
 
 - (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)scaleFactor
 {
@@ -203,7 +197,7 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGAlertGraphic
 
-//	MARK: +PGAlertGraphic
+//	MARK: PGAlertGraphic
 
 + (id)cannotGoRightGraphic
 {
@@ -222,8 +216,6 @@ NS_ASSUME_NONNULL_BEGIN
 	return [PGLoopedLeftGraphic new];
 }
 
-//	MARK: - PGAlertGraphic
-
 - (PGAlertGraphicType)graphicType
 {
 	return PGSingleImageGraphic;
@@ -240,8 +232,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	return 1;
 }
-
-//	MARK: -
 
 - (void)drawInView:(PGAlertView *)anAlertView
 {
@@ -294,11 +284,9 @@ NS_ASSUME_NONNULL_BEGIN
 	[flip concat];
 }
 
-//	MARK: -
-
 - (void)animateOneFrame:(PGAlertView *)anAlertView {}
 
-//	MARK: - <NSObject>
+//	MARK: <NSObject>
 
 - (NSUInteger)hash
 {
@@ -313,8 +301,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 //	MARK: -
 @implementation PGCannotGoRightGraphic
-
-//	MARK: - PGAlertGraphic
 
 - (void)drawInView:(PGAlertView *)anAlertView
 {
@@ -350,8 +336,6 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGCannotGoLeftGraphic
 
-//	MARK: - PGAlertGraphic
-
 - (void)drawInView:(PGAlertView *)anAlertView
 {
 	[self flipHorizontally];
@@ -363,8 +347,6 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGLoopedLeftGraphic
 
-//	MARK: - PGAlertGraphic
-
 - (PGAlertGraphicType)graphicType
 {
 	return PGInterImageGraphic;
@@ -373,8 +355,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	return 1.0f;
 }
-
-//	MARK: -
 
 - (void)drawInView:(PGAlertView *)anAlertView
 {
@@ -404,8 +384,6 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGLoopedRightGraphic
 
-//	MARK: - PGAlertGraphic
-
 - (void)drawInView:(PGAlertView *)anAlertView
 {
 	[self flipHorizontally];
@@ -417,21 +395,15 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGLoadingGraphic
 
-//	MARK: +PGLoadingGraphic
-
 + (instancetype)loadingGraphic
 {
 	return [PGLoadingGraphic new];
 }
 
-//	MARK: - PGLoadingGraphic
-
 - (void)setProgress:(CGFloat)progress
 {
 	_progress = MIN(MAX(progress, 0.0f), 1.0f);
 }
-
-//	MARK: - PGAlertGraphic
 
 - (NSTimeInterval)fadeOutDelay
 {
@@ -445,8 +417,6 @@ NS_ASSUME_NONNULL_BEGIN
 {
 	return 12;
 }
-
-//	MARK: -
 
 - (void)drawInView:(PGAlertView *)anAlertView
 {
@@ -464,8 +434,6 @@ NS_ASSUME_NONNULL_BEGIN
 	}
 }
 
-//	MARK: -
-
 - (void)animateOneFrame:(PGAlertView *)anAlertView
 {
 	CGFloat const f = PGAlertViewSize / 300.0f;
@@ -474,7 +442,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[anAlertView setNeedsDisplayInRect:NSMakeRect(250.0f * f, 50.0f * f,  25.0f * f, 200.0f * f)];
 }
 
-//	MARK: - <NSObject>
+//	MARK: <NSObject>
 
 - (NSUInteger)hash
 {
@@ -490,14 +458,10 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGBezierPathIconGraphic
 
-//	MARK: +PGBezierPathIconGraphic
-
 + (instancetype)graphicWithIconType:(AEIconType)type
 {
 	return [[self alloc] initWithIconType:type];
 }
-
-//	MARK: - PGBezierPathIconGraphic
 
 - (instancetype)initWithIconType:(AEIconType)type
 {
@@ -507,14 +471,10 @@ NS_ASSUME_NONNULL_BEGIN
 	return self;
 }
 
-//	MARK: - PGAlertGraphic
-
 - (NSTimeInterval)fadeOutDelay
 {
 	return 1.0f;
 }
-
-//	MARK: -
 
 - (void)drawInView:(PGAlertView *)anAlertView
 {
@@ -524,7 +484,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[NSBezierPath PG_drawIcon:_iconType inRect:PGCenteredSizeInRect(NSMakeSize(PGAlertViewSize / 2.0f, PGAlertViewSize / 2.0f), b)];
 }
 
-//	MARK: - <NSObject>
+//	MARK: <NSObject>
 
 - (NSUInteger)hash
 {

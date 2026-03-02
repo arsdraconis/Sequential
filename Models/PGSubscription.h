@@ -26,11 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PGSubscriptionEventDidOccurNotification;
-
-extern NSString *const PGSubscriptionPathKey;
-extern NSString *const PGSubscriptionRootFlagsKey; // Only included when the subscription root changes.
-
 @interface PGSubscription : NSObject
 
 + (instancetype)subscriptionWithPath:(NSString *)path descendents:(BOOL)flag;

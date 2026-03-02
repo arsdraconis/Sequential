@@ -24,12 +24,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGContainerAdapter.h"
 
-// Models
 #import "PGDocument.h"
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -97,7 +94,7 @@ Unpack2HalfUInts(NSUInteger packed, NSUInteger* upper, NSUInteger* lower)
 extern	void	Unpack_ByteSize_FolderImageCounts(uint64_t packed, uint64_t* byteSize,
 												  NSUInteger* folders, NSUInteger* images);
 
-//	extern
+// extern
 void
 Unpack_ByteSize_FolderImageCounts(uint64_t packed, uint64_t* byteSize,
 								  NSUInteger* folders, NSUInteger* images)
@@ -147,8 +144,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 }
 
 //	MARK: -
-
-
 @interface PGContainerAdapter ()
 
 @property (nonatomic, strong, nullable) NSArray<PGNode*> *sortedChildren;
@@ -166,8 +161,6 @@ CalculateByteSizeAllChildren(NSArray<PGNode*>* children) {
 {
 	return self.recursionPolicy;
 }
-
-//	MARK: -
 
 - (NSArray<PGNode*> *)sortedChildren
 {

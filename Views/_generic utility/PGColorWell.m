@@ -24,7 +24,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGColorWell.h"
 
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -36,15 +35,11 @@ NS_ASSUME_NONNULL_BEGIN
 	[self deactivate];
 }
 
-//	MARK: NSColorWell
-
 - (void)deactivate
 {
 	[super deactivate];
 	[[NSColorPanel sharedColorPanel] close];
 }
-
-//	MARK: NSView
 
 - (void)viewWillMoveToWindow:(nullable NSWindow *)aWindow
 {

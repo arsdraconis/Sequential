@@ -23,11 +23,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGSubscription.h"
+
 #import <sys/time.h>
 #import <unistd.h>
 #import <fcntl.h>
 
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -39,11 +39,11 @@ NSString *const PGSubscriptionRootFlagsKey = @"PGSubscriptionRootFlags";
 
 @interface PGLeafSubscription : PGSubscription
 
-+ (void)threaded_sendFileEvents;
-+ (void)mainThread_sendFileEvent:(NSDictionary *)info;
-
 - (instancetype)initWithPath:(NSString *)path NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
+
++ (void)threaded_sendFileEvents;
++ (void)mainThread_sendFileEvent:(NSDictionary *)info;
 
 @end
 
@@ -71,6 +71,7 @@ NSString *const PGSubscriptionRootFlagsKey = @"PGSubscriptionRootFlags";
 	else result = [PGBranchSubscription alloc];
 	return [result initWithPath:path];
 }
+
 + (instancetype)subscriptionWithPath:(NSString *)path
 {
 	return [self subscriptionWithPath:path descendents:NO];
@@ -92,14 +93,14 @@ NSString *const PGSubscriptionRootFlagsKey = @"PGSubscriptionRootFlags";
 
 @end
 
-
+// MARK: -
 static NSString *const PGLeafSubscriptionValueKey = @"PGLeafSubscriptionValue";
 static NSString *const PGLeafSubscriptionFlagsKey = @"PGLeafSubscriptionFlags";
 
 static int PGKQueue = -1;
 static CFMutableSetRef PGActiveSubscriptions = nil;
 
-// MARK: -
+
 @interface PGLeafSubscription ()
 
 @property (nonatomic, assign) int descriptor;
@@ -109,7 +110,62 @@ static CFMutableSetRef PGActiveSubscriptions = nil;
 
 @implementation PGLeafSubscription
 
-//	MARK: +PGLeafSubscription
+- (instancetype)initWithPath:(NSString *)path
+{
+    NSAssert([NSThread isMainThread], @"PGSubscription is not thread safe.");
+    errno = 0;
+    if((self = [super init])) {
+        CFSetAddValue(PGActiveSubscriptions, (__bridge void *)self);
+        char const *const rep = path.fileSystemRepresentation;
+        _descriptor = open(rep, O_EVTONLY);
+        if(-1 == _descriptor) {
+            self = nil;
+            return nil;
+        }
+        struct kevent const ev = {
+            .ident = _descriptor,
+            .filter = EVFILT_VNODE,
+            .flags = EV_ADD | EV_CLEAR,
+            //    2024/02/26 only request events which are to be acted upon
+            //    under ARC builds, the PGLeafSubscription object can be
+            //    deleted before the callback +mainThread_sendFileEvent:
+            //    executes which results in it accessing a deleted object
+            //    and then crashing. This can occur when a bookmarked
+            //    folder is Resumed: doing so generates a NOTE_ATTRIB
+            //    event which gets enqueued for execution by
+            //    +mainThread_sendFileEvent but the object gets -delloc'd
+            //    before it is dequeued.
+        //    .fflags = NOTE_DELETE | NOTE_WRITE | NOTE_EXTEND | NOTE_ATTRIB | NOTE_LINK | NOTE_RENAME | NOTE_REVOKE,
+            .fflags = NOTE_DELETE | NOTE_RENAME | NOTE_REVOKE,
+            .data = 0,
+            .udata = (__bridge void *)self,
+        };
+        struct timespec const timeout = {0, 0};
+        if(-1 == kevent(PGKQueue, &ev, 1, NULL, 0, &timeout)) {
+            self = nil;
+            return nil;
+        }
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+//    NSLog(@"-[PGLeafSubscription dealloc]: %p", (__bridge void *)self);
+    CFSetRemoveValue(PGActiveSubscriptions, (__bridge void *)self);
+    if(-1 != _descriptor) close(_descriptor);
+}
+
++ (void)initialize
+{
+    if([PGLeafSubscription class] != self) return;
+    PGKQueue = kqueue();
+    PGActiveSubscriptions = CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
+    [NSThread detachNewThreadSelector:@selector(threaded_sendFileEvents) toTarget:self withObject:nil];
+}
+
+
+//	MARK: PGLeafSubscription
 
 + (void)threaded_sendFileEvents
 {
@@ -118,12 +174,12 @@ static CFMutableSetRef PGActiveSubscriptions = nil;
 			struct kevent ev;
 			(void)kevent(PGKQueue, NULL, 0, &ev, 1, NULL);
 
-			//	The original API documentation (pre-ARC) states "the
-			//	-performSelector:onThread:withObject:waitUntilDone: method retains the receiver
-			//	and the arg parameter until after the selector is performed."
-//	<https://web.archive.org/web/20111006112505/http://developer.apple.com/library/ios/#documentation/Cocoa/Reference/Foundation/Classes/NSObject_Class/Reference/Reference.html>
-			//	As such, this code should not cause the dictionary to be invalid
-			//	when it is accessed in the main thread in -mainThread_sendFileEvent:
+			// The original API documentation (pre-ARC) states "the
+			// -performSelector:onThread:withObject:waitUntilDone: method retains the receiver
+			// and the arg parameter until after the selector is performed."
+            // <https://web.archive.org/web/20111006112505/http://developer.apple.com/library/ios/#documentation/Cocoa/Reference/Foundation/Classes/NSObject_Class/Reference/Reference.html>
+			// As such, this code should not cause the dictionary to be invalid
+			// when it is accessed in the main thread in -mainThread_sendFileEvent:
 			[self performSelectorOnMainThread:@selector(mainThread_sendFileEvent:)
 								   withObject:[NSDictionary dictionaryWithObjectsAndKeys:
 				[NSValue valueWithNonretainedObject:(__bridge PGLeafSubscription *)ev.udata], PGLeafSubscriptionValueKey,
@@ -150,58 +206,8 @@ static CFMutableSetRef PGActiveSubscriptions = nil;
 	[subscription PG_postNotificationName:PGSubscriptionEventDidOccurNotification userInfo:dict];
 }
 
-//	MARK: +NSObject
 
-+ (void)initialize
-{
-	if([PGLeafSubscription class] != self) return;
-	PGKQueue = kqueue();
-	PGActiveSubscriptions = CFSetCreateMutable(kCFAllocatorDefault, 0, NULL);
-	[NSThread detachNewThreadSelector:@selector(threaded_sendFileEvents) toTarget:self withObject:nil];
-}
-
-//	MARK: - PGLeafSubscription
-
-- (instancetype)initWithPath:(NSString *)path
-{
-	NSAssert([NSThread isMainThread], @"PGSubscription is not thread safe.");
-	errno = 0;
-	if((self = [super init])) {
-		CFSetAddValue(PGActiveSubscriptions, (__bridge void *)self);
-		char const *const rep = path.fileSystemRepresentation;
-		_descriptor = open(rep, O_EVTONLY);
-		if(-1 == _descriptor) {
-			self = nil;
-			return nil;
-		}
-		struct kevent const ev = {
-			.ident = _descriptor,
-			.filter = EVFILT_VNODE,
-			.flags = EV_ADD | EV_CLEAR,
-			//	2024/02/26 only request events which are to be acted upon
-			//	under ARC builds, the PGLeafSubscription object can be
-			//	deleted before the callback +mainThread_sendFileEvent:
-			//	executes which results in it accessing a deleted object
-			//	and then crashing. This can occur when a bookmarked
-			//	folder is Resumed: doing so generates a NOTE_ATTRIB
-			//	event which gets enqueued for execution by
-			//	+mainThread_sendFileEvent but the object gets -delloc'd
-			//	before it is dequeued.
-		//	.fflags = NOTE_DELETE | NOTE_WRITE | NOTE_EXTEND | NOTE_ATTRIB | NOTE_LINK | NOTE_RENAME | NOTE_REVOKE,
-			.fflags = NOTE_DELETE | NOTE_RENAME | NOTE_REVOKE,
-			.data = 0,
-			.udata = (__bridge void *)self,
-		};
-		struct timespec const timeout = {0, 0};
-		if(-1 == kevent(PGKQueue, &ev, 1, NULL, 0, &timeout)) {
-			self = nil;
-			return nil;
-		}
-	}
-	return self;
-}
-
-//	MARK: - PGSubscription
+//	MARK: PGSubscription
 
 - (nullable NSString *)path
 {
@@ -212,23 +218,15 @@ static CFMutableSetRef PGActiveSubscriptions = nil;
 	return result;
 }
 
-//	MARK: - NSObject
-
-- (void)dealloc
-{
-//    NSLog(@"-[PGLeafSubscription dealloc]: %p", (__bridge void *)self);
-	CFSetRemoveValue(PGActiveSubscriptions, (__bridge void *)self);
-	if(-1 != _descriptor) close(_descriptor);
-}
 
 @end
 
+// MARK: -
 static void PGEventStreamCallback(ConstFSEventStreamRef streamRef, PGBranchSubscription *subscription, size_t numEvents, NSArray *paths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[])
 {
-	for(NSString *const path in paths) [subscription PG_postNotificationName:PGSubscriptionEventDidOccurNotification userInfo:@{PGSubscriptionPathKey: path}];
+    for(NSString *const path in paths) [subscription PG_postNotificationName:PGSubscriptionEventDidOccurNotification userInfo:@{PGSubscriptionPathKey: path}];
 }
 
-// MARK: -
 @interface PGBranchSubscription ()
 
 @property (nonatomic, assign, nullable) FSEventStreamRef eventStream;
@@ -239,17 +237,24 @@ static void PGEventStreamCallback(ConstFSEventStreamRef streamRef, PGBranchSubsc
 // MARK: -
 @implementation PGBranchSubscription
 
-//	MARK: - PGBranchSubscription
-
 - (instancetype)initWithPath:(NSString *)path
 {
-	if((self = [super init])) {
-		_rootSubscription = [PGSubscription subscriptionWithPath:path];
-		[_rootSubscription PG_addObserver:self selector:@selector(rootSubscriptionEventDidOccur:) name:PGSubscriptionEventDidOccurNotification];
-		[self subscribeWithPath:path];
-	}
-	return self;
+    if((self = [super init])) {
+        _rootSubscription = [PGSubscription subscriptionWithPath:path];
+        [_rootSubscription PG_addObserver:self selector:@selector(rootSubscriptionEventDidOccur:) name:PGSubscriptionEventDidOccurNotification];
+        [self subscribeWithPath:path];
+    }
+    return self;
 }
+
+- (void)dealloc
+{
+    [self PG_removeObserver];
+    [self unsubscribe];
+}
+
+//	MARK: PGBranchSubscription
+
 - (void)subscribeWithPath:(NSString *)path
 {
 	NSParameterAssert(!_eventStream);
@@ -281,19 +286,11 @@ static void PGEventStreamCallback(ConstFSEventStreamRef streamRef, PGBranchSubsc
 	[self PG_postNotificationName:PGSubscriptionEventDidOccurNotification userInfo:aNotif.userInfo];
 }
 
-//	MARK: - PGSubscription
+//	MARK: PGSubscription
 
 - (nullable NSString *)path
 {
 	return _rootSubscription.path;
-}
-
-//	MARK: - NSObject
-
-- (void)dealloc
-{
-	[self PG_removeObserver];
-	[self unsubscribe];
 }
 
 @end

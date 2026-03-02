@@ -26,14 +26,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #import "Sequential-Swift.h"
 
-// Models
 #import "PGContainerAdapter.h"
 #import "PGDataProvider.h"
 #import "PGDocument.h"
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGDebug.h"
 #import "PGFoundationAdditions.h"
@@ -79,6 +76,29 @@ static NSString * const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
 //	MARK: -
 @implementation PGResourceAdapter
 
+- (instancetype)initWithNode:(PGNode *)node dataProvider:(PGDataProvider *)dataProvider
+{
+    if ((self = [super init]))
+    {
+        _node         = node;
+        _dataProvider = dataProvider;
+        _activity     = [[PGActivity alloc] initWithOwner:self];
+    }
+    return self;
+}
+
+- (instancetype)init
+{
+    PGAssertNotReached(@"Invalid initializer, use -initWithNode:dataProvider: instead.");
+    self = nil;
+    return nil;
+}
+
+- (void)dealloc
+{
+    [_activity invalidate];
+}
+
 //	MARK: +PGResourceAdapter
 
 + (NSDictionary *)typesDictionary
@@ -117,17 +137,6 @@ static NSString * const PGCFBundleTypeExtensionsKey = @"CFBundleTypeExtensions";
 }
 
 //	MARK: PGResourceAdapter
-
-- (instancetype)initWithNode:(PGNode *)node dataProvider:(PGDataProvider *)dataProvider
-{
-    if ((self = [super init]))
-    {
-        _node         = node;
-        _dataProvider = dataProvider;
-        _activity     = [[PGActivity alloc] initWithOwner:self];
-    }
-    return self;
-}
 
 - (PGContainerAdapter *)containerAdapter
 {
@@ -577,19 +586,6 @@ static NSBitmapImageRep *ThumbnailOf(NSImageRep *imageRep,
 }
 
 //	MARK: NSObject
-
-- (instancetype)init
-{
-    PGAssertNotReached(@"Invalid initializer, use -initWithNode:dataProvider: instead.");
-    self = nil;
-    return nil;
-}
-
-- (void)dealloc
-{
-    [_activity invalidate];
-}
-
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<%@ %p: %@>", [self class], self, _dataProvider];

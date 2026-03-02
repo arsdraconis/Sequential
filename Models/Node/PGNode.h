@@ -45,9 +45,10 @@ extern NSString * const PGImageRepKey;
 
 extern NSString * const PGNodeErrorDomain;
 
-typedef NS_ENUM(NSUInteger, PGNodeStatus) {
-    PGGenericError  = 1,
-    PGPasswordError = 2,
+typedef NS_ENUM(NSInteger, PGNodeError) {
+    PGNodeErrorNone = 0,
+    PGNodeErrorGeneric = 1,
+    PGNodeErrorPasswordProtected = 2,
 };
 
 @interface PGNode : NSObject <PGResourceAdapting>

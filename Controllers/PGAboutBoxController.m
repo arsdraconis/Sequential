@@ -44,14 +44,46 @@ static PGAboutBoxController *PGSharedAboutBoxController;
 //	MARK: -
 @implementation PGAboutBoxController
 
-//	MARK: + PGAboutBoxController
+- (instancetype)init
+{
+    if((self = [super initWithWindowNibName:@"PGAbout"])) {
+        if(PGSharedAboutBoxController) {
+            self = nil;
+            return PGSharedAboutBoxController;
+        }
+        else
+        {
+            PGSharedAboutBoxController = self;
+        }
+    }
+    return self;
+}
+
+- (void)windowDidLoad
+{
+    [_paneControl sizeToFit];
+    [_paneControl removeFromSuperview];
+    if([_paneControl respondsToSelector:@selector(setSegmentStyle:)])
+    {
+        _paneControl.segmentStyle = NSSegmentStyleTexturedRounded;
+    }
+
+    NSToolbar *const toolbar = [[NSToolbar alloc] initWithIdentifier:@"PGAboutBoxControllerToolbar"];
+    toolbar.displayMode = NSToolbarDisplayModeIconOnly;
+    toolbar.sizeMode = NSToolbarSizeModeRegular;
+    [toolbar setAllowsUserCustomization:NO];
+    toolbar.delegate = self;
+    self.window.toolbar = toolbar;
+    [self.window setShowsToolbarButton:NO];
+    [self.window center];
+    [self changePane:nil];
+    [super windowDidLoad];
+}
 
 + (PGAboutBoxController*)sharedAboutBoxController
 {
 	return PGSharedAboutBoxController ? PGSharedAboutBoxController : [self new];
 }
-
-//	MARK: - PGAboutBoxController
 
 - (IBAction)changePane:(nullable id)sender
 {
@@ -82,48 +114,6 @@ static PGAboutBoxController *PGSharedAboutBoxController;
 	}
 }
 
-//	MARK: - NSWindowController
-
-- (void)windowDidLoad
-{
-	[_paneControl sizeToFit];
-	[_paneControl removeFromSuperview];
-	if([_paneControl respondsToSelector:@selector(setSegmentStyle:)])
-    {
-        _paneControl.segmentStyle = NSSegmentStyleTexturedRounded;
-    }
-
-	NSToolbar *const toolbar = [[NSToolbar alloc] initWithIdentifier:@"PGAboutBoxControllerToolbar"];
-	toolbar.displayMode = NSToolbarDisplayModeIconOnly;
-	toolbar.sizeMode = NSToolbarSizeModeRegular;
-	[toolbar setAllowsUserCustomization:NO];
-	toolbar.delegate = self;
-	self.window.toolbar = toolbar;
-	[self.window setShowsToolbarButton:NO];
-	[self.window center];
-	[self changePane:nil];
-	[super windowDidLoad];
-}
-
-//	MARK: - NSObject
-
-- (instancetype)init
-{
-	if((self = [super initWithWindowNibName:@"PGAbout"])) {
-		if(PGSharedAboutBoxController) {
-			self = nil;
-			return PGSharedAboutBoxController;
-		}
-        else
-        {
-            PGSharedAboutBoxController = self;
-        }
-	}
-	return self;
-}
-
-//	MARK: - <NSToolbarDelegate>
-
 - (nullable NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)ident willBeInsertedIntoToolbar:(BOOL)flag
 {
 	NSParameterAssert(PGEqualObjects(ident, PGPaneItemKey));
@@ -140,8 +130,6 @@ static PGAboutBoxController *PGSharedAboutBoxController;
 {
 	return [self toolbarDefaultItemIdentifiers:toolbar];
 }
-
-//	MARK: - <NSWindowDelegate>
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)window defaultFrame:(NSRect)newFrame
 {

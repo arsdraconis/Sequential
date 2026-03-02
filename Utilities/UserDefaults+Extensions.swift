@@ -7,17 +7,42 @@
 
 import Cocoa
 
+@objc(PGAction)
+public enum MouseClickAction : Int
+{
+    case nextPrevious = 0
+    case leftRight = 1
+    case rightLeft = 2
+}
+
+@objc(PGEscapeMapping)
+public enum EscapeMapping : Int
+{
+    case fullscreen = 0
+    case quit = 1
+}
+
+@objc(PGImageScaleConstraint)
+public enum ImageScaleConstraint : Int
+{
+    case none = 0
+    case downscaleOnly = 1
+    case upscaleOnly = 2
+}
+
+
 let PGPrefObjectAnimateKey = "PGPrefObjectAnimate"
 
 fileprivate let PGRecentItemsKey = "PGRecentItems2"
 fileprivate let PGDisplayScreenIndexKey = "PGDisplayScreenIndex"
 fileprivate let PGShowsInfoInspectorKey = "PGShowsInfo"
 fileprivate let PGMaxRecursionDepthKey = "PGMaxDepth"
-fileprivate let PGMouseClickActionKey = "PGMouseClickAction"
+let PGMouseClickActionKey = "PGMouseClickAction"
 fileprivate let PGEscapeKeyMappingKey = "PGEscapeKeyMapping"
 fileprivate let PGTimerIntervalKey = "PGTimerInterval"
 
 fileprivate let PGBackgroundPatternKey = "PGBackgroundPattern"
+fileprivate let PGBackgroundColorKey = "PGBackgroundColor"
 public let PGWindowBackgroundTypeKey = "PGWindowBackgroundType"
 public let PGWindowBackgroundColorKey = "PGWindowBackgroundColor"
 public let PGFullScreenBackgroundTypeKey = "PGFullScreenBackgroundType"
@@ -46,6 +71,16 @@ fileprivate let PGImageScaleModeKey = "PGImageScaleMode"
 fileprivate let PGImageScaleFactorKey = "PGImageScaleFactor"
 fileprivate let PGImageScaleConstraintKey = "PGImageScaleConstraint"
 fileprivate let PGAntialiasWhenUpscalingKey = "PGAntialiasWhenUpscaling"
+
+//NSString * const deprecated_PGShowFileNameOnImageThumbnailKey = @"PGShowFileNameOnImageThumbnail";
+//NSString * const deprecated_PGShowCountsAndSizesOnContainerThumbnailKey = @"PGShowCountsAndSizesOnContainerThumbnail";
+//NSString *const PGThumbnailContainerLabelTypeKey = @"PGThumbnailContainerLabelType";
+// TODO: work out if these can be removed
+//NSString * const PGRecentItemsKey            = @"PGRecentItems2";
+//NSString * const PGRecentItemsDeprecated2Key = @"PGRecentItems";    // Deprecated after 1.3.2
+//NSString * const PGRecentItemsDeprecatedKey = @"PGRecentDocuments";    // Deprecated after 1.2.2.
+//NSString * const PGFullscreenKey = @"PGFullscreen";
+
 
 extension Notification.Name
 {
@@ -135,15 +170,15 @@ extension UserDefaults
             PGBackgroundPatternKey: PatternType.noPattern.rawValue,
             
             PGMaxRecursionDepthKey: 1,
-            PGMouseClickActionKey: PGAction.nextPrevious.rawValue,
-            PGEscapeKeyMappingKey: PGEscapeMapping.fullscreen.rawValue,
+            PGMouseClickActionKey: MouseClickAction.nextPrevious.rawValue,
+            PGEscapeKeyMappingKey: EscapeMapping.fullscreen.rawValue,
             
             PGDefaultReadingDirectionKey: PGReadingDirection.leftToRight.rawValue,
             PGBackwardsInitialLocationKey: PGPageLocation.end.rawValue,
 
             PGImageScaleModeKey: ImageScaleMode.constantFactor.rawValue,
             PGImageScaleFactorKey: 1.0,
-            PGImageScaleConstraintKey: PGImageScaleConstraint.none.rawValue,
+            PGImageScaleConstraintKey: ImageScaleConstraint.none.rawValue,
             PGAntialiasWhenUpscalingKey: true,
             
             PGAnimatesImagesKey: true,
@@ -201,6 +236,11 @@ extension UserDefaults
                 standard.set(FullScreenBackgroundType.systemAppearance, forKey: PGFullScreenBackgroundTypeKey as String)
             }
             standard.removeObject(forKey: "PGBackgroundColorSourceKey")
+        }
+        
+        if let _ = standard.object(forKey: "PGBackgroundColorUsedInFullScreen")
+        {
+            standard.removeObject(forKey: "PGBackgroundColorUsedInFullScreen")
         }
         
         // 2026/02/22 Transition older saved resent items
@@ -290,12 +330,12 @@ extension UserDefaults
     }
     
     @objc
-    var mouseClickAction: PGAction
+    var mouseClickAction: MouseClickAction
     {
         get
         {
-            let raw = UInt(self.integer(forKey: PGMouseClickActionKey))
-            return PGAction(rawValue: raw) ?? .nextPrevious
+            let raw = self.integer(forKey: PGMouseClickActionKey)
+            return MouseClickAction(rawValue: raw) ?? .nextPrevious
         }
         set
         {
@@ -304,12 +344,12 @@ extension UserDefaults
     }
     
     @objc
-    var escapeKeyMapping: PGEscapeMapping
+    var escapeKeyMapping: EscapeMapping
     {
         get
         {
-            let raw = UInt(self.integer(forKey: PGEscapeKeyMappingKey))
-            return PGEscapeMapping(rawValue: raw) ?? .fullscreen
+            let raw = self.integer(forKey: PGEscapeKeyMappingKey)
+            return EscapeMapping(rawValue: raw) ?? .fullscreen
         }
         set
         {
@@ -705,12 +745,12 @@ extension UserDefaults
     }
     
     @objc
-    var imageScaleConstraint: PGImageScaleConstraint
+    var imageScaleConstraint: ImageScaleConstraint
     {
         get
         {
-            let raw = UInt(self.integer(forKey: PGImageScaleConstraintKey))
-            return PGImageScaleConstraint(rawValue: raw) ?? .none
+            let raw = self.integer(forKey: PGImageScaleConstraintKey)
+            return ImageScaleConstraint(rawValue: raw) ?? .none
         }
         set
         {

@@ -43,6 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 static __strong NSImage * _Nullable PGRoundedCornerImages[4];
 static NSSize PGRoundedCornerSizes[4];
 
+// MARK: -
 @interface PGImageView ()
 
 @property (nonatomic, assign) NSSize size;
@@ -56,15 +57,12 @@ static NSSize PGRoundedCornerSizes[4];
 @property (nonatomic, strong) NSImage *image;
 @property (nonatomic, assign) BOOL isPDF;
 @property (nonatomic, assign) NSUInteger numberOfFrames;
-//@property (nonatomic, assign) CGLayerRef _cacheLayer;		2023/10/16 removed; -setUsesCaching: is now a no-op
 @property (nonatomic, assign) BOOL awaitingUpdate;
 
 - (void)_runAnimationTimer;
 - (void)_animate;
 - (void)_invalidateCache;
 - (void)_cache;
-//	2023/10/16 replaced with -_drawImageWithFrame:
-//- (void)_drawImageWithFrame:(NSRect)aRect compositeCopy:(BOOL)compositeCopy rects:(NSRect const *)rects count:(NSUInteger)count;
 - (void)_drawImageWithFrame:(NSRect)aRect;
 @property(readonly) BOOL _shouldDrawRoundedCorners;
 - (BOOL)_needsToDrawRoundedCornersForImageRect:(NSRect)r rects:(NSRect const * _Nullable)rects count:(NSUInteger)count;
@@ -79,6 +77,25 @@ static NSSize PGRoundedCornerSizes[4];
 
 //	MARK: -
 @implementation PGImageView
+
+- (instancetype)init
+{
+    return [self initWithFrame:NSZeroRect];
+}
+
+- (void)dealloc
+{
+    [self PG_cancelPreviousPerformRequests];
+    [self PG_removeObserver];
+    [self stopAnimatedSizeTransition];
+    [self unbind:@"animates"];
+    [self unbind:@"antialiasWhenUpscaling"];
+    [self unbind:@"usesRoundedCorners"];
+    [self setImageRep:nil orientation:PGUpright size:NSZeroSize];
+    NSParameterAssert(!_rep);
+    [self _invalidateCache];
+    [self setAnimates:NO];
+}
 
 //	MARK: +PGImageView
 
@@ -106,7 +123,7 @@ static NSSize PGRoundedCornerSizes[4];
 	PGRoundedCornerSizes[PGMaxXMaxYCorner] = PGRoundedCornerImages[PGMaxXMaxYCorner].size;
 }
 
-//	MARK: - PGImageView
+//	MARK: PGImageView
 
 - (NSSize)size
 {
@@ -161,13 +178,7 @@ static NSSize PGRoundedCornerSizes[4];
 {
 	if(flag == _usesCaching) return;
 	_usesCaching = flag;
-
-	//	2023/10/16 since caching is no longer done, do nothing
-//	if(flag) [self setNeedsDisplay:YES];
-//	else [self _invalidateCache];
 }
-
-//	MARK: -
 
 - (BOOL)canAnimateRep
 {
@@ -194,8 +205,6 @@ static NSSize PGRoundedCornerSizes[4];
 	}
 	[self _runAnimationTimer];
 }
-
-//	MARK: -
 
 - (void)setImageRep:(nullable NSImageRep *)rep orientation:(PGOrientation)orientation size:(NSSize)size
 {
@@ -281,8 +290,6 @@ static NSSize PGRoundedCornerSizes[4];
 	return [[self _transformWithRotationInDegrees:val] transformPoint:PGOffsetPointByXY(p, NSMidX(b2), NSMidY(b2))];
 }
 
-//	MARK: -
-
 - (BOOL)writeToPasteboard:(nullable NSPasteboard *)pboard types:(NSArray *)types
 {
 	if(![types containsObject:NSPasteboardTypeTIFF]) return NO;
@@ -294,8 +301,6 @@ static NSSize PGRoundedCornerSizes[4];
 	return YES;
 }
 
-//	MARK: -
-
 - (void)appDidHide:(NSNotification *)aNotif
 {
 	self.paused = YES;
@@ -305,7 +310,7 @@ static NSSize PGRoundedCornerSizes[4];
 	self.paused = NO;
 }
 
-//	MARK: - PGImageView(Private)
+//	MARK: PGImageView(Private)
 
 - (BOOL)_imageIsOpaque
 {
@@ -523,7 +528,7 @@ static NSSize PGRoundedCornerSizes[4];
 	[self setNeedsDisplay:YES];
 }
 
-//	MARK: - NSView
+//	MARK: NSView
 
 - (instancetype)initWithFrame:(NSRect)aRect
 {
@@ -624,7 +629,7 @@ static NSSize PGRoundedCornerSizes[4];
 	[self _invalidateCache];
 }
 
-//	MARK: - NSView(PGClipViewAdditions)
+//	MARK: NSView(PGClipViewAdditions)
 
 - (BOOL)PG_acceptsClicksInClipView:(PGClipView *)sender
 {
@@ -635,25 +640,6 @@ static NSSize PGRoundedCornerSizes[4];
 	return YES;
 }
 
-//	MARK: - NSObject
-
-- (instancetype)init
-{
-	return [self initWithFrame:NSZeroRect];
-}
-- (void)dealloc
-{
-	[self PG_cancelPreviousPerformRequests];
-	[self PG_removeObserver];
-	[self stopAnimatedSizeTransition];
-	[self unbind:@"animates"];
-	[self unbind:@"antialiasWhenUpscaling"];
-	[self unbind:@"usesRoundedCorners"];
-	[self setImageRep:nil orientation:PGUpright size:NSZeroSize];
-	NSParameterAssert(!_rep);
-	[self _invalidateCache];
-	[self setAnimates:NO];
-}
 
 @end
 

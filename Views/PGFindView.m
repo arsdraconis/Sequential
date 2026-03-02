@@ -24,14 +24,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGFindView.h"
 
-// Views
 @class PGBezelPanel;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @implementation PGFindView
-
-//	MARK: - NSResponder
 
 - (BOOL)acceptsFirstMouse:(nullable NSEvent *)theEvent
 {
@@ -43,8 +40,6 @@ NS_ASSUME_NONNULL_BEGIN
 	[self.window makeFirstResponder:self.window.initialFirstResponder]; // Fitt's law.
 }
 
-//	MARK: - <PGBezelPanelContentView>
-
 - (NSRect)bezelPanel:(PGBezelPanel *)sender frameForContentRect:(NSRect)aRect scale:(CGFloat)s
 {
 	return (NSRect){aRect.origin, {NSWidth(self.frame) * s, NSHeight(self.frame) * s}};
@@ -55,21 +50,15 @@ NS_ASSUME_NONNULL_BEGIN
 //	MARK: -
 @implementation PGFindlessTextView
 
-//	MARK: - NSTextView
-
 - (IBAction)performFindPanelAction:(nullable id)sender
 {
 	[self doesNotRecognizeSelector:_cmd];
 }
 
-//	MARK: - NSObject
-
 + (BOOL)instancesRespondToSelector:(SEL)aSelector
 {
 	return @selector(performFindPanelAction:) == aSelector ? NO : [super instancesRespondToSelector:aSelector];
 }
-
-//	MARK: - <NSObject>
 
 - (BOOL)respondsToSelector:(SEL)aSelector
 {

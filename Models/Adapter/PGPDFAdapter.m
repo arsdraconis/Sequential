@@ -24,11 +24,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGPDFAdapter.h"
 
-// Models
 #import "PGNode.h"
 #import "PGResourceIdentifier.h"
-
-// Other Sources
 #import "PGAppKitAdditions.h"
 #import "PGGeometry.h"
 
@@ -122,6 +119,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 //	MARK: -
 @implementation PGPDFPageAdapter
 
@@ -196,7 +194,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 //	MARK: -
-
 @interface PGPDFPageDataProvider ()
 
 @property (nonatomic, strong) NSPDFImageRep *mainRep;

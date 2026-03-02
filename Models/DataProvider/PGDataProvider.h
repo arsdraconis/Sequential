@@ -53,6 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+// MARK: -
 @interface PGDataProvider (PGDataProviderCreation)
 
 + (instancetype)providerWithResourceIdentifier:(PGResourceIdentifier *)ident

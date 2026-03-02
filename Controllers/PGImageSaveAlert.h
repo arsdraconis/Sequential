@@ -30,7 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PGImageSaveAlert : NSWindowController<NSOpenSavePanelDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate, NSWindowDelegate>
 
 - (instancetype)initWithRoot:(PGNode *)root initialSelection:(NSSet *)aSet;
-- (void)beginSheetForWindow:(NSWindow *)window; // If 'window' is nil, uses a modal alert instead of a sheet.
+/// If 'window' is nil, uses a modal alert instead of a sheet.
+- (void)beginSheetForWindow:(NSWindow *)window;
 - (void)openPanelDidEnd:(NSOpenPanel *)panel returnCode:(NSInteger)returnCode contextInfo:(nullable void *)contextInfo;
 
 - (NSString *)saveNameForNode:(PGNode *)node;

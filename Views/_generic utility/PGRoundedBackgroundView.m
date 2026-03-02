@@ -31,24 +31,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation PGRoundedBackgroundView
 
-//	MARK: - NSView
-
 - (BOOL)isOpaque
 {
 	return NO;
 }
+
 - (void)drawRect:(NSRect)aRect
 {
 	[[NSColor windowBackgroundColor] set];
 	[[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(self.bounds, 1.0f, 1.0f) xRadius:20.0f yRadius:20.0f] fill];
 }
 
-//	MARK: - NSResponder
-
 - (void)mouseDown:(NSEvent *)anEvent
 {
 	[self.window makeFirstResponder:self.superview];
 }
+
 - (void)rightMouseDown:(NSEvent *)anEvent {}
 
 @end

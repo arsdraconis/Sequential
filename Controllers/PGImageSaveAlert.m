@@ -164,15 +164,13 @@ NS_ASSUME_NONNULL_BEGIN
 	[_openPanel setDelegate:nil];
 }
 
-//	MARK: -
-
 - (NSString *)saveNameForNode:(PGNode *)node
 {
 	NSString *const modifiedName = _saveNamesByNodePointer[[NSValue valueWithNonretainedObject:node]];
 	return modifiedName ? modifiedName : node.identifier.naturalDisplayName;
 }
 
-//	MARK: - NSObject
+//	MARK: NSObject
 
 - (void)dealloc
 {
@@ -181,7 +179,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[_nodesOutline setDelegate:nil];
 }
 
-//	MARK: - <NSOpenSavePanelDelegate>
+//	MARK: <NSOpenSavePanelDelegate>
 
 - (BOOL)panel:(id)sender validateURL:(NSURL *)url error:(NSError **)outError {
 #if !defined(NS_BLOCK_ASSERTIONS)
@@ -279,7 +277,7 @@ NS_ASSUME_NONNULL_BEGIN
 	[self _setDestination:url];
 }
 
-//	MARK: - <NSOutlineViewDataSource>
+//	MARK: <NSOutlineViewDataSource>
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(nullable id)item
 {
@@ -309,7 +307,7 @@ NS_ASSUME_NONNULL_BEGIN
 	if(((NSString *)object).length) _saveNamesByNodePointer[[NSValue valueWithNonretainedObject:item]] = object;
 }
 
-//	MARK: - <NSOutlineViewDelegate>
+//	MARK: <NSOutlineViewDelegate>
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(nullable NSTableColumn *)tableColumn item:(id)item
 {
@@ -334,7 +332,7 @@ NS_ASSUME_NONNULL_BEGIN
 	return [item resourceAdapter].canSaveData;
 }
 
-//	MARK: - <NSWindowDelegate>
+//	MARK: <NSWindowDelegate>
 
 - (void)windowDidEndSheet:(NSNotification *)notification
 {

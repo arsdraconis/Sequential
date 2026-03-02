@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 @implementation PGResourceDataProvider
 
 @synthesize identifier = _identifier;

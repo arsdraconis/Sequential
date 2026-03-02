@@ -33,8 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *stringValue;
 @property (nonatomic, assign) NSUInteger index;
 @property (nonatomic, assign) NSUInteger count;
-@property (nonatomic, assign) NSUInteger currentFolderIndex;	//	2023/10/01 added
-@property (nonatomic, assign) NSUInteger currentFolderCount;	//	2023/10/01 added
+@property (nonatomic, assign) NSUInteger currentFolderIndex;
+@property (nonatomic, assign) NSUInteger currentFolderCount;
 @property (readonly) BOOL showsProgressBar;
 @property (nonatomic, assign) PGRectCorner originCorner;
 

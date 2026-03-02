@@ -22,36 +22,33 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
-// Models
 @class PGDisplayableIdentifier;
 @class PGSubscription;
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const PGDisplayableIdentifierIconDidChangeNotification;
-extern NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification;
-
 // 2021/07/21 modernized
+@interface PGResourceIdentifier : NSObject <NSSecureCoding>
 
-@interface PGResourceIdentifier : NSObject <NSSecureCoding>	//	NSCoding
+@property(readonly) PGResourceIdentifier *identifier;
+@property(readonly) PGDisplayableIdentifier *displayableIdentifier;
+@property(readonly, nullable) PGResourceIdentifier *superidentifier;
+@property(readonly) PGResourceIdentifier *rootIdentifier;
+/// Equivalent to -URLByFollowingAliases:NO.
+@property(readonly) NSURL *URL;
+@property(readonly) NSInteger index;
+@property(readonly) BOOL hasTarget;
+@property(readonly) BOOL isFileIdentifier;
 
 + (instancetype)resourceIdentifierWithURL:(NSURL *)URL;
 
 - (instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 
-@property(readonly) PGResourceIdentifier *identifier;
-@property(readonly) PGDisplayableIdentifier *displayableIdentifier;
-@property(readonly, nullable) PGResourceIdentifier *superidentifier;
-@property(readonly) PGResourceIdentifier *rootIdentifier;
-@property(readonly) NSURL *URL; // Equivalent to -URLByFollowingAliases:NO.
-@property(readonly) NSInteger index;
-@property(readonly) BOOL hasTarget;
-@property(readonly) BOOL isFileIdentifier;
-
 - (PGResourceIdentifier *)subidentifierWithIndex:(NSInteger)index;
 
-- (NSURL *)superURLByFollowingAliases:(BOOL)flag; // Our URL, or our superidentifier's otherwise.
+/// Our URL, or our superidentifier's otherwise.
+- (NSURL *)superURLByFollowingAliases:(BOOL)flag;
 - (nullable NSURL *)URLByFollowingAliases:(BOOL)flag;
 
 - (nullable PGSubscription *)subscriptionWithDescendents:(BOOL)flag;
@@ -60,15 +57,14 @@ extern NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification;
 
 
 //	MARK: -
-
 @interface PGDisplayableIdentifier : PGResourceIdentifier
 
 @property (nonatomic, assign) BOOL postsNotifications;
 @property (nonatomic, strong) NSImage *icon;
 @property (nonatomic, readonly) NSString *displayName;
 @property (nonatomic, copy, nullable) NSString *customDisplayName;
-@property (nonatomic, copy) NSString *naturalDisplayName; // The name from the filesystem or raw address of the URL.
-//@property(readonly) PGLabelColor labelColor;	2021/07/21 modernized
+/// The name from the filesystem or raw address of the URL.
+@property (nonatomic, copy) NSString *naturalDisplayName;
 @property (nonatomic, readonly, nullable) NSColor* labelColor;
 
 - (NSAttributedString *)attributedStringWithAncestory:(BOOL)flag;
@@ -77,7 +73,6 @@ extern NSString *const PGDisplayableIdentifierDisplayNameDidChangeNotification;
 @end
 
 //	MARK: -
-
 @interface NSURL(PGResourceIdentifierCreation)
 
 @property(readonly) PGResourceIdentifier *PG_resourceIdentifier;

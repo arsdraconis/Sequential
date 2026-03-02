@@ -33,7 +33,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation PGPrefObject
 
-//	MARK: +PGPrefObject
+- (instancetype)init
+{
+    if ((self = [super init]))
+    {
+        NSUserDefaults * const d = [NSUserDefaults standardUserDefaults];
+        _showsInfo        = d.showsInfo;
+        _showsThumbnails  = d.showsThumbnailSidebar;
+        _readingDirection = d.defaultReadingDirection;
+        _imageScaleMode   = d.imageScaleMode;
+        _imageScaleFactor = d.imageScaleFactor;
+        _animatesImages   = d.animatesImages;
+        _sortOrder        = d.sortOrder;
+        _timerInterval    = d.timerInterval;
+        _baseOrientation  = d.baseOrientation;
+    }
+    return self;
+}
 
 + (id)globalPrefObject
 {
@@ -136,24 +152,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isCurrentSortOrder:(PGSortOrder)order
 {
     return order == self.sortOrder;
-}
-
-- (instancetype)init
-{
-    if ((self = [super init]))
-    {
-        NSUserDefaults * const d = [NSUserDefaults standardUserDefaults];
-        _showsInfo        = d.showsInfo;
-        _showsThumbnails  = d.showsThumbnailSidebar;
-        _readingDirection = d.defaultReadingDirection;
-        _imageScaleMode   = d.imageScaleMode;
-        _imageScaleFactor = d.imageScaleFactor;
-        _animatesImages   = d.animatesImages;
-        _sortOrder        = d.sortOrder;
-        _timerInterval    = d.timerInterval;
-        _baseOrientation  = d.baseOrientation;
-    }
-    return self;
 }
 
 @end

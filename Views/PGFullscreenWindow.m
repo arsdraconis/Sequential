@@ -47,12 +47,12 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 	if(nil == screen)
 		return NSZeroRect;
 
-//if(useEntireScreen) NSLog(@"screen.frame = %5.2f x %5.2f", screen.frame.size.width, screen.frame.size.height);
+//    if(useEntireScreen) NSLog(@"screen.frame = %5.2f x %5.2f", screen.frame.size.width, screen.frame.size.height);
 
 	if(useEntireScreen)
 		return screen.frame;
 
-	//	return a frame that positions the window under the notch
+	// return a frame that positions the window under the notch
 	return NSMakeRect(screen.frame.origin.x, screen.frame.origin.y,
 						screen.frame.size.width,
 						screen.frame.size.height - GetNotchHeight(screen));
@@ -164,14 +164,10 @@ GetSuitableFrameForScreenWithNotch(BOOL useEntireScreen, NSScreen* screen) {
 			[super validateMenuItem:anItem];
 }
 
-//	MARK: NSWindow
-
 - (IBAction)performClose:(nullable id)sender
 {
 	[(NSObject<PGFullscreenWindowDelegate> *)self.delegate closeWindowContent:self];
 }
-
-//	MARK: -
 
 - (BOOL)canBecomeKeyWindow
 {

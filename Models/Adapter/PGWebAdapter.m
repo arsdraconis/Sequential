@@ -24,17 +24,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGWebAdapter.h"
 
-// Models
 #import "PGNode.h"
 #import "PGContainerAdapter.h"
 #import "PGResourceIdentifier.h"
 #import "PGDataProvider.h"
 #import "PGURLLoad.h"
-
-// Controllers
 #import "PGDocumentController.h"
-
-// Other Sources
 #import "PGFoundationAdditions.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -47,8 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 //	MARK: -
-
-
 @interface PGWebAdapter ()
 
 @property (nonatomic, strong) PGURLLoad *mainLoad;
@@ -58,8 +51,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 //	MARK: -
-
 @implementation PGWebAdapter
+
+- (void)dealloc
+{
+    [_mainLoad cancelAndNotify:NO];
+    [_faviconLoad cancelAndNotify:NO];
+}
 
 //	MARK: +PGDataProviderCustomizing
 
@@ -86,14 +84,6 @@ NS_ASSUME_NONNULL_BEGIN
 	_mainLoad = [[PGURLLoad alloc] initWithRequest:[NSURLRequest requestWithURL:URL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:15.0f] parent:self delegate:self];
 }
 
-//	MARK: -NSObject
-
-- (void)dealloc
-{
-	[_mainLoad cancelAndNotify:NO];
-	[_faviconLoad cancelAndNotify:NO];
-}
-
 //	MARK: - <PGActivityOwner>
 
 - (CGFloat)progressForActivity:(PGActivity *)activity
@@ -114,7 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
 	if([resp respondsToSelector:@selector(statusCode)] && ([resp statusCode] < 200 || [resp statusCode] >= 300)) {
 		[_mainLoad cancelAndNotify:NO];
 		[_faviconLoad cancelAndNotify:NO];
-		self.error = [NSError PG_errorWithDomain:PGNodeErrorDomain code:PGGenericError localizedDescription:[NSString stringWithFormat:NSLocalizedString(@"The error %ld %@ was generated while loading the URL %@.", @"The URL returned a error status code. %ld is replaced by the status code, the first %@ is replaced by the human-readable error (automatically localized), the second %@ is replaced by the full URL."), (long)[resp statusCode], [NSHTTPURLResponse localizedStringForStatusCode:[resp statusCode]], [resp URL]] userInfo:nil];
+		self.error = [NSError PG_errorWithDomain:PGNodeErrorDomain code:PGNodeErrorGeneric localizedDescription:[NSString stringWithFormat:NSLocalizedString(@"The error %ld %@ was generated while loading the URL %@.", @"The URL returned a error status code. %ld is replaced by the status code, the first %@ is replaced by the human-readable error (automatically localized), the second %@ is replaced by the full URL."), (long)[resp statusCode], [NSHTTPURLResponse localizedStringForStatusCode:[resp statusCode]], [resp URL]] userInfo:nil];
 		[self.node loadFinishedForAdapter:self];
 		return;
 	}
@@ -152,7 +142,7 @@ NS_ASSUME_NONNULL_BEGIN
 	if(sender != _mainLoad) return;
 	[_faviconLoad cancelAndNotify:NO];
     NSString *errorMsg = [NSString stringWithFormat:NSLocalizedString(@"The URL %@ could not be loaded.", @"The URL could not be loaded for an unknown reason. %@ is replaced by the full URL."), _mainLoad.request.URL];
-	self.error = [NSError PG_errorWithDomain:PGNodeErrorDomain code:PGGenericError localizedDescription:errorMsg userInfo:nil];
+	self.error = [NSError PG_errorWithDomain:PGNodeErrorDomain code:PGNodeErrorGeneric localizedDescription:errorMsg userInfo:nil];
 	[self.node loadFinishedForAdapter:self];
 }
 - (void)loadDidCancel:(PGURLLoad *)sender
