@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)init
 {
-    return [self initWithWindowNibName:[self nibName]];
+    return [self initWithWindowNibName:[self windowNibName]];
 }
 
 - (void)windowDidLoad
@@ -95,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)windowFrameAutosaveName
 {
-    NSString * const name = [self nibName];
+    NSString * const name = [self windowNibName];
     return name ? [NSString stringWithFormat:@"%@PanelFrame", name] : [NSString string];
 }
 

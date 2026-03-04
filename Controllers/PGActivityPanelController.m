@@ -80,8 +80,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)nibName
 {
+    return @"PGActivity";
+}
+
+- (nullable NSString *)windowNibName
+{
 	return @"PGActivity";
 }
+
 - (void)windowWillShow
 {
 	_updateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(_update) userInfo:nil repeats:YES];

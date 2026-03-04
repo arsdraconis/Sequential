@@ -404,6 +404,11 @@ NS_ASSUME_NONNULL_BEGIN
     return @"PGInspector";
 }
 
+- (nullable NSString *)windowNibName
+{
+    return @"PGInspector";
+}
+
 - (BOOL)setDisplayControllerReturningWasChanged:(nullable PGDisplayController *)controller
 {
     PGDisplayController * const oldController = self.displayController;

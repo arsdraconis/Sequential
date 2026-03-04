@@ -37,7 +37,7 @@ typedef NS_ENUM(NSInteger, PGFloatingPanelToggleInstruction)
 @interface PGFloatingPanelController : NSWindowController
 
 @property (nonatomic, assign, getter=isShown) BOOL shown;
-@property (readonly) PGDisplayController *displayController;
+@property (readonly, nullable) PGDisplayController *displayController;
 
 - (void)toggleShown;
 - (void)toggleShownUsing:(PGFloatingPanelToggleInstruction)i;

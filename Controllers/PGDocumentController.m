@@ -41,7 +41,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGDisplayController.h"
 #import "PGFullscreenController.h"
 #import "PGInspectorPanelController.h"
-#import "PGTimerPanelController.h"
 #import "PGURLAlert.h"
 #import "PGWindowController.h"
 #import "PGAppKitAdditions.h"

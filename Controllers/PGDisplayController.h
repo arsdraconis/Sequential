@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL loadingIndicatorShown;
 @property (nonatomic, assign) BOOL findPanelShown;
 @property (nonatomic, assign) BOOL goToPagePanelShown;
-@property (readonly) NSDate *nextTimerFireDate;
+@property (readonly, nullable) NSDate *nextTimerFireDate;
 @property (nonatomic, assign) BOOL timerRunning;
 @property (nonatomic, assign, getter=isInFullSizeContentModeForNonFullScreenMode) BOOL inFullSizeContentModeForNonFullScreenMode;
 

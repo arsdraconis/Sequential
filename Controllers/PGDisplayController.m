@@ -701,7 +701,7 @@ SetControlAttributedStringValue(NSControl *c, NSAttributedString *anObject) {
 		[self.window makeKeyWindow];
 	}
 }
-- (NSDate *)nextTimerFireDate
+- (nullable NSDate *)nextTimerFireDate
 {
 	return _nextTimerFireDate;
 }
