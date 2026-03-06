@@ -125,7 +125,6 @@
 		0ED4A44D0DCC628F007C5A77 /* PGPDFAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ED4A44C0DCC628F007C5A77 /* PGPDFAdapter.m */; };
 		0ED4A8DD0DD00E18007C5A77 /* PGURLLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ED4A8DB0DD00E18007C5A77 /* PGURLLoad.m */; };
 		0ED4AAF80DD18538007C5A77 /* PGFloatingPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ED4AAF70DD18538007C5A77 /* PGFloatingPanelController.m */; };
-		0ED4AB170DD18730007C5A77 /* PGInspectorPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ED4AB160DD18730007C5A77 /* PGInspectorPanelController.m */; };
 		0EDB9A760EA1896400B7342A /* PGColumnView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB9A750EA1896400B7342A /* PGColumnView.m */; };
 		0EDB9A790EA1899300B7342A /* PGThumbnailBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB9A780EA1899300B7342A /* PGThumbnailBrowser.m */; };
 		0EDB9BFF0EA1E27D00B7342A /* PGThumbnailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB9BFE0EA1E27D00B7342A /* PGThumbnailView.m */; };
@@ -156,9 +155,13 @@
 		AB29A11C2F44194F009EBE8A /* NSBezierPath+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */; };
 		AB29A11E2F4420B1009EBE8A /* NSScreen+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */; };
 		AB29A1202F44335A009EBE8A /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */; };
+		AB374DA82F5ABB52001A4721 /* NSTableColumn+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB374D9A2F5ABB4A001A4721 /* NSTableColumn+Extensions.swift */; };
 		AB7A40C32F580B59006F0269 /* TimerPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7A40C22F580B59006F0269 /* TimerPanelController.swift */; };
 		AB8C82652F4C183A007AC077 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */; };
 		AB8C82752F4C3A35007AC077 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82742F4C3A35007AC077 /* Notifications.m */; };
+		ABCE98272F583196005829A5 /* Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCE98262F583196005829A5 /* Orientation.swift */; };
+		ABCE98362F5835FD005829A5 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCE98352F5835FD005829A5 /* String+Extensions.swift */; };
+		ABCE98382F583A81005829A5 /* InspectorPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCE98372F583A81005829A5 /* InspectorPanelController.swift */; };
 		ABDA66612F502314005B8635 /* TimerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDA66602F502314005B8635 /* TimerButton.swift */; };
 		ABDA66702F502917005B8635 /* CocoaTypes+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDA666F2F502917005B8635 /* CocoaTypes+Extensions.swift */; };
 		B581795C121490A60041F0F4 /* PGXMLAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = B581795B121490A60041F0F4 /* PGXMLAdapter.m */; };
@@ -545,8 +548,6 @@
 		0ED4A8DC0DD00E18007C5A77 /* PGURLLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGURLLoad.h; sourceTree = "<group>"; };
 		0ED4AAF60DD18538007C5A77 /* PGFloatingPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGFloatingPanelController.h; sourceTree = "<group>"; };
 		0ED4AAF70DD18538007C5A77 /* PGFloatingPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGFloatingPanelController.m; sourceTree = "<group>"; };
-		0ED4AB150DD18730007C5A77 /* PGInspectorPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGInspectorPanelController.h; sourceTree = "<group>"; };
-		0ED4AB160DD18730007C5A77 /* PGInspectorPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGInspectorPanelController.m; sourceTree = "<group>"; };
 		0EDB9A740EA1896400B7342A /* PGColumnView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGColumnView.h; sourceTree = "<group>"; };
 		0EDB9A750EA1896400B7342A /* PGColumnView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGColumnView.m; sourceTree = "<group>"; };
 		0EDB9A770EA1899300B7342A /* PGThumbnailBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGThumbnailBrowser.h; sourceTree = "<group>"; };
@@ -602,10 +603,14 @@
 		AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSBezierPath+Extensions.swift"; sourceTree = "<group>"; };
 		AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSScreen+Extensions.swift"; sourceTree = "<group>"; };
 		AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extensions.swift"; sourceTree = "<group>"; };
+		AB374D9A2F5ABB4A001A4721 /* NSTableColumn+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTableColumn+Extensions.swift"; sourceTree = "<group>"; };
 		AB7A40C22F580B59006F0269 /* TimerPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerPanelController.swift; sourceTree = "<group>"; };
 		AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		AB8C82732F4C3A35007AC077 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		AB8C82742F4C3A35007AC077 /* Notifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
+		ABCE98262F583196005829A5 /* Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Orientation.swift; sourceTree = "<group>"; };
+		ABCE98352F5835FD005829A5 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		ABCE98372F583A81005829A5 /* InspectorPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorPanelController.swift; sourceTree = "<group>"; };
 		ABDA66602F502314005B8635 /* TimerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerButton.swift; sourceTree = "<group>"; };
 		ABDA666F2F502917005B8635 /* CocoaTypes+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CocoaTypes+Extensions.swift"; sourceTree = "<group>"; };
 		B573CFF3122AC22200F4B7CA /* PGNodeParenting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGNodeParenting.h; sourceTree = "<group>"; };
@@ -683,8 +688,6 @@
 				0E1BE0E20F5AA246007421EE /* PGThumbnailController.m */,
 				0ED4AAF60DD18538007C5A77 /* PGFloatingPanelController.h */,
 				0ED4AAF70DD18538007C5A77 /* PGFloatingPanelController.m */,
-				0ED4AB150DD18730007C5A77 /* PGInspectorPanelController.h */,
-				0ED4AB160DD18730007C5A77 /* PGInspectorPanelController.m */,
 				0E56B8DB0E24918C00987F57 /* PGActivityPanelController.h */,
 				0E56B8DC0E24918C00987F57 /* PGActivityPanelController.m */,
 				0E5EC1D40CEDFBBC00E7FF9A /* PGURLAlert.h */,
@@ -693,6 +696,7 @@
 				0EE059B00CF29F380080061B /* PGImageSaveAlert.m */,
 				AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */,
 				AB7A40C22F580B59006F0269 /* TimerPanelController.swift */,
+				ABCE98372F583A81005829A5 /* InspectorPanelController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -807,6 +811,7 @@
 				0ED4A8DB0DD00E18007C5A77 /* PGURLLoad.m */,
 				0EE645930DC63C4700A90F86 /* PGBookmark.h */,
 				0EE645940DC63C4700A90F86 /* PGBookmark.m */,
+				ABCE98262F583196005829A5 /* Orientation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1029,11 +1034,13 @@
 		AB0742762F44033800628E02 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				AB374D9A2F5ABB4A001A4721 /* NSTableColumn+Extensions.swift */,
 				AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */,
 				AB0742782F44035700628E02 /* NSColor+Extensions.swift */,
 				AB29A11B2F44194F009EBE8A /* NSBezierPath+Extensions.swift */,
 				AB29A11D2F4420B1009EBE8A /* NSScreen+Extensions.swift */,
 				ABDA666F2F502917005B8635 /* CocoaTypes+Extensions.swift */,
+				ABCE98352F5835FD005829A5 /* String+Extensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1362,6 +1369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F1CA6DDB26BA587100ECE823 /* only_for_linking_cpp_dylib.cpp in Sources */,
+				ABCE98272F583196005829A5 /* Orientation.swift in Sources */,
 				8D15AC320486D014006FF6A4 /* main.m in Sources */,
 				AB7A40C32F580B59006F0269 /* TimerPanelController.swift in Sources */,
 				0E2500C20FA4755A002CCCBA /* PGDelayedPerforming.m in Sources */,
@@ -1392,8 +1400,10 @@
 				0ED4A44D0DCC628F007C5A77 /* PGPDFAdapter.m in Sources */,
 				0EE6476F0DC8F96C00A90F86 /* PGGenericImageAdapter.m in Sources */,
 				B581795C121490A60041F0F4 /* PGXMLAdapter.m in Sources */,
+				ABCE98362F5835FD005829A5 /* String+Extensions.swift in Sources */,
 				0ED4A41A0DCBFDDA007C5A77 /* PGArchiveAdapter.m in Sources */,
 				0EE647720DC8FA3A00A90F86 /* PGContainerAdapter.m in Sources */,
+				AB374DA82F5ABB52001A4721 /* NSTableColumn+Extensions.swift in Sources */,
 				0ECA9B681136CEF600BAFF5E /* PGDataProvider.m in Sources */,
 				4BD905F82AE4D36F001FECBD /* PGResourceDataProvider.m in Sources */,
 				0EF5431E0DC128B600905391 /* PGNode.m in Sources */,
@@ -1418,6 +1428,7 @@
 				0EDB9A790EA1899300B7342A /* PGThumbnailBrowser.m in Sources */,
 				0EDB9A760EA1896400B7342A /* PGColumnView.m in Sources */,
 				0EDB9BFF0EA1E27D00B7342A /* PGThumbnailView.m in Sources */,
+				ABCE98382F583A81005829A5 /* InspectorPanelController.swift in Sources */,
 				4B2462E02ADAC51700BA81EF /* PGThumbnailInfoView.m in Sources */,
 				ABDA66612F502314005B8635 /* TimerButton.swift in Sources */,
 				0E1D3EC90A8091FE00C542A6 /* PGDocumentController.m in Sources */,
@@ -1429,7 +1440,6 @@
 				0E94FBAF0DAE739700A23F73 /* PGDisplayController.m in Sources */,
 				AB29A11C2F44194F009EBE8A /* NSBezierPath+Extensions.swift in Sources */,
 				0ED4AAF80DD18538007C5A77 /* PGFloatingPanelController.m in Sources */,
-				0ED4AB170DD18730007C5A77 /* PGInspectorPanelController.m in Sources */,
 				0E8A1C0610157A5200C23B34 /* PGAboutBoxController.m in Sources */,
 				0E1BE0E30F5AA246007421EE /* PGThumbnailController.m in Sources */,
 				0E56B8DD0E24918C00987F57 /* PGActivityPanelController.m in Sources */,
