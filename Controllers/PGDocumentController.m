@@ -40,7 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGActivityPanelController.h"
 #import "PGDisplayController.h"
 #import "PGFullscreenController.h"
-#import "PGURLAlert.h"
 #import "PGWindowController.h"
 #import "PGAppKitAdditions.h"
 #import "PGDelayedPerforming.h"
@@ -152,7 +151,7 @@ static PGDocumentController *PGSharedDocumentController = nil;
 - (IBAction)openURL:(id)sender
 {
     [NSApp activateIgnoringOtherApps:YES];
-    NSURL * const URL = [[PGURLAlert new] runModal];
+    NSURL * const URL = [[OpenURLWindowController new] runModal];
     if (URL) { [self openDocumentWithContentsOfURL:URL display:YES]; }
 }
 

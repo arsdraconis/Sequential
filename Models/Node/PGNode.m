@@ -233,8 +233,13 @@ typedef NS_OPTIONS(NSUInteger, PGNodeStatus)
 {
     NSParameterAssert((PGNodeStatusLoadingOrReadingMask & _status) == PGNodeStatusReading);
     _status &= ~PGNodeStatusReading;
+    NSDictionary *userInfo = nil;
+    if (aRep)
+    {
+        userInfo = @{PGImageRepKey: aRep};
+    }
     [self PG_postNotificationName:PGNodeReadyForViewingNotification
-                         userInfo:@{PGImageRepKey: aRep}];
+                         userInfo:userInfo];
 }
 
 //	MARK: -
