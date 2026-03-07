@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(readonly) CGFloat progress;
 @property(readonly) BOOL isActive;
 
-+ (id)applicationActivity;
++ (PGActivity *)applicationActivity;
 
 - (instancetype)initWithOwner:(NSObject<PGActivityOwner> *)owner;
 

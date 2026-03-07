@@ -73,7 +73,6 @@
 		0E4794290DF182C40083B7CA /* Silhouette-Black.png in Resources */ = {isa = PBXBuildFile; fileRef = 0E4794280DF182C40083B7CA /* Silhouette-Black.png */; };
 		0E47942B0DF1832E0083B7CA /* Silhouette-White.png in Resources */ = {isa = PBXBuildFile; fileRef = 0E47942A0DF1832E0083B7CA /* Silhouette-White.png */; };
 		0E5035410DDBBF070067FF6A /* Cursor-Hand-Pointing.png in Resources */ = {isa = PBXBuildFile; fileRef = 0E5035400DDBBF070067FF6A /* Cursor-Hand-Pointing.png */; };
-		0E56B8DD0E24918C00987F57 /* PGActivityPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E56B8DC0E24918C00987F57 /* PGActivityPanelController.m */; };
 		0E7B2FF60E9266A600F537CD /* PGKeyboardLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E7B2FF50E9266A600F537CD /* PGKeyboardLayout.m */; };
 		0E7D74460C9ED641004AA269 /* PGDragHighlightView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E7D74450C9ED641004AA269 /* PGDragHighlightView.m */; };
 		0E82626C0CA950770041FA9D /* Sequential.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0E82626B0CA950770041FA9D /* Sequential.icns */; };
@@ -116,7 +115,6 @@
 		0EBED53B102FE2070013748A /* Checkerboard.png in Resources */ = {isa = PBXBuildFile; fileRef = 0EBED53A102FE2070013748A /* Checkerboard.png */; };
 		0EC0F5FA10F0C758000C8B8B /* PGLocalizing.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC0F5F910F0C758000C8B8B /* PGLocalizing.m */; };
 		0EC11DF00CA02B7B003E492C /* PGZooming.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC11DEF0CA02B7B003E492C /* PGZooming.m */; };
-		0EC33E3F0E29B0A700450CF8 /* PGProgressIndicatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC33E3E0E29B0A700450CF8 /* PGProgressIndicatorCell.m */; };
 		0ECA9B681136CEF600BAFF5E /* PGDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECA9B671136CEF600BAFF5E /* PGDataProvider.m */; };
 		0ECD9FFE0CB3961B0059C754 /* PGFindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECD9FFD0CB3961B0059C754 /* PGFindView.m */; };
 		0ECF36E80C7DC4FC0009EB00 /* PGSubscription.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECF36E70C7DC4FC0009EB00 /* PGSubscription.m */; };
@@ -156,6 +154,7 @@
 		AB29A1202F44335A009EBE8A /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */; };
 		AB374DA82F5ABB52001A4721 /* NSTableColumn+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB374D9A2F5ABB4A001A4721 /* NSTableColumn+Extensions.swift */; };
 		AB374DAA2F5C107D001A4721 /* OpenURLWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB374DA92F5C107D001A4721 /* OpenURLWindowController.swift */; };
+		AB374DAC2F5C18F7001A4721 /* ActivityPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB374DAB2F5C18F7001A4721 /* ActivityPanelController.swift */; };
 		AB7A40C32F580B59006F0269 /* TimerPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7A40C22F580B59006F0269 /* TimerPanelController.swift */; };
 		AB8C82652F4C183A007AC077 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */; };
 		AB8C82752F4C3A35007AC077 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82742F4C3A35007AC077 /* Notifications.m */; };
@@ -473,8 +472,6 @@
 		0E4794280DF182C40083B7CA /* Silhouette-Black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Silhouette-Black.png"; sourceTree = "<group>"; };
 		0E47942A0DF1832E0083B7CA /* Silhouette-White.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Silhouette-White.png"; sourceTree = "<group>"; };
 		0E5035400DDBBF070067FF6A /* Cursor-Hand-Pointing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Cursor-Hand-Pointing.png"; sourceTree = "<group>"; };
-		0E56B8DB0E24918C00987F57 /* PGActivityPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGActivityPanelController.h; sourceTree = "<group>"; };
-		0E56B8DC0E24918C00987F57 /* PGActivityPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGActivityPanelController.m; sourceTree = "<group>"; };
 		0E7B2FF40E9266A600F537CD /* PGKeyboardLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGKeyboardLayout.h; sourceTree = "<group>"; };
 		0E7B2FF50E9266A600F537CD /* PGKeyboardLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGKeyboardLayout.m; sourceTree = "<group>"; };
 		0E7D74440C9ED641004AA269 /* PGDragHighlightView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDragHighlightView.h; sourceTree = "<group>"; };
@@ -530,8 +527,6 @@
 		0EC0F5F910F0C758000C8B8B /* PGLocalizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGLocalizing.m; sourceTree = "<group>"; };
 		0EC11DEE0CA02B7B003E492C /* PGZooming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGZooming.h; sourceTree = "<group>"; };
 		0EC11DEF0CA02B7B003E492C /* PGZooming.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGZooming.m; sourceTree = "<group>"; };
-		0EC33E3D0E29B0A700450CF8 /* PGProgressIndicatorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGProgressIndicatorCell.h; sourceTree = "<group>"; };
-		0EC33E3E0E29B0A700450CF8 /* PGProgressIndicatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGProgressIndicatorCell.m; sourceTree = "<group>"; };
 		0ECA9B661136CEF600BAFF5E /* PGDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDataProvider.h; sourceTree = "<group>"; };
 		0ECA9B671136CEF600BAFF5E /* PGDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDataProvider.m; sourceTree = "<group>"; };
 		0ECD9FFC0CB3961B0059C754 /* PGFindView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGFindView.h; sourceTree = "<group>"; };
@@ -603,6 +598,7 @@
 		AB29A11F2F44334E009EBE8A /* UserDefaults+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extensions.swift"; sourceTree = "<group>"; };
 		AB374D9A2F5ABB4A001A4721 /* NSTableColumn+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTableColumn+Extensions.swift"; sourceTree = "<group>"; };
 		AB374DA92F5C107D001A4721 /* OpenURLWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLWindowController.swift; sourceTree = "<group>"; };
+		AB374DAB2F5C18F7001A4721 /* ActivityPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityPanelController.swift; sourceTree = "<group>"; };
 		AB7A40C22F580B59006F0269 /* TimerPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerPanelController.swift; sourceTree = "<group>"; };
 		AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		AB8C82732F4C3A35007AC077 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
@@ -687,14 +683,13 @@
 				0E1BE0E20F5AA246007421EE /* PGThumbnailController.m */,
 				0ED4AAF60DD18538007C5A77 /* PGFloatingPanelController.h */,
 				0ED4AAF70DD18538007C5A77 /* PGFloatingPanelController.m */,
-				0E56B8DB0E24918C00987F57 /* PGActivityPanelController.h */,
-				0E56B8DC0E24918C00987F57 /* PGActivityPanelController.m */,
 				0EE059AF0CF29F380080061B /* PGImageSaveAlert.h */,
 				0EE059B00CF29F380080061B /* PGImageSaveAlert.m */,
 				AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */,
 				AB7A40C22F580B59006F0269 /* TimerPanelController.swift */,
 				ABCE98372F583A81005829A5 /* InspectorPanelController.swift */,
 				AB374DA92F5C107D001A4721 /* OpenURLWindowController.swift */,
+				AB374DAB2F5C18F7001A4721 /* ActivityPanelController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -919,8 +914,6 @@
 				0EF9B2540FA348F700B7E16A /* PGIconTextFieldCell.m */,
 				0E20FDB810967449007EE24A /* PGOrientationMenuItemCell.h */,
 				0E20FDB910967449007EE24A /* PGOrientationMenuItemCell.m */,
-				0EC33E3D0E29B0A700450CF8 /* PGProgressIndicatorCell.h */,
-				0EC33E3E0E29B0A700450CF8 /* PGProgressIndicatorCell.m */,
 				0E2D08770DD2B4F800EC128A /* PGRoundedBackgroundView.h */,
 				0E2D08780DD2B4F800EC128A /* PGRoundedBackgroundView.m */,
 				ABDA66602F502314005B8635 /* TimerButton.swift */,
@@ -1409,6 +1402,7 @@
 				AB0742792F44035700628E02 /* NSColor+Extensions.swift in Sources */,
 				0E1D3A4C0A7FA7B500C542A6 /* PGClipView.m in Sources */,
 				0ECD9FFE0CB3961B0059C754 /* PGFindView.m in Sources */,
+				AB374DAC2F5C18F7001A4721 /* ActivityPanelController.swift in Sources */,
 				0E90195C0DF55F50004B6F69 /* PGDocumentWindow.m in Sources */,
 				AB29A11E2F4420B1009EBE8A /* NSScreen+Extensions.swift in Sources */,
 				0E04EBD00C253BB100078EC2 /* PGAlertView.m in Sources */,
@@ -1418,7 +1412,6 @@
 				0EF9B2550FA348F700B7E16A /* PGIconTextFieldCell.m in Sources */,
 				0E20FDBA10967449007EE24A /* PGOrientationMenuItemCell.m in Sources */,
 				AB29A1202F44335A009EBE8A /* UserDefaults+Extensions.swift in Sources */,
-				0EC33E3F0E29B0A700450CF8 /* PGProgressIndicatorCell.m in Sources */,
 				AB07427B2F44084800628E02 /* AppDelegate.swift in Sources */,
 				0E9016AB0DF44A7E004B6F69 /* PGColorWell.m in Sources */,
 				0EA89C9E0BD540E60077BEEE /* PGImageView.m in Sources */,
@@ -1440,7 +1433,6 @@
 				0ED4AAF80DD18538007C5A77 /* PGFloatingPanelController.m in Sources */,
 				0E8A1C0610157A5200C23B34 /* PGAboutBoxController.m in Sources */,
 				0E1BE0E30F5AA246007421EE /* PGThumbnailController.m in Sources */,
-				0E56B8DD0E24918C00987F57 /* PGActivityPanelController.m in Sources */,
 				4BF35D0D2B062D1A008FC486 /* PGFullSizeContentController.m in Sources */,
 				4BF35D192B062F1D008FC486 /* PGFullSizeContentTitlebarAccessoryViewController.m in Sources */,
 			);

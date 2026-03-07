@@ -37,7 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #import "PGResourceIdentifier.h"
 #import "PGOrientationMenuItemCell.h"
 #import "PGAboutBoxController.h"
-#import "PGActivityPanelController.h"
 #import "PGDisplayController.h"
 #import "PGFullscreenController.h"
 #import "PGWindowController.h"

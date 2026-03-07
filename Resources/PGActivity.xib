@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="PGActivityPanelController">
+        <customObject id="-2" userLabel="File's Owner" customClass="ActivityPanelController" customModule="Sequential" customModuleProvider="target">
             <connections>
                 <outlet property="activityOutline" destination="72" id="79"/>
                 <outlet property="cancelButton" destination="39" id="63"/>
@@ -17,7 +17,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="Activity" allowsToolTipsWhenApplicationIsInactive="NO" hidesOnDeactivate="YES" visibleAtLaunch="NO" animationBehavior="default" id="1" userLabel="Activity Panel" customClass="NSPanel">
+        <window title="Activity" allowsToolTipsWhenApplicationIsInactive="NO" hidesOnDeactivate="YES" visibleAtLaunch="NO" animationBehavior="default" titlebarAppearsTransparent="YES" id="1" userLabel="Activity Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="305" width="360" height="205"/>
@@ -28,14 +28,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView focusRingType="none" fixedFrame="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="71">
-                        <rect key="frame" x="-1" y="39" width="362" height="166"/>
+                        <rect key="frame" x="-1" y="39" width="362" height="161"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" copiesOnScroll="NO" id="LHa-w7-Upy">
-                            <rect key="frame" x="1" y="1" width="360" height="164"/>
+                            <rect key="frame" x="1" y="1" width="360" height="159"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="13" outlineTableColumn="76" id="72">
-                                    <rect key="frame" x="0.0" y="0.0" width="360" height="164"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="360" height="159"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -53,18 +53,21 @@
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
-                                                <tableCellView id="JeI-wq-jtg">
+                                                <tableCellView identifier="ActivityDescriptionView" id="JeI-wq-jtg">
                                                     <rect key="frame" x="1" y="1" width="221" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="URR-c3-kWQ">
                                                             <rect key="frame" x="0.0" y="1" width="221" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="oxX-Qw-mh2">
+                                                            <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" title="Table View Cell" placeholderString="Activity Description" id="oxX-Qw-mh2">
                                                                 <font key="font" usesAppearanceFont="YES"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
+                                                            <connections>
+                                                                <binding destination="JeI-wq-jtg" name="value" keyPath="objectValue" id="IwG-Jm-YZw"/>
+                                                            </connections>
                                                         </textField>
                                                     </subviews>
                                                     <connections>
@@ -85,23 +88,18 @@
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
-                                                <tableCellView id="ZWK-ak-OSl">
+                                                <tableCellView identifier="ActivityProgressView" id="ZWK-ak-OSl">
                                                     <rect key="frame" x="225" y="1" width="104" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Ex-xi-oPA">
-                                                            <rect key="frame" x="0.0" y="1" width="104" height="16"/>
+                                                        <progressIndicator wantsLayer="YES" fixedFrame="YES" maxValue="100" doubleValue="50" indeterminate="YES" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="ONq-id-xSz">
+                                                            <rect key="frame" x="2" y="-1" width="100" height="20"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="gYa-YS-DEE">
-                                                                <font key="font" usesAppearanceFont="YES"/>
-                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            </textFieldCell>
-                                                        </textField>
+                                                            <connections>
+                                                                <binding destination="ZWK-ak-OSl" name="value" keyPath="objectValue" id="68d-BC-1s6"/>
+                                                            </connections>
+                                                        </progressIndicator>
                                                     </subviews>
-                                                    <connections>
-                                                        <outlet property="textField" destination="8Ex-xi-oPA" id="cBL-ho-7X6"/>
-                                                    </connections>
                                                 </tableCellView>
                                             </prototypeCellViews>
                                         </tableColumn>
@@ -118,7 +116,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="90">
-                            <rect key="frame" x="344" y="1" width="17" height="164"/>
+                            <rect key="frame" x="344" y="1" width="17" height="159"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
@@ -138,7 +136,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="16"/>
             </connections>
-            <point key="canvasLocation" x="139" y="136"/>
+            <point key="canvasLocation" x="139" y="135.5"/>
         </window>
     </objects>
 </document>

@@ -112,17 +112,14 @@ NS_ASSUME_NONNULL_BEGIN
     if (flag == _shown) return;
     
     _shown = flag;
-    id<PGFloatingPanelProtocol> pr = !forFullScreenTransition && [self conformsToProtocol:@protocol(PGFloatingPanelProtocol)]
-        ? (id<PGFloatingPanelProtocol>)self
-        : nil;
     if (flag)
     {
-        [pr windowWillShow];
+        [self windowWillShow];
         [super showWindow:self];
     }
     else
     {
-        [pr windowWillClose];
+        [self windowWillHide];
         if (forFullScreenTransition)
         {
             [self.window orderOut:self];
@@ -167,6 +164,16 @@ NS_ASSUME_NONNULL_BEGIN
     return NO;
 }
 
+- (void)windowWillShow
+{
+    
+}
+
+- (void)windowWillHide
+{
+    
+}
+
 
 //	MARK: - <NSWindowDelegate>
 - (void)windowDidResize:(nullable NSNotification *)notification
@@ -182,11 +189,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)windowWillClose:(NSNotification *)aNotif
 {
     _shown = NO;
-
-    if ([self conformsToProtocol:@protocol(PGFloatingPanelProtocol)])
-    {
-        [(id<PGFloatingPanelProtocol>)self windowWillClose];
-    }
+    [self windowWillHide];
 }
 
 - (void)windowDidBecomeMain:(nullable NSNotification *)aNotif

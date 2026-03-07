@@ -58,7 +58,7 @@ static PGActivity *PGApplicationActivity;
     [_childActivities makeObjectsPerformSelector:@selector(setParentActivity:) withObject:nil];
 }
 
-+ (id)applicationActivity
++ (PGActivity *)applicationActivity
 {
 	return PGApplicationActivity;
 }

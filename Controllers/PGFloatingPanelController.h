@@ -47,6 +47,9 @@ typedef NS_ENUM(NSInteger, PGFloatingPanelToggleInstruction)
 // ARC, so use a similarly-named method:
 - (BOOL)setDisplayControllerReturningWasChanged:(nullable PGDisplayController *)controller;
 
+- (void)windowWillShow;
+- (void)windowWillHide;
+
 @end
 
 @protocol PGFloatingPanelProtocol
