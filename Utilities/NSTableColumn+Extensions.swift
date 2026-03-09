@@ -11,6 +11,7 @@ extension NSTableColumn
     {
         guard resizingMask != [],
         let tableView = self.tableView,
+                tableView.numberOfRows > 0,
         let columnIndex = tableView.tableColumns.firstIndex(of: self) else
         {
             return

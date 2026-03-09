@@ -227,7 +227,7 @@ fileprivate let keyLabels: [AnyHashable : Any] = [
 
 // MARK: -
 @objc(PGInspectorPanelController)
-class InspectorPanelController : PGFloatingPanelController
+class InspectorPanelController : FloatingPanelController
 {
     @IBOutlet
     var propertiesTable: NSTableView?
@@ -241,11 +241,11 @@ class InspectorPanelController : PGFloatingPanelController
     @IBOutlet
     var searchField: NSSearchField?
     
-    var properties: [String : Any]!
+    var properties: [String : Any]?
     
-    var matchingProperties: [String : Any]!
+    var matchingProperties: [String : Any]?
     
-    var matchingLabels: [String]!
+    var matchingLabels: [String]?
     
     override var windowNibName: NSNib.Name? { return "PGInspector" }
     
@@ -263,15 +263,15 @@ class InspectorPanelController : PGFloatingPanelController
     }
     
     // MARK: Base Class Overrides
-    override func setDisplayReturningWasChanged(_ controller: PGDisplayController?) -> Bool
+    override func setDisplayControllerReturningWasChanged(_ displayController: DocumentWindowController?) -> Bool
     {
-        let oldController = self.displayController
-        if !super.setDisplayReturningWasChanged(controller) { return false }
+        let oldController = self.documentWindowController
+        if !super.setDisplayControllerReturningWasChanged(displayController) { return false }
         NotificationCenter.default.removeObserver(self,
                                                   name: .PGDisplayControllerActiveNodeWasRead,
                                                   object: oldController)
         
-        if let newController = self.displayController
+        if let newController = self.documentWindowController
         {
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(displayControllerDidReadActiveNode(_:)),
@@ -287,7 +287,7 @@ class InspectorPanelController : PGFloatingPanelController
     @objc
     func displayControllerDidReadActiveNode(_ notification: Notification?)
     {
-        if let imageProperties = displayController?.activeNode.resourceAdapter.imageProperties as? [AnyHashable : Any]
+        if let imageProperties = documentWindowController?.activeNode.resourceAdapter.imageProperties as? [AnyHashable : Any]
         {
             properties = humanReadableProperties(from: imageProperties)
         }
@@ -302,6 +302,8 @@ class InspectorPanelController : PGFloatingPanelController
     @IBAction
     func changeSearch(_ sender: Any?)
     {
+        guard let properties = self.properties else { return }
+        
         if let terms = searchField?.stringValue.pg_searchTerms()
         {
             var matchingProperties = [String : Any]()
@@ -319,7 +321,7 @@ class InspectorPanelController : PGFloatingPanelController
             self.matchingProperties = properties
         }
 
-        self.matchingLabels = Array(matchingProperties.keys).sorted()
+        self.matchingLabels = Array(matchingProperties!.keys).sorted()
         propertiesTable?.reloadData()
         updateColumnWidths()
     }
@@ -327,16 +329,21 @@ class InspectorPanelController : PGFloatingPanelController
     @IBAction
     func copy(_ sender: Any?)
     {
-        var result = ""
-        for i in propertiesTable?.selectedRowIndexes ?? []
+        if let matchingProperties = self.matchingProperties,
+            let matchingLabels = self.matchingLabels,
+            !matchingLabels.isEmpty
         {
-            let label = matchingLabels[i]
-            result.append(String(format: "%@: %@\n", label, String(describing: matchingProperties[label])))
+            var result = ""
+            for i in propertiesTable?.selectedRowIndexes ?? []
+            {
+                let label = matchingLabels[i]
+                result.append(String(format: "%@: %@\n", label, String(describing: matchingProperties[label])))
+            }
+            
+            let pasteboard = NSPasteboard.general
+            pasteboard.declareTypes([.string], owner: nil)
+            pasteboard.setString(result, forType: .string)
         }
-        
-        let pasteboard = NSPasteboard.general
-        pasteboard.declareTypes([.string], owner: nil)
-        pasteboard.setString(result, forType: .string)
     }
     
     // MARK: Private Implementation
@@ -503,19 +510,22 @@ extension InspectorPanelController : NSTableViewDataSource, NSTableViewDelegate
 {
     func numberOfRows(in tableView: NSTableView) -> Int
     {
-        return matchingLabels.count
+        return matchingLabels?.count ?? 0
     }
     
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any?
     {
-        let label = matchingLabels[row]
+        guard let label = matchingLabels?[row] else
+        {
+            return nil
+        }
         if tableColumn == labelColumn
         {
             return label
         }
-        else if tableColumn == valueColumn
+        else if tableColumn == valueColumn, let value = matchingProperties?[label]
         {
-            return matchingProperties[label]
+            return value
         }
         return nil
     }

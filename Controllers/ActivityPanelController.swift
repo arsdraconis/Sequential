@@ -8,7 +8,7 @@
 import Cocoa
 
 @objc(PGActivityPanelController)
-class ActivityPanelController : PGFloatingPanelController
+class ActivityPanelController : FloatingPanelController
 {
     @IBOutlet
     var activityOutline: NSOutlineView!

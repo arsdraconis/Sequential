@@ -121,7 +121,6 @@
 		0ED4A41A0DCBFDDA007C5A77 /* PGArchiveAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ED4A4190DCBFDDA007C5A77 /* PGArchiveAdapter.m */; };
 		0ED4A44D0DCC628F007C5A77 /* PGPDFAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ED4A44C0DCC628F007C5A77 /* PGPDFAdapter.m */; };
 		0ED4A8DD0DD00E18007C5A77 /* PGURLLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ED4A8DB0DD00E18007C5A77 /* PGURLLoad.m */; };
-		0ED4AAF80DD18538007C5A77 /* PGFloatingPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ED4AAF70DD18538007C5A77 /* PGFloatingPanelController.m */; };
 		0EDB9A760EA1896400B7342A /* PGColumnView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB9A750EA1896400B7342A /* PGColumnView.m */; };
 		0EDB9A790EA1899300B7342A /* PGThumbnailBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB9A780EA1899300B7342A /* PGThumbnailBrowser.m */; };
 		0EDB9BFF0EA1E27D00B7342A /* PGThumbnailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB9BFE0EA1E27D00B7342A /* PGThumbnailView.m */; };
@@ -158,6 +157,7 @@
 		AB7A40C32F580B59006F0269 /* TimerPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7A40C22F580B59006F0269 /* TimerPanelController.swift */; };
 		AB8C82652F4C183A007AC077 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */; };
 		AB8C82752F4C3A35007AC077 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8C82742F4C3A35007AC077 /* Notifications.m */; };
+		ABBDF6BA2F5E28A600C66363 /* FloatingPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBDF6B92F5E28A600C66363 /* FloatingPanelController.swift */; };
 		ABCE98272F583196005829A5 /* Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCE98262F583196005829A5 /* Orientation.swift */; };
 		ABCE98362F5835FD005829A5 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCE98352F5835FD005829A5 /* String+Extensions.swift */; };
 		ABCE98382F583A81005829A5 /* InspectorPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCE98372F583A81005829A5 /* InspectorPanelController.swift */; };
@@ -539,8 +539,6 @@
 		0ED4A44C0DCC628F007C5A77 /* PGPDFAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPDFAdapter.m; sourceTree = "<group>"; };
 		0ED4A8DB0DD00E18007C5A77 /* PGURLLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGURLLoad.m; sourceTree = "<group>"; };
 		0ED4A8DC0DD00E18007C5A77 /* PGURLLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGURLLoad.h; sourceTree = "<group>"; };
-		0ED4AAF60DD18538007C5A77 /* PGFloatingPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGFloatingPanelController.h; sourceTree = "<group>"; };
-		0ED4AAF70DD18538007C5A77 /* PGFloatingPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGFloatingPanelController.m; sourceTree = "<group>"; };
 		0EDB9A740EA1896400B7342A /* PGColumnView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGColumnView.h; sourceTree = "<group>"; };
 		0EDB9A750EA1896400B7342A /* PGColumnView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGColumnView.m; sourceTree = "<group>"; };
 		0EDB9A770EA1899300B7342A /* PGThumbnailBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGThumbnailBrowser.h; sourceTree = "<group>"; };
@@ -603,6 +601,7 @@
 		AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		AB8C82732F4C3A35007AC077 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		AB8C82742F4C3A35007AC077 /* Notifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
+		ABBDF6B92F5E28A600C66363 /* FloatingPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPanelController.swift; sourceTree = "<group>"; };
 		ABCE98262F583196005829A5 /* Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Orientation.swift; sourceTree = "<group>"; };
 		ABCE98352F5835FD005829A5 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		ABCE98372F583A81005829A5 /* InspectorPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorPanelController.swift; sourceTree = "<group>"; };
@@ -611,7 +610,7 @@
 		B573CFF3122AC22200F4B7CA /* PGNodeParenting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGNodeParenting.h; sourceTree = "<group>"; };
 		B581795A121490A60041F0F4 /* PGXMLAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGXMLAdapter.h; sourceTree = "<group>"; };
 		B581795B121490A60041F0F4 /* PGXMLAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGXMLAdapter.m; sourceTree = "<group>"; };
-		B5FE965911F5C9C10010BBCA /* Sequential.help */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sequential.help; sourceTree = "<group>"; };
+		B5FE965911F5C9C10010BBCA /* Sequential.help */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Sequential.help; sourceTree = "<group>"; };
 		F1CA6DBC26BA316300ECE823 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		F1CA6DBE26BA316900ECE823 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		F1CA6DC526BA31D400ECE823 /* libSystem.B.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libSystem.B.tbd; path = usr/lib/libSystem.B.tbd; sourceTree = SDKROOT; };
@@ -681,14 +680,13 @@
 				0E1D37500A7E319100C542A6 /* PGFullscreenController.m */,
 				0E1BE0E10F5AA246007421EE /* PGThumbnailController.h */,
 				0E1BE0E20F5AA246007421EE /* PGThumbnailController.m */,
-				0ED4AAF60DD18538007C5A77 /* PGFloatingPanelController.h */,
-				0ED4AAF70DD18538007C5A77 /* PGFloatingPanelController.m */,
 				0EE059AF0CF29F380080061B /* PGImageSaveAlert.h */,
 				0EE059B00CF29F380080061B /* PGImageSaveAlert.m */,
+				AB374DA92F5C107D001A4721 /* OpenURLWindowController.swift */,
 				AB8C82642F4C183A007AC077 /* SettingsWindowController.swift */,
+				ABBDF6B92F5E28A600C66363 /* FloatingPanelController.swift */,
 				AB7A40C22F580B59006F0269 /* TimerPanelController.swift */,
 				ABCE98372F583A81005829A5 /* InspectorPanelController.swift */,
-				AB374DA92F5C107D001A4721 /* OpenURLWindowController.swift */,
 				AB374DAB2F5C18F7001A4721 /* ActivityPanelController.swift */,
 			);
 			path = Controllers;
@@ -776,8 +774,8 @@
 				0E1D37350A7E1A5200C542A6 /* Views */,
 				0E1D37360A7E1A5800C542A6 /* Controllers */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
-				0EEE57B10DB55837006E5B9C /* External */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
+				0EEE57B10DB55837006E5B9C /* External */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 			);
@@ -1368,6 +1366,7 @@
 				0E92E1360E2CA88400276801 /* PGGeometry.m in Sources */,
 				0E1616940EB3C71C00589D4B /* PGGeometryTypes.m in Sources */,
 				ABDA66702F502917005B8635 /* CocoaTypes+Extensions.swift in Sources */,
+				ABBDF6BA2F5E28A600C66363 /* FloatingPanelController.swift in Sources */,
 				0E246B4310887CF200C30936 /* PGFoundationAdditions.m in Sources */,
 				0E4793930DF15FD90083B7CA /* PGAttachments.m in Sources */,
 				0E246BBD108880F800C30936 /* PGDebug.m in Sources */,
@@ -1430,7 +1429,6 @@
 				0E94FBAF0DAE739700A23F73 /* PGDisplayController.m in Sources */,
 				AB29A11C2F44194F009EBE8A /* NSBezierPath+Extensions.swift in Sources */,
 				AB374DAA2F5C107D001A4721 /* OpenURLWindowController.swift in Sources */,
-				0ED4AAF80DD18538007C5A77 /* PGFloatingPanelController.m in Sources */,
 				0E8A1C0610157A5200C23B34 /* PGAboutBoxController.m in Sources */,
 				0E1BE0E30F5AA246007421EE /* PGThumbnailController.m in Sources */,
 				4BF35D0D2B062D1A008FC486 /* PGFullSizeContentController.m in Sources */,

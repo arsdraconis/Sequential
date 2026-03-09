@@ -8,7 +8,7 @@
 import Foundation
 
 @objc(PGTimerPanelController)
-class TimerPanelController : PGFloatingPanelController
+class TimerPanelController : FloatingPanelController
 {
     @IBOutlet
     public var toggleButton: TimerButton!
@@ -40,25 +40,17 @@ class TimerPanelController : PGFloatingPanelController
         super.windowDidLoad()
         tick(nil)
     }
-    
-    override var isShown: Bool
-    {
-        didSet
-        {
-            update()
-        }
-    }
-    
+        
     @objc
     public func displayControllerTimerDidChange(_ notification: Notification)
     {
         update()
     }
     
-    override func setDisplayReturningWasChanged(_ controller: PGDisplayController?) -> Bool
+    override func setDisplayControllerReturningWasChanged(_ controller: DocumentWindowController?) -> Bool
     {
-        let oldController = self.displayController
-        if !super.setDisplayReturningWasChanged(controller) { return false }
+        let oldController = self.documentWindowController
+        if !super.setDisplayControllerReturningWasChanged(controller) { return false }
         if let oldController
         {
             NotificationCenter.default.removeObserver(self,
@@ -66,7 +58,7 @@ class TimerPanelController : PGFloatingPanelController
                                                       object: oldController)
         }
         
-        if let newController = self.displayController
+        if let newController = self.documentWindowController
         {
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(displayControllerTimerDidChange(_:)),
@@ -78,11 +70,16 @@ class TimerPanelController : PGFloatingPanelController
         return true
     }
     
+    override func windowWillShow()
+    {
+        update()
+    }
+    
     // MARK: IB Actions
     @IBAction
     public func toggleTimer(_ sender: Any?)
     {
-        displayController?.timerRunning.toggle()
+        documentWindowController?.timerRunning.toggle()
     }
     
     @IBAction
@@ -97,7 +94,7 @@ class TimerPanelController : PGFloatingPanelController
     private func update()
     {
         // FIXME: When the timer is running, timerRunning returns false?!?!
-        let isRunning = displayController?.timerRunning ?? false
+        let isRunning = documentWindowController?.timerRunning ?? false
         if (!self.isShown || !isRunning)
         {
             timer?.invalidate()
@@ -107,7 +104,7 @@ class TimerPanelController : PGFloatingPanelController
         {
             timer = Timer.scheduledTimer(timeInterval: 1.0/30.0, target: self, selector: #selector(tick(_:)), userInfo: nil, repeats: true)
         }
-        toggleButton?.isEnabled = displayController != nil
+        toggleButton?.isEnabled = documentWindowController != nil
         toggleButton?.buttonIcon = isRunning ? .stop : .play
         tick(nil)
     }
@@ -116,12 +113,12 @@ class TimerPanelController : PGFloatingPanelController
     private func tick(_ timer: Timer?)
     {
         let interval = UserDefaults.standard.timerInterval
-        let isRunning = displayController?.timerRunning ?? false
+        let isRunning = documentWindowController?.timerRunning ?? false
         var timeRemaining = interval
         
         if isRunning
         {
-            if let fireDate = displayController?.nextTimerFireDate
+            if let fireDate = documentWindowController?.nextTimerFireDate
             {
                 timeRemaining = max(0, fireDate.timeIntervalSinceNow)
             }
@@ -139,7 +136,7 @@ class TimerPanelController : PGFloatingPanelController
         {
             totalField?.stringValue = String.localizedStringWithFormat(formatString, interval)
             intervalSlider?.doubleValue = interval
-            intervalSlider?.isEnabled = self.displayController != nil
+            intervalSlider?.isEnabled = self.documentWindowController != nil
         }
     }
 }

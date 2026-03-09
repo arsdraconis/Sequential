@@ -9,7 +9,6 @@
 
 // Controllers
 #import "PGDocumentController.h"
-#import "PGFloatingPanelController.h"
 #import "PGDisplayController.h"
 
 // Models
